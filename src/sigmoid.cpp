@@ -5,24 +5,24 @@
 
 using namespace std;
 
-sigmoid::sigmoid(){
+Sigmoid::Sigmoid(){
 }
-sigmoid::sigmoid(W _w){
+Sigmoid::Sigmoid(mat& m){
 }
-sigmoid::sigmoid(size_t row,size_t col){
+Sigmoid::Sigmoid(size_t row, size_t col){
 }
-sigmoid::~sigmoid(){
-}
-
-void sigmoid::forward(vector<float>& _input){
-}
-void sigmoid::backPropagate(vector<float>& _grad){
+Sigmoid::~Sigmoid(){
 }
 
-void sigmoid::print(ofstream* _out){
+void Sigmoid::forward(vector<float>& input){
+}
+void Sigmoid::backPropagate(vector<float>& grad){
 }
 
-void sigmoid::rand_init(){
+void Sigmoid::print(ofstream& out){
+}
+
+void Sigmoid::rand_init(){
 }
 
 

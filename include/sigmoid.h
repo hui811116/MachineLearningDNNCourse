@@ -5,14 +5,14 @@
 #include <fstream>
 using namespace std;
 
-typedef device_matrix<float> W;
+typedef device_matrix<float> mat;
 
-class sigmoid{
+class Sigmoid{
 public:
-	sigmoid();
-	sigmoid(W);
-	sigmoid(size_t,size_t);
-	~sigmoid();
+	Sigmoid();
+	Sigmoid(mat&);
+	Sigmoid(size_t, size_t);
+	~Sigmoid();
 	
 	void forward(vector<float>&);
 	void backPropagate(vector<float>&);	
@@ -20,7 +20,7 @@ public:
 	void print(ofstream*);
 private:
 	void rand_init();
-	W* _weight;
+	mat* _weight;
 	vector<float>* _sigout;  //output
 	vector<float>* _sigoutdiff; //differentiation of output
 };

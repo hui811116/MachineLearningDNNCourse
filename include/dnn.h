@@ -6,25 +6,29 @@
 #include <fstream>
 
 using namespace std;
-enum method{	ALL,BATCH,ONE		};
+enum Method{
+	ALL, 
+	BATCH, 
+	ONE
+};
 
-class dnn{
+class DNN{
 public:
-	dnn();
-	dnn(dataset);
-	dnn(ifstream*);
-	~dnn();
+	DNN();
+	DNN(Dataset&);
+	Dnn(ifstream*);
+	~Dnn();
 
-	void train(dataset,method);
-	void predict(dataset,vector<float>&);
-	
-	void save(ofstream*);
+	void train(Dataset, Method);
+	void predict(Dataset, vector<float>&);
+
+	void save(ofstream&);
 
 private:
-	bool feedForward(dataset,vector<float>&);
-	bool backPropagate(dataset);
-	vector<sigmoid>* _layer;
-	
+	bool feedForward(Dataset, vector<float>&);
+	bool backPropagate(Dataset);
+
+	vector<Sigmoid>* _layer;
 };
 
 

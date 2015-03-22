@@ -6,27 +6,27 @@
 
 using namespace std;
 
-dnn::dnn(){
+DNN::DNN(){
 }
-dnn::dnn(dataset){
+DNN::DNN(Dataset){
 }
-dnn::dnn(ifstream*){
+DNN::DNN(ifstream& ){
 }
-dnn::~dnn(){
-}
-
-void dnn::train(dataset _input,method _type){
+DNN::~DNN(){
 }
 
-void dnn::predict(dataset _input,vector<float>& _result){
+void DNN::train(Dataset input, method type){
 }
 
-void dnn::save(ofstream* _out){
+void DNN::predict(dataset input, vector<float>& result){
+}
+
+void DNN::save(ofstream* out){
 }
 
 //helper function
 
-bool dnn::feedForward(dataset _input,vector<float>& _output){
+bool DNN::feedForward(Dataset input,vector<float>& output){
 }
-bool dnn::backPropagate(dataset _error){
+bool DNN::backPropagate(Dataset error){
 }
