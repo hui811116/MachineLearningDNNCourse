@@ -1,9 +1,9 @@
 #ifndef DNN_H
 #define DNN_H
 #include <vector>
-#include "sigmoid.h"
+#include <string>
+//#include "sigmoid.h"
 //#include "dataset.h"
-#include <fstream>
 
 using namespace std;
 enum Method{
@@ -15,20 +15,23 @@ enum Method{
 class DNN{
 public:
 	DNN();
-	DNN(Dataset&);
-	Dnn(ifstream*);
-	~Dnn();
+//	DNN(Dataset&);
+	DNN(const string& fn);
+	~DNN();
 
-	void train(Dataset, Method);
-	void predict(Dataset, vector<float>&);
+//	void train(Dataset&, Method);
+//	void predict(Dataset&, vector<float>&);
 
-	void save(ofstream&);
+	void save(const string& fn);
 
 private:
-	bool feedForward(Dataset, vector<float>&);
-	bool backPropagate(Dataset);
+	bool feedForward(vector<float>& input);
+	bool backPropagate();
 
-	vector<Sigmoid>* _layer;
+	size_t _inputDimension;
+	size_t _outputDimension;
+//	vector<Sigmoid>* _layer;
+//	Dataset _inputData;
 };
 
 
