@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 //#include "sigmoid.h"
-//#include "dataset.h"
+#include "dataset.h"
 
 using namespace std;
 enum Method{
@@ -15,7 +15,7 @@ enum Method{
 class DNN{
 public:
 	DNN();
-//	DNN(Dataset&);
+	DNN(Dataset&);
 	DNN(const string& fn);
 	~DNN();
 
@@ -30,8 +30,10 @@ private:
 
 	size_t _inputDimension;
 	size_t _outputDimension;
+	float _learningRate;
 //	vector<Sigmoid>* _layer;
-//	Dataset _inputData;
+	Dataset& _inputSet;
+    Dataset& _validSet;
 };
 
 

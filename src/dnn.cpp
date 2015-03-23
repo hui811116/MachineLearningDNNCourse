@@ -1,18 +1,30 @@
 #include "dnn.h"
-// undefined yet
-//#include "dataset.h"
+#include "dataset.h"
+#include <iostream>
 #include <vector>
 #include <string>
 #include <fstream>
+#include <device_matrix.h>
+
+#define TEST_SET_PORTION 0.75
 
 using namespace std;
 
+typedef device_matrix<float> mat;
+typedef thrust::device_vector<float> vec;
+
 DNN::DNN(){
 }
-//DNN::DNN(Dataset& data){
+DNN::DNN(Dataset& data){
+	size_t numOfTestSet = data.getNumOfData * TEST_SET_PORTION;
+	 
 }
 DNN::DNN(const string& fn){
-	ifstream ifs(fn);
+	ifstream ifs(fn, std::ifstream::in);
+	if(!ifs.is_open()){
+		cerr << "Cannot open file: " << fn << endl;
+		exit(1);
+	}
 }
 DNN::~DNN(){
 }
