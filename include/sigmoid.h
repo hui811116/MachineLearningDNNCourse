@@ -10,7 +10,7 @@ typedef device_matrix<float> mat;
 class Sigmoid{
 public:
 	Sigmoid();
-	Sigmoid(mat&);
+	Sigmoid(const mat&);
 	Sigmoid(size_t, size_t);
 	~Sigmoid();
 	
