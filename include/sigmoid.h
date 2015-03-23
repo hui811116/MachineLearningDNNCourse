@@ -16,7 +16,9 @@ public:
 	
 	void forward(mat& out, const mat& in, bool train);
 	void backPropagate(mat& out, const mat& delta, float ln);	
-		
+	size_t getInputDim();
+	size_t getOutputDim();
+
 	void print(ofstream* os);
 private:
 	void rand_init();

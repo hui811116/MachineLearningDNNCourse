@@ -56,14 +56,25 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 // assume error pass through var "delta"
 Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat _tmp(~ (*_weight) * delta);
-	mat _tmp2()
+	out= _tmp & sigmoid(_sigout) & (1-sigmoid(_sigout));
+	// update weight
+	float* h_data = new float(_weight->size());
+	float* d_data = out.getData();
+	for(int i=0 ;i<_weight->size();++i)
+		h_data[i]=d_data[i % out.getRows()];
+	
 
-	delete _tmp;
 }
 
 void Sigmoid::print(ofstream& out){
 }
 
+size_t Sigmoid::getInputDim(){
+	return _weight->getCols()-1;
+}
+size_t Sigmoid::getOutputDim(){
+	return _weight->getRows();
+}
 void Sigmoid::rand_init(){
 	size_t _s=_weight->size();
 	T* h_data = new T [_s];
