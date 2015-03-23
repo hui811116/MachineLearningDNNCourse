@@ -2,7 +2,7 @@
 #define DNN_H
 #include <vector>
 #include <string>
-//#include "sigmoid.h"
+#include "sigmoid.h"
 #include "dataset.h"
 
 using namespace std;
@@ -15,25 +15,27 @@ enum Method{
 class DNN{
 public:
 	DNN();
-	DNN(Dataset&);
-	DNN(const string& fn);
+	DNN(Dataset& data, size_t numOfLayer, float learningRate, const vector<size_t>& v, Method method);
+//	DNN(const string& fn);
 	~DNN();
 
-//	void train(Dataset&, Method);
-//	void predict(Dataset&, vector<float>&);
+	void train();
+	vector<float>* predict(const vector<float>& inputVec);
 
 	void save(const string& fn);
 
 private:
-	bool feedForward(vector<float>& input);
-	bool backPropagate();
+	bool feedForward(const vector<float>& input);
+	bool backPropagate(const vector<float>& error);
 
+	Dataset& _data;
 	size_t _inputDimension;
+	size_t _numOfLayer;
 	size_t _outputDimension;
 	float _learningRate;
-//	vector<Sigmoid>* _layer;
-	Dataset& _inputSet;
-    Dataset& _validSet;
+	Method _method;
+	vector<Sigmoid*>* _layers;
+	vector<float>* _validateAccuracy;
 };
 
 

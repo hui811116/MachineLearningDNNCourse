@@ -16,6 +16,7 @@ public:
 	
 	void forward(vector<float>&);
 	void backPropagate(vector<float>&);	
+	vector<float>* getSigOut();	
 		
 	void print(ofstream*);
 private:
