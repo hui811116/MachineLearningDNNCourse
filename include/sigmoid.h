@@ -10,19 +10,19 @@ typedef device_matrix<float> mat;
 class Sigmoid{
 public:
 	Sigmoid();
-	Sigmoid(const mat& w);
-	Sigmoid(size_t r, size_t c);
+	Sigmoid(const mat&);
+	Sigmoid(size_t, size_t);
 	~Sigmoid();
 	
-	void forward(mat& out, const mat& in, bool train);
-	void backPropagate(mat& out, const mat& delta, float ln);	
+	void forward(mat&, const mat&);
+	void backPropagate(mat&, const mat&);	
 		
-	void print(ofstream* os);
+	void print(ofstream*);
 private:
 	void rand_init();
 	mat* _weight;
-	mat _input; //for backpropagation
-	mat _sigout;  //output
+	mat* _input; //for backpropagation
+	mat* _sigout;  //output
 };
 
 #endif
