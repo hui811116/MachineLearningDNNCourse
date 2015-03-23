@@ -3,6 +3,7 @@
 #include <vector>
 #include <device_matrix.h>
 #include "dnn.h"
+#include "dataset.h"
 
 using namespace std;
 
@@ -19,6 +20,14 @@ void randomInit(device_matrix<T>& m) {
 
 int main(int argc, char** argv){
 	cout << "Test!\n";
+	vector<size_t> dimensions;
+	dimensions.push_back(4);
+	dimensions.push_back(7);
+	dimensions.push_back(5);
+
+	Dataset dataset;
+	DNN dnn(dataset, 3, 0.1, dimensions, ALL);
+	
 	return 0;
 }
 
