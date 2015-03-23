@@ -56,5 +56,6 @@ void DNN::save(const string& fn){
 bool DNN::feedForward(const vector<float>& inputVec){
 i
 }
+//The delta of last layer = _sigoutdiff & grad(errorFunc())
 bool DNN::backPropagate(vector<float>& error){
 }

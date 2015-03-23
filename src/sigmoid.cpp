@@ -14,43 +14,38 @@ using namespace ext;
 typedef device_matrix<float> mat;
 typedef thrust::device_vector<float> vec;
 
-
 Sigmoid::Sigmoid(){
 	_weight = new mat(1,2);
-	_sigout = new vector<float>;
-	_sigoutdiff = new vector<float>;
+	_sigout = new mat(2,1);
+	_input = new mat(1,1);
 	_weight->fillwith(0);
 }
 Sigmoid::Sigmoid(const mat& m){
 	_weight = new mat(m);
-	_sigout = new vector<float>;
-	_sigoutdiff = new vector<float>;
+	_sigout = new mat(_weight->getRows(),1);
+	_input = new mat(_weight->getCols()-1,1);
 }
 Sigmoid::Sigmoid(size_t row, size_t col){
 	_weight = new mat(row,col+1);  // +1 for bias
-	_sigout = new vector<float>;
-	_sigoutdiff = new vector<float>;
+	_sigout = new mat(row,1);
+	_input = new mat(col,1);
 	rand_init();
 }
 Sigmoid::~Sigmoid(){
-	delete [] _weight;
-	_sigout.clear();_sigoutdiff.clear();
+	delete _weight;
 	delete _sigout;
-	delete _sigoutdiff;
+	delete _input;
+
 }
 
-void Sigmoid::forward(vector<float>& input){
-	input.push_back(1);
-	vec* _tmp = new vec(input);
-	vec* _o=new vec(sigmoid(toStlVector(*(_weight) * *(_tmp))));
-	input.assign(toStlVector(*_o));
-	_sigout->assign(input);
-	_sigoutdiff->assign(toStlVector(*_o & (1- *_o));
-	delete _tmp;
-	delete _o;
+void Sigmoid::forward(const mat& in, mat& out){
+	//assume in is a vector
+	out = sigmoid( *_weight * in);
 }
-void Sigmoid::backPropagate(vector<float>& grad){
 
+// assume error pass through var "delta"
+Sigmoid::backPropagate(const mat& err, mat& out){
+	
 }
 
 void Sigmoid::print(ofstream& out){

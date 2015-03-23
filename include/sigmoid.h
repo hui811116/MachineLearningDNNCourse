@@ -14,16 +14,15 @@ public:
 	Sigmoid(size_t, size_t);
 	~Sigmoid();
 	
-	void forward(vector<float>&);
-	void backPropagate(vector<float>&);	
-	vector<float>* getSigOut();	
+	void forward(mat&, const mat&);
+	void backPropagate(mat&, const mat&);	
 		
 	void print(ofstream*);
 private:
 	void rand_init();
 	mat* _weight;
-	vector<float>* _sigout;  //output
-	vector<float>* _sigoutdiff; //differentiation of output
+	mat* _input; //for backpropagation
+	mat* _sigout;  //output
 };
 
 #endif
