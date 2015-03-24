@@ -6,6 +6,9 @@
 #include "dataset.h"
 
 using namespace std;
+
+typedef device_matrix<float> mat;
+
 enum Method{
 	ALL, 
 	BATCH, 
@@ -15,26 +18,26 @@ enum Method{
 class DNN{
 public:
 	DNN();
-	DNN(Dataset& data, size_t numOfLayer, float learningRate, const vector<size_t>& v, Method method);
+	DNN(Dataset& data, float learningRate, const vector<size_t>& v, Method method);
 //	DNN(const string& fn);
 	~DNN();
 
 	void train();
-	vector<float>* predict(const vector<float>& inputVec);
+	void predict(vector<size_t>& result, const mat& inputMat);
 
+	size_t getInputDimension();
+	size_t getOutputDimension();
+	size_t getNumLayers();
 	void save(const string& fn);
 
 private:
-	bool feedForward(const vector<float>& input);
-	bool backPropagate(const vector<float>& error);
+	void feedForward(mat& ouputMat, const mat& inputMat);
+	void backPropagate(mat& errorMat, const mat& deltaMat);
 
 	Dataset& _data;
-	size_t _inputDimension;
-	size_t _numOfLayer;
-	size_t _outputDimension;
 	float _learningRate;
 	Method _method;
-	vector<Sigmoid*>* _layers;
+	vector<Sigmoid*> _transforms;
 	vector<float>* _validateAccuracy;
 };
 

@@ -9,43 +9,42 @@
 using namespace std;
 
 typedef device_matrix<float> mat;
-typedef thrust::device_vector<float> vec;
 
 DNN::DNN(){}
-DNN::DNN(Dataset& data, size_t numOfLayer, float learningRate, const vector<size_t>& v, Method method):_data(data), _numOfLayer(numOfLayer), _learningRate(learningRate), _method(method){
-	_inputDimension = v.front();
-	_outputDimension = v.back();
-	_layers = new vector<Sigmoid*>();	
-	for(size_t i = 0; i < numOfLayer-1; i++){
-		Sigmoid* layer_ptr = new Sigmoid(v.at(i), v.at(i+1));
-		_layers.push_back(layer_ptr); 
+DNN::DNN(Dataset& data, float learningRate, const vector<size_t>& v, Method method):_data(data), _learningRate(learningRate), _method(method){
+	size_t numOfLayers = v.size();
+	for(size_t i = 0; i < numOfLayers-1; i++){
+		Sigmoid* pTransform = new Sigmoid(v.at(i), v.at(i+1));
+		_transforms.push_back(pTransform);
 	}
 }
-//DNN::DNN(const string& fn){
-//	ifstream ifs(fn, std::ifstream::in);
-//	if(!ifs.is_open()){
-//		cerr << "Cannot open file: " << fn << endl;
-//		exit(1);
-//	}
-//}
 DNN::~DNN(){
-	while(!_layers->empty()){
-		delete _layers->back();
-		_layers->pop_back();
+	while(!_transforms.empty()){
+		delete _transforms.back();
+		_transforms.pop_back();
 	}
-	delete _layers;
 }
 
 void DNN::train(){
 }
 
-vector<float>* DNN::predict(const vector<float>& inputVec){
-	vector<float>* temp = &inputVec;
-	for(size_t i = 0; i < _layers->size(); i++){
-		(_layers->at(i))->feedForward(*temp);
-		temp = (_layers->at(i)->getSigOut());
-	}
-	return temp;
+void DNN::predict(vector<size_t>& result, const mat& inputMat){
+	mat outputMat;
+	feedForward(outputMat, inputMat);
+	result.reserve(outputMat.getCols);
+	
+}
+
+size_t DNN::getInputDimension(){
+	return _transforms.front()->getInputDimension();
+}
+
+size_t DNN::getOutputDimension(){
+	return _transforms.back()->getOutputDimension();
+}
+
+size_t DNN::getNumLayers(){
+	return _transforms.size()+1;
 }
 
 void DNN::save(const string& fn){
@@ -53,9 +52,18 @@ void DNN::save(const string& fn){
 
 //helper function
 
-bool DNN::feedForward(const vector<float>& inputVec){
-i
+void DNN::feedForward(mat& outputMat, const mat& inputMat){
+	mat& tempInputMat = inputMat;
+	for(size_t i = 0; i < _transforms->size(); i++){
+		(_transforms->at(i))->feedForward(outputMat, tempInputMat);
+		tempInputMat = outputMat;
+	}
 }
+
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
-bool DNN::backPropagate(vector<float>& error){
+void DNN::backPropagate(mat& errorMat, const mat& deltaMat){
 }
+
+//Helper Functions
+void
+
