@@ -53,7 +53,7 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 // assume error pass through var "delta"
 Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat _tmp( (~_weight) * delta);
-	out= _tmp & sigmoid(_sigout) & (1-sigmoid(_sigout));   // this part need tesing
+	out= _tmp & _sigout & (1-_sigout) ;   // this part need tesing
 	
 	// update weight
 	mat _inp(_input);
