@@ -53,20 +53,13 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 // assume error pass through var "delta"
 Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat _tmp( (~_weight) * delta);
-	out= _tmp & sigmoid(_sigout) & (1-sigmoid(_sigout));
-	// update weight
-	/*
-	float* h_data = new float(_weight->size());
-	float* d_data = out.getData();
+	out= _tmp & sigmoid(_sigout) & (1-sigmoid(_sigout));   // this part need tesing
 	
-	for(int i=0 ;i<_weight->size();++i)
-		h_data[i]=d_data[i % out.getRows()];
-	*/
-	mat _inp(_input.getRows()+1,1,1);
-	float* h_data = _input.getData();
-	float* d_data = _inp.getData();
-	for(int i=0;i<_input.size();++i)
-		d_data[i]=h_data[i];
+	// update weight
+	mat _inp(_input);
+	_inp.resize(_input.getRows()+1,1);
+	float* h_data = _inp.getData();
+	h_data[_input.getRows()]=1;
 	gemm(out,_inp,_weight,-rate,1.0,false,true);
 
 }

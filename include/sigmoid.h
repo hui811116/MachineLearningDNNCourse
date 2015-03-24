@@ -22,7 +22,7 @@ public:
 	void print(ofstream* os);
 private:
 	void rand_init();
-	mat* _weight;
+	mat _weight;
 	mat _input; //for backpropagation
 	mat _sigout;  //output
 };
