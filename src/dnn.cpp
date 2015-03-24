@@ -11,7 +11,7 @@ using namespace std;
 typedef device_matrix<float> mat;
 
 DNN::DNN(){}
-DNN::DNN(Dataset& data, float learningRate, const vector<size_t>& v, Method method):_data(data), _learningRate(learningRate), _method(method){
+DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
 	size_t numOfLayers = v.size();
 	for(size_t i = 0; i < numOfLayers-1; i++){
 		Sigmoid* pTransform = new Sigmoid(v.at(i), v.at(i+1));
@@ -30,14 +30,15 @@ void DNN::train(){
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	mat outputMat;
-	feedForward(outputMat, inputMat);
+	feedForward(outputMat, inputMat, false);
 	result.reserve(outputMat.getCols());
+	float* outputData = outputMat.getData();
 	for(size_t i = 0; i < outputMat.getCols(); i++){
-		float tempMaX = outputMat(0, i);
+		float tempMax = outputData[0 + i];
 		size_t idx = 0;
 		for(size_t j = 0; j < outputMat.getRows(); j++){
-			if(tempMax < outputMat(j, i)){
-				tempMax = outputMat(j, i);
+			if(tempMax < outputData[j*outputMat.getRows()+i]){
+				tempMax = outputData[j*outputMat.getRows()+i];
 				idx = j;
 			}
 		}
@@ -46,11 +47,11 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 }
 
 size_t DNN::getInputDimension(){
-	return _transforms.front()->getInputDimension();
+	return _transforms.front()->getInputDim();
 }
 
 size_t DNN::getOutputDimension(){
-	return _transforms.back()->getOutputDimension();
+	return _transforms.back()->getOutputDim();
 }
 
 size_t DNN::getNumLayers(){
@@ -62,24 +63,22 @@ void DNN::save(const string& fn){
 
 //helper function
 
-void DNN::feedForward(mat& outputMat, const mat& inputMat){
+void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 	mat tempInputMat = inputMat;
-	for(size_t i = 0; i < _transforms->size(); i++){
-		(_transforms.at(i))->feedForward(outputMat, tempInputMat);
+	for(size_t i = 0; i < _transforms.size(); i++){
+		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
-void DNN::backPropagate(mat& errorMat, const mat& deltaMat){
+void DNN::backPropagate(mat& errorMat, const mat& deltaMat, float learningRate){
 	mat tempMat = deltaMat;
 	for(int i = _transforms.size()-1; i >= 0; i--){
-		(_transforms.at(i))->backPropagate(errorMat, tempMat);
-		(_transforms.at(i))->update();
+		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate);
 		tempMat = errorMat;
 	}
 }
 
 //Helper Functions
-void
 

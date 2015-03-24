@@ -26,7 +26,8 @@ int main(int argc, char** argv){
 	dimensions.push_back(5);
 
 	Dataset dataset;
-	DNN dnn(dataset, 3, 0.1, dimensions, ALL);
+	Method method = ALL;
+	DNN dnn(&dataset, 0.1, dimensions, method);
 	
 	return 0;
 }
