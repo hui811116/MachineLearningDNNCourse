@@ -32,13 +32,13 @@ public:
 
 private:
 	void feedForward(mat& ouputMat, const mat& inputMat);
-	void backPropagate(mat& errorMat, const mat& deltaMat);
+	void backPropagate(mat& errorMat, const mat& foutMat);
 
 	Dataset& _data;
 	float _learningRate;
 	Method _method;
 	vector<Sigmoid*> _transforms;
-	vector<float>* _validateAccuracy;
+	vector<float> _validateAccuracy;
 };
 
 

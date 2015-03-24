@@ -31,8 +31,18 @@ void DNN::train(){
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	mat outputMat;
 	feedForward(outputMat, inputMat);
-	result.reserve(outputMat.getCols);
-	
+	result.reserve(outputMat.getCols());
+	for(size_t i = 0; i < outputMat.getCols(); i++){
+		float tempMaX = outputMat(0, i);
+		size_t idx = 0;
+		for(size_t j = 0; j < outputMat.getRows(); j++){
+			if(tempMax < outputMat(j, i)){
+				tempMax = outputMat(j, i);
+				idx = j;
+			}
+		}
+		result.push_back(idx);
+	}
 }
 
 size_t DNN::getInputDimension(){
@@ -53,15 +63,21 @@ void DNN::save(const string& fn){
 //helper function
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat){
-	mat& tempInputMat = inputMat;
+	mat tempInputMat = inputMat;
 	for(size_t i = 0; i < _transforms->size(); i++){
-		(_transforms->at(i))->feedForward(outputMat, tempInputMat);
+		(_transforms.at(i))->feedForward(outputMat, tempInputMat);
 		tempInputMat = outputMat;
 	}
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
 void DNN::backPropagate(mat& errorMat, const mat& deltaMat){
+	mat tempMat = deltaMat;
+	for(int i = _transforms.size()-1; i >= 0; i--){
+		(_transforms.at(i))->backPropagate(errorMat, tempMat);
+		(_transforms.at(i))->update();
+		tempMat = errorMat;
+	}
 }
 
 //Helper Functions
