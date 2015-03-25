@@ -10,7 +10,7 @@ using namespace std;
 class Dataset{
 public:
 	Dataset();
-	Dataset(const string& fn);
+	Dataset(const char* fn);
 	Dataset(const Dataset& data);
 	~Dataset();
 
@@ -21,6 +21,8 @@ private:
 	size_t _featureDimension;
 	size_t _stateDimension;
 	size_t _numOfData;
+	size_t _numOfPhoneme;
+	size_t _dataMatrix[][];
 	vector<float>* _dataVectors;
 };
 
