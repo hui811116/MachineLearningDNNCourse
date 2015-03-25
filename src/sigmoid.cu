@@ -1,5 +1,4 @@
 #include "sigmoid.h"
-#include "util.h"
 #include <device_matrix.h>
 #include <vector>
 #include <fstream>
@@ -8,18 +7,10 @@
 #include <device_arithmetic.h>
 #include <device_math.h>
 
-#include <thrust/transform_reduce.h>
-#include <thrust/functional.h>
-#include <thrust/host_vector.h>
-#include <thrust/device_vector.h>
-
-
 using namespace std;
-//using namespace ext;
-using namespace func;
+using namespace ext;
 
 typedef device_matrix<float> mat;
-typedef thrust::device_vector<float> vec;
 
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2);
@@ -49,7 +40,7 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 	h_data[in.getRows()]=1;
 	//fill with 1 for computation simplicity
 	out = sigmoid( _weight * (*_inp));
-	// 
+	//if in training mode 
 	if(train){
 		_input = in;
 		_sigout = _weight * (*_inp);	
@@ -82,7 +73,7 @@ size_t Sigmoid::getOutputDim(){
 }
 void Sigmoid::rand_init(){
 	size_t _s=_weight.size();
-	T* h_data = new T [_s];
+	float* h_data = new float [_s];
 	for (size_t i=0; i<_s; ++i)
 		h_data[i]=rand() / (float) RAND_MAX;
 	cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice);
