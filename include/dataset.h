@@ -18,11 +18,15 @@ public:
 	size_t getNumOfData();
 	size_t getInputDim();
 	size_t getOutputDim();
+	mat    getBatch(int batchSize);
+	mat    getTrainSet(int trainSize);
+	mat    getValidSet();
 private:
 	size_t _featureDimension;
 	size_t _stateDimension;
 	size_t _numOfData;
 	size_t _numOfPhoneme;
+	void   dataSegment();
 	string* _dataNameMatrix;
 	//size_t _dataMatrix[][_numOfPhoneme]*;
 };
