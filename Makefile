@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CFLAGS=
+CFLAGS= 
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
@@ -42,10 +42,10 @@ LIBRARY=-lcuda -lcublas -lcudart
 TARGET=test.app
 
 all: $(OBJ) $(HEADEROBJ) matMultTest.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LD_LIBRARY) $(LIBRARY)
 
 debug: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LIBRARY) $(LD_LIBRARY) 
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
 	@rm -f $(EXECUTABLES) obj/*
