@@ -12,18 +12,15 @@ public:
 	Sigmoid();
 	Sigmoid(const mat& w);
 	Sigmoid(size_t row, size_t col);
-	~Sigmoid();
-	
+	~Sigmoid();	
 	void forward(mat& out, const mat& in, bool train);
 	void backPropagate(mat& out, const mat& delta, float rate);	
 	size_t getInputDim();
 	size_t getOutputDim();
 
-	void print(ofstream* out);
+	void print(ostream& out);
 private:
 	void rand_init();
-	mat operator &(const mat& lv, const mat& rv);
-
 	mat _weight;
 	mat _input; //for backpropagation
 	mat _sigout;  //output

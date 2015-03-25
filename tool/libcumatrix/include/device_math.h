@@ -105,7 +105,18 @@ namespace ext {
   T sum(const device_matrix<T>& m) {
     return thrust::reduce(m.getData(), m.getData() + m.size(), (T) 0, thrust::plus<T>());
   }
-
+  //modified part
+  // ===============
+  // === Sigmoid ===
+  // ===============
+  template <typename T>
+  device_matrix<T> sigmoid(const device_matrix<T>& m) {
+    device_matrix<T> result(m.getRows(),m.getCols());
+    thrust::device_ptr<T> ptr0(result.getData());
+    thrust::device_ptr<T> ptr1(m.getData());
+    thrust::transform(ptr1, ptr1 + m.getRows() * m.getCols(), ptr0, func::sigmoid<T>());
+  }
+  //ends here
 };
 
 #endif // __DEVICE_MATH_EXT_H_

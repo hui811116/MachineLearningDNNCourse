@@ -41,21 +41,7 @@ dvec<T> operator & (const dvec<T>& x, const dvec<T>& y) {
   thrust::transform(x.begin(), x.end(), y.begin(), z.begin(), thrust::multiplies<T>());
   return z;
 }
-/*
-// modified
-template <typename T>
-dmat<T> operator & (const dmat<T>& x, const dmat<T>& y){
-  assert(x.size() == y.size());
-  assert( x.getRows() == y.getRows() && x.getCols() == y.getCols());
-  dmat<T> result(x.getRows(),y.getCols());
-  thrust::device_ptr<T> dv1(x.getData());
-  thrust::device_ptr<T> dv2(y.getData());
-  thrust::transform(dv1,dv1 + x.getRows() * x.getCols(), dv2 , result.getData(), thrust::multiplies<T>());
-  return result;
-  
-}
-// until here
-*/
+
 template <typename T>
 dmat<T> operator * (const dvec<T>& v, const dmat<T>& A) {
   assert(v.size() == A.getRows());

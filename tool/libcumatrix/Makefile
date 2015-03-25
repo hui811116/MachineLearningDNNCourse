@@ -6,11 +6,14 @@ NVCC=nvcc -arch=sm_21 -w
 CUDA_ROOT=/usr/local/cuda
 
 EXECUTABLES=
-EXAMPLE_PROGRAM= example2
+EXAMPLE_PROGRAM=
 OBJ=obj/device_matrix.o obj/cuda_memory_manager.o
  
 .PHONY: debug all o3 ctags clean
-all: libs $(EXECUTABLES) $(EXAMPLE_PROGRAM) ctags
+all:dir libs
+
+dir:
+	@mkdir -p obj
 
 o3: CFLAGS+=-O3
 o3: all
@@ -20,9 +23,10 @@ debug: all
 libs: $(OBJ) lib/libcumatrix.a
 
 lib/libcumatrix.a: $(OBJ)
-	rm -f $@
-	ar rcs $@ $^
-	ranlib $@
+	@rm -f $@
+	@ar rcs $@ $^
+	@ranlib $@
+	@echo "generating static library "libcumatrix.a""
 
 vpath %.h include/
 vpath %.cpp src/
@@ -43,8 +47,8 @@ CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)
 #	$(CXX) $(CPPFLAGS) $(CUDA_INCLUDE) -o $@ $^ $(LIBRARY_PATH) $(LIBRARY)
 #example1: $(OBJ) example1.cpp
 #	$(CXX) $(CPPFLAGS) $(CUDA_INCLUDE) -o $@ $^ $(LIBRARY_PATH) $(LIBRARY)
-example2: $(OBJ) matMultTest.cu
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(CUDA_INCLUDE) -o $@ $^ $(LIBRARY_PATH) $(LIBRARY)
+#example2: $(OBJ) matMultTest.cu
+#	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(CUDA_INCLUDE) -o $@ $^ $(LIBRARY_PATH) $(LIBRARY)
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
@@ -57,7 +61,7 @@ obj/%.o: %.cu
 obj/%.d: %.cpp
 	@$(CXX) -MM $(CPPFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,obj/\1.o $@ : ,g' < $@.$$$$ > $@;\
-	rm -f $@.$$$$
+	@rm -f $@.$$$$
 
 -include $(addprefix obj/,$(subst .cpp,.d,$(SOURCES)))
 
