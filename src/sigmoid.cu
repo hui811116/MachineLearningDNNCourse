@@ -91,12 +91,3 @@ void Sigmoid::rand_init(){
 
 // element-wise operation
 
-mat Sigmoid::operator & (const mat& lv, const mat& rv){
-	assert(lv.size()==rv.size());
-	assert( lv.getRows() == rv.getRows() && rv.getCols() == rv.getCols());
-	mat result(lv.getRows(),lv.getCols());
-	thrust::device_ptr<float> dv1(lv.getData());
-	thrust::device_ptr<float> dv2(rv.getData());
-	thrust::transform(dv1,dv1 + lv.getRows() * lv.getCols(), dv2 , result.getData(), thrust::multiplies());
-	return result;
-}
