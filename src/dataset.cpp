@@ -1,7 +1,8 @@
 include "dataset.h"
+//typedef device_matrix<float> mat;
 
 Dataset::Dataset(){};
-Dataset::Dataset(const char fn, size_t dataNum, size_t phonemeNum){
+Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	this._numOfData = dataNum;
 	this._numOfPhoneme = phonemeNum;
 

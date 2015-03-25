@@ -6,14 +6,15 @@
 #include <fstream>
 
 using namespace std;
-
+//typedef device_matrix<float> mat;
 class Dataset{
 public:
 	Dataset();
-	Dataset(const char* fn);
+	Dataset(const char* fn, size_t dataNum, size_t phonemeNum);
 	Dataset(const Dataset& data);
 	~Dataset();
-
+	
+	
 	size_t getNumOfData();
 	size_t getInputDim();
 	size_t getOutputDim();
@@ -22,8 +23,8 @@ private:
 	size_t _stateDimension;
 	size_t _numOfData;
 	size_t _numOfPhoneme;
-	size_t _dataMatrix[][];
-	vector<float>* _dataVectors;
+	string* _dataNameMatrix;
+	//size_t _dataMatrix[][_numOfPhoneme]*;
 };
 
 #endif 
