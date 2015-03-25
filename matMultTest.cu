@@ -49,5 +49,30 @@ printf("C & D= \n"); (C&D).print();
 
 Sigmoid n1(5,5);
 
+//float**
+
+float** _fptr=new float*[10];
+for(size_t t=0;t<10;++t){
+	_fptr[t]=new float[20];
+}
+
+for(size_t t=0;t<10;++t){
+	for(size_t k=0;k<20;++k)
+		_fptr[t][k]=t+100*k;
+}
+
+float* test=_fptr[2];
+
+for(size_t t=0;t<20;++t){
+	cout<<" "<<test[t];
+	if(t+1%5==0)
+		cout<<endl;
+}
+cout<<endl;
+
+for(size_t t=0;t<10;++t)
+	delete [] _fptr[t];
+delete [] _fptr;
+
 return 0;
 }
