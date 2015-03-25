@@ -9,7 +9,7 @@ EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ=obj/sigmoid.o
+HEADEROBJ= obj/sigmoid.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -29,6 +29,7 @@ debug: CFLAGS+=-g -DDEBUG
 
 vpath %.h include/
 vpath %.cpp src/
+vpath %.cu src/
 
 INCLUDE= -I include\
 	 -I $(LIBCUMATDIR)include/\
@@ -46,7 +47,7 @@ all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 debug: $(OBJ) $(HEADEROBJ) temp.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LIBRARY) $(LD_LIBRARY)
 
-hui: matMultTest.cu $(libs)
+hui:$(HEADEROBJ) matMultTest.cu $(libs)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
 
 clean:

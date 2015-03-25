@@ -4,6 +4,7 @@
 
 #include <device_arithmetic.h>
 #include <device_math.h>
+#include "sigmoid.h"
 
 using namespace std;
 
@@ -43,6 +44,10 @@ printf("D=\n");
 D.print();
 
 printf("C & D= \n"); (C&D).print();
+
+//testing sigmoid function
+
+Sigmoid n1(5,5);
 
 return 0;
 }

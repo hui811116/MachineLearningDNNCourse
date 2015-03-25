@@ -8,7 +8,6 @@
 #include <device_math.h>
 
 using namespace std;
-using namespace ext;
 
 typedef device_matrix<float> mat;
 
@@ -16,7 +15,7 @@ Sigmoid::Sigmoid(){
 	_weight.resize(1,2);
 	_sigout.resize(2,1);
 	_input.resize(1,1);
-	_weight->fillwith(0);
+	_weight.fillwith(0);
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
@@ -29,40 +28,40 @@ Sigmoid::Sigmoid(size_t row, size_t col){
 	_input.resize(col,1);
 	rand_init();
 }
+
 Sigmoid::~Sigmoid(){
 }
 
 void Sigmoid::forward(mat& out, const mat& in, bool train){
 	//assume in is a vector
-	mat* _inp = new mat(in);
-	_inp->resize(in.getRows()+1,in.getCols());
-	float* h_data=_inp->getData();
+	mat _inp = mat(in);
+	_inp.resize(in.getRows()+1,in.getCols());
+	float* h_data=_inp.getData();
 	h_data[in.getRows()]=1;
 	//fill with 1 for computation simplicity
-	out = sigmoid( _weight * (*_inp));
+	out = ext::sigmoid( (_weight * _inp));
 	//if in training mode 
 	if(train){
 		_input = in;
-		_sigout = _weight * (*_inp);	
+		_sigout = _weight * (_inp);	
 	}
-	delete _inp;
 }
 
 // assume error pass through var "delta"
-Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
+void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat _tmp( (~_weight) * delta);
-	out= _tmp & _sigout & (1-_sigout) ;   // this part need tesing
-	
+	mat one(_tmp.getRows(),_tmp.getCols(),1);
+	out= _tmp & _sigout & (one-_sigout) ;   // this part need tesing
 	// update weight
 	mat _inp(_input);
 	_inp.resize(_input.getRows()+1,1);
 	float* h_data = _inp.getData();
 	h_data[_input.getRows()]=1;
-	gemm(out,_inp,_weight,-rate,1.0,false,true);
+	gemm(out,_inp,_weight,-rate,(float)1.0,false,true);
 
 }
 
-void Sigmoid::print(ofstream& out){
+void Sigmoid::print(ostream& out){
 }
 
 size_t Sigmoid::getInputDim(){

@@ -10,7 +10,7 @@ EXAMPLE_PROGRAM=
 OBJ=obj/device_matrix.o obj/cuda_memory_manager.o
  
 .PHONY: debug all o3 ctags clean
-all:dir libs $(EXECUTABLES) $(EXAMPLE_PROGRAM) ctags
+all:dir libs
 
 dir:
 	@mkdir -p obj
@@ -26,7 +26,8 @@ lib/libcumatrix.a: $(OBJ)
 	@rm -f $@
 	@ar rcs $@ $^
 	@ranlib $@
-	echo "generating static library "libcumatrix.a""
+	@echo "generating static library "libcumatrix.a""
+
 vpath %.h include/
 vpath %.cpp src/
 vpath %.cu src/
@@ -60,7 +61,7 @@ obj/%.o: %.cu
 obj/%.d: %.cpp
 	@$(CXX) -MM $(CPPFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,obj/\1.o $@ : ,g' < $@.$$$$ > $@;\
-	rm -f $@.$$$$
+	@rm -f $@.$$$$
 
 -include $(addprefix obj/,$(subst .cpp,.d,$(SOURCES)))
 
