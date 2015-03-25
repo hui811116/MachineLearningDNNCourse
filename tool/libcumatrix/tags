@@ -1,0 +1,165 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CACHE_SIZE	include/cuda_memory_manager.h	/^  static size_t CACHE_SIZE;$/;"	m	class:CudaMemManager
+CACHE_SIZE	src/cuda_memory_manager.cpp	/^size_t CudaMemManager<T>::CACHE_SIZE = 16 * 1024 * 1024; \/* 16 MBytes *\/$/;"	m	class:CudaMemManager	file:
+CC	Makefile	/^CC=gcc$/;"	m
+CCE	include/cuda_memory_manager.h	11;"	d
+CCE	include/device_matrix.h	16;"	d
+CFLAGS	Makefile	/^CFLAGS=$/;"	m
+CPPFLAGS	Makefile	/^CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)$/;"	m
+CUBLAS_HANDLE	include/device_matrix.h	/^  CUBLAS_HANDLE()  { CCE(cublasCreate(&_handle)); }$/;"	f	class:CUBLAS_HANDLE
+CUBLAS_HANDLE	include/device_matrix.h	/^class CUBLAS_HANDLE {$/;"	c
+CUDA_INCLUDE	Makefile	/^CUDA_INCLUDE=$(INCLUDE) \\$/;"	m
+CUDA_ROOT	Makefile	/^CUDA_ROOT=\/usr\/local\/cuda$/;"	m
+CXX	Makefile	/^CXX=g++$/;"	m
+CudaMemManager	include/cuda_memory_manager.h	/^  CudaMemManager(): _total_byte_allocated(0) { \/* Nothing to do *\/ }$/;"	f	class:CudaMemManager
+CudaMemManager	include/cuda_memory_manager.h	/^class CudaMemManager {$/;"	c
+EXAMPLE_PROGRAM	Makefile	/^EXAMPLE_PROGRAM=$/;"	m
+EXECUTABLES	Makefile	/^EXECUTABLES=$/;"	m
+HAVE_THRUST_DEVICE_VECTOR_H	include/device_math.h	8;"	d
+HAVE_THRUST_DEVICE_VECTOR_H	include/device_vector_operators.h	9;"	d
+INCLUDE	Makefile	/^INCLUDE= -I include\/\\$/;"	m
+LIBRARY	Makefile	/^LIBRARY= -lcuda -lcublas -lcudart$/;"	m
+LIBRARY_PATH	Makefile	/^LIBRARY_PATH=-L$(CUDA_ROOT)\/lib64\/$/;"	m
+MemList	include/cuda_memory_manager.h	/^  MemList(): hits(0), hit_rate(0) {}$/;"	f	struct:MemList
+MemList	include/cuda_memory_manager.h	/^struct MemList {$/;"	s
+MemPool	include/cuda_memory_manager.h	/^struct MemPool {$/;"	s
+NVCC	Makefile	/^NVCC=nvcc -arch=sm_21 -w$/;"	m
+OBJ	Makefile	/^OBJ=obj\/device_matrix.o obj\/cuda_memory_manager.o$/;"	m
+PI	include/math_ext.h	5;"	d
+SCALAR_MEMORY_BUFFER	include/device_matrix.h	/^  SCALAR_MEMORY_BUFFER(): _ptr(NULL) {$/;"	f	class:SCALAR_MEMORY_BUFFER
+SCALAR_MEMORY_BUFFER	include/device_matrix.h	/^class SCALAR_MEMORY_BUFFER {$/;"	c
+T	src/device_matrix.cu	/^device_matrix<T>::operator thrust::device_vector<T>() const {$/;"	f
+Transposed	include/device_matrix.h	/^      Transposed(const device_matrix<T>& m): _m(m) {}$/;"	f	class:device_matrix::Transposed
+Transposed	include/device_matrix.h	/^  class Transposed {$/;"	c	class:device_matrix
+VECTOR	include/device_vector_operators.h	14;"	d
+VECTOR	include/device_vector_operators.h	18;"	d
+WHERE	include/device_vector_operators.h	15;"	d
+WHERE	include/device_vector_operators.h	19;"	d
+__CUDA_MEMORY_MANAGER_H_	include/cuda_memory_manager.h	2;"	d
+__DEVICE_BLAS_H_	include/device_arithmetic.h	2;"	d
+__DEVICE_MATH_EXT_H_	include/device_math.h	2;"	d
+__DEVICE_MATRIX_H__	include/device_matrix.h	2;"	d
+__MATH_EXT_H_	include/math_ext.h	2;"	d
+_byte_allocated	include/cuda_memory_manager.h	/^  std::map<T*, size_t> _byte_allocated;$/;"	m	class:CudaMemManager
+_capacity	include/device_matrix.h	/^  size_t _capacity;$/;"	m	class:device_matrix
+_cols	include/device_matrix.h	/^  size_t _cols;$/;"	m	class:device_matrix
+_cols	src/device_matrix.cu	/^  _capacity(_rows * _cols),$/;"	v
+_cuda_stream	include/device_matrix.h	/^  static cudaStream_t _cuda_stream;$/;"	m	class:device_matrix
+_cuda_stream	src/device_matrix.cu	/^cudaStream_t device_matrix<T>::_cuda_stream = 0;$/;"	m	class:T	file:
+_data	include/device_matrix.h	/^  T* _data;$/;"	m	class:device_matrix
+_data	src/device_matrix.cu	/^  _data(NULL) {$/;"	f
+_handle	include/device_matrix.h	/^  cublasHandle_t _handle;$/;"	m	class:CUBLAS_HANDLE
+_m	include/device_matrix.h	/^      const device_matrix<T>& _m;$/;"	m	class:device_matrix::Transposed
+_mem_manager	include/device_matrix.h	/^  static CudaMemManager<T> _mem_manager;$/;"	m	class:device_matrix
+_pool	include/cuda_memory_manager.h	/^  typename MemPool<T>::type _pool;$/;"	m	class:CudaMemManager
+_ptr	include/device_matrix.h	/^  T* _ptr;$/;"	m	class:SCALAR_MEMORY_BUFFER
+_random_seed_	include/math_ext.h	/^    static time_t _random_seed_ = srander();$/;"	m	namespace:ext::randomgenerator
+_rows	include/device_matrix.h	/^  size_t _rows;$/;"	m	class:device_matrix
+_total_byte_allocated	include/cuda_memory_manager.h	/^  size_t _total_byte_allocated;$/;"	m	class:CudaMemManager
+b_sigmoid	include/math_ext.h	/^  std::vector<T> b_sigmoid(const std::vector<T>& x) {$/;"	f	namespace:ext
+back	include/cuda_memory_manager.h	/^  T* back() const {$/;"	f	struct:MemList
+device_matrix	include/device_matrix.h	/^class device_matrix {$/;"	c
+device_matrix	src/device_matrix.cu	/^device_matrix<T>::device_matrix(T* h_data, size_t r, size_t c):$/;"	f	class:T
+device_matrix	src/device_matrix.cu	/^device_matrix<T>::device_matrix(const Transposed& source):$/;"	f	class:T
+device_matrix	src/device_matrix.cu	/^device_matrix<T>::device_matrix(const std::string& filename):$/;"	f	class:T
+device_matrix	src/device_matrix.cu	/^device_matrix<T>::device_matrix(size_t r, size_t c):$/;"	f	class:T
+device_matrix	src/device_matrix.cu	/^device_matrix<T>::device_matrix(size_t r, size_t c, T value):$/;"	f	class:T
+device_matrix	src/device_matrix.cu	/^template <typename T> device_matrix<T>::device_matrix():$/;"	f	class:T
+diff1st	include/math_ext.h	/^  std::vector<T> diff1st(const std::vector<T>& v) {$/;"	f	namespace:ext
+dmat	include/device_arithmetic.h	92;"	d
+dmat	include/device_arithmetic.h	9;"	d
+dmat	include/device_matrix.h	246;"	d
+dmat	include/device_matrix.h	317;"	d
+dvec	include/device_arithmetic.h	8;"	d
+dvec	include/device_arithmetic.h	91;"	d
+empty	include/cuda_memory_manager.h	/^  bool empty() const {$/;"	f	struct:MemList
+ext	include/device_math.h	/^namespace ext {$/;"	n
+ext	include/math_ext.h	/^namespace ext {$/;"	n
+free	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::free(T* ptr) {$/;"	f	class:CudaMemManager
+garbage_collection	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::garbage_collection() {$/;"	f	class:CudaMemManager
+gc	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::gc() {$/;"	f	class:CudaMemManager
+geam	include/device_matrix.h	/^void geam(const dmat& A, const dmat& B, dmat& C, T alpha = 1.0, T beta = 1.0, bool transA = false, bool transB = false) {$/;"	f
+gemm	include/device_matrix.h	/^void gemm(const dmat& A, const dmat& B, dmat& C, T alpha = 1.0, T beta = 0.0, bool transA = false, bool transB = false) {$/;"	f
+get	src/cuda_memory_manager.cpp	/^T* CudaMemManager<T>::get(size_t size) {$/;"	f	class:CudaMemManager
+getBuffer	include/device_matrix.h	/^  static T* getBuffer() {$/;"	f	class:SCALAR_MEMORY_BUFFER
+getCols	include/device_matrix.h	/^  size_t getCols() const { return _cols; }$/;"	f	class:device_matrix
+getData	include/device_matrix.h	/^  T* getData() const { return _data; }$/;"	f	class:device_matrix
+getInstance	include/cuda_memory_manager.h	/^  static CudaMemManager& getInstance() {$/;"	f	class:CudaMemManager
+getInstance	include/device_matrix.h	/^  static cublasHandle_t& getInstance() {$/;"	f	class:CUBLAS_HANDLE
+getKeys	src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::getKeys(const typename MemPool<T>::type &pool) {$/;"	f	class:CudaMemManager
+getRows	include/device_matrix.h	/^  size_t getRows() const { return _rows; }$/;"	f	class:device_matrix
+hasMore	src/cuda_memory_manager.cpp	/^bool CudaMemManager<T>::hasMore(size_t size) {$/;"	f	class:CudaMemManager
+hist	include/math_ext.h	/^  std::vector<size_t> hist(const std::vector<T>& v) {$/;"	f	namespace:ext
+hit	include/cuda_memory_manager.h	/^  void hit() {$/;"	f	struct:MemList
+hit_rate	include/cuda_memory_manager.h	/^  size_t hit_rate;$/;"	m	struct:MemList
+hits	include/cuda_memory_manager.h	/^  size_t hits;$/;"	m	struct:MemList
+is_inf	include/math_ext.h	/^  inline bool is_inf(T x) {$/;"	f	namespace:ext
+load	include/device_math.h	/^  thrust::device_vector<T> load(std::string filename) {$/;"	f	namespace:ext
+load	include/math_ext.h	/^  void load(std::vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+main	matMultTest.cu	/^int main(){$/;"	f
+malloc	src/cuda_memory_manager.cpp	/^T* CudaMemManager<T>::malloc(size_t N) {$/;"	f	class:CudaMemManager
+mat	matMultTest.cu	/^typedef device_matrix<float> mat;$/;"	t	file:
+max	include/math_ext.h	/^  T max(const std::vector<T>& v) {$/;"	f	namespace:ext
+mylog	src/device_matrix.cu	8;"	d	file:
+naiveMatrixTranspose	src/device_matrix.cu	/^__global__ void naiveMatrixTranspose(T *odata, const T *idata, const int rows, const int cols) {$/;"	f
+norm	include/device_math.h	/^  T norm(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+norm	include/device_math.h	/^  T norm(const thrust::host_vector<T>& v) {$/;"	f	namespace:ext
+normalize	include/math_ext.h	/^  void normalize(std::vector<T>& v) {$/;"	f	namespace:ext
+nrm2	include/device_matrix.h	/^T nrm2(const dmat& A) {$/;"	f
+operator	src/device_matrix.cu	/^device_matrix<T>& device_matrix<T>::operator += (T val) {$/;"	m	class:T	file:
+operator &	include/device_arithmetic.h	/^dvec<T> operator & (const dvec<T>& x, const dvec<T>& y) {$/;"	f
+operator *	include/device_arithmetic.h	/^dmat<T> operator * (const dmat<T>& A, const dvec<T>& v) {$/;"	f
+operator *	include/device_arithmetic.h	/^dmat<T> operator * (const dvec<T>& col_vector, const dvec<T>& row_vector) {$/;"	f
+operator *	include/device_arithmetic.h	/^dmat<T> operator * (const dvec<T>& v, const dmat<T>& A) {$/;"	f
+operator *	include/device_matrix.h	/^      device_matrix<T> operator * (const Transposed& rhs) {$/;"	f	class:device_matrix::Transposed
+operator *	include/device_matrix.h	/^      device_matrix<T> operator * (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator *	include/device_matrix.h	/^device_matrix<T> operator * (T alpha, const device_matrix<T>& m) {$/;"	f
+operator +	include/device_matrix.h	/^      device_matrix<T> operator + (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator +	include/device_matrix.h	/^device_matrix<T> operator + (T alpha, const device_matrix<T>& m) {$/;"	f
+operator -	include/device_matrix.h	/^      device_matrix<T> operator - (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator -	include/device_matrix.h	/^device_matrix<T> operator - (T alpha, const device_matrix<T>& m) {$/;"	f
+pop_back	include/cuda_memory_manager.h	/^  void pop_back() {$/;"	f	struct:MemList
+print	include/device_math.h	/^  void print(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+print	include/device_math.h	/^  void print(const thrust::host_vector<T>& v) {$/;"	f	namespace:ext
+ptrs	include/cuda_memory_manager.h	/^  std::vector<T*> ptrs;$/;"	m	struct:MemList
+push	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::push(size_t size, T* ptr) {$/;"	f	class:CudaMemManager
+push_back	include/cuda_memory_manager.h	/^  void push_back(T* ptr) {$/;"	f	struct:MemList
+rand	include/device_math.h	/^  void rand(device_matrix<T>& m) {$/;"	f	namespace:ext
+rand	include/math_ext.h	/^  std::vector<T> rand(size_t size) {$/;"	f	namespace:ext
+rand01	include/math_ext.h	/^  T rand01() {$/;"	f	namespace:ext
+randn	include/device_math.h	/^  void randn(device_matrix<T>& m, float mean = 0.0, float variance = 1.0) {$/;"	f	namespace:ext
+randn	include/math_ext.h	/^  T randn(T mean, T var) {$/;"	f	namespace:ext
+randn	include/math_ext.h	/^  std::vector<T> randn(size_t size) {$/;"	f	namespace:ext
+randomgenerator	include/math_ext.h	/^  namespace randomgenerator {$/;"	n	namespace:ext
+sampleDataFrom	include/math_ext.h	/^  std::vector<size_t> sampleDataFrom(const std::vector<T>& pdf, size_t nSample) {$/;"	f	namespace:ext
+save	include/device_math.h	/^  void save(const thrust::device_vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+save	include/math_ext.h	/^  void save(const std::vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+setCacheSize	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::setCacheSize(size_t cache_size_in_MB) {$/;"	f	class:CudaMemManager
+setCudaStream	src/device_matrix.cu	/^void device_matrix<T>::setCudaStream(cudaStream_t& streamId) {$/;"	f	class:T
+showCacheHits	src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::showCacheHits() {$/;"	f	class:CudaMemManager
+sigmoid	include/math_ext.h	/^  std::vector<T> sigmoid(const std::vector<T>& x) {$/;"	f	namespace:ext
+size	include/cuda_memory_manager.h	/^  size_t size() const {$/;"	f	struct:MemList
+size	include/device_matrix.h	/^  size_t size() const { return _rows * _cols; }$/;"	f	class:device_matrix
+size	src/cuda_memory_manager.cpp	/^size_t CudaMemManager<T>::size() const {$/;"	f	class:CudaMemManager
+softmax	include/math_ext.h	/^  std::vector<T> softmax(const std::vector<T>& x) {$/;"	f	namespace:ext
+sort_memlist_by_hit_rate	src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::sort_memlist_by_hit_rate() {$/;"	f	class:CudaMemManager
+sort_memlist_by_hits	src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::sort_memlist_by_hits() {$/;"	f	class:CudaMemManager
+srander	include/math_ext.h	/^    inline time_t srander() {$/;"	f	namespace:ext::randomgenerator
+status	include/device_matrix.h	/^  void status() const {$/;"	f	class:device_matrix
+std	matMultTest.cu	/^using namespace std;$/;"	v
+sum	include/device_math.h	/^  T sum(const device_matrix<T>& m) {$/;"	f	namespace:ext
+sum	include/device_math.h	/^  T sum(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+sum	include/math_ext.h	/^  T sum(const std::vector<T>& v) {$/;"	f	namespace:ext
+swap	include/device_matrix.h	/^void swap(device_matrix<T>& lhs, device_matrix<T>& rhs) {$/;"	f
+toStlVector	include/device_math.h	/^  std::vector<T> toStlVector(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+type	include/cuda_memory_manager.h	/^  typedef typename std::map<size_t, MemList<T> > type;$/;"	t	struct:MemPool
+unif	include/math_ext.h	/^  T unif(T &seed) {$/;"	f	namespace:ext
+~CUBLAS_HANDLE	include/device_matrix.h	/^  ~CUBLAS_HANDLE() { CCE(cublasDestroy(_handle)); }$/;"	f	class:CUBLAS_HANDLE
+~CudaMemManager	include/cuda_memory_manager.h	/^  ~CudaMemManager() {}$/;"	f	class:CudaMemManager
+~SCALAR_MEMORY_BUFFER	include/device_matrix.h	/^  ~SCALAR_MEMORY_BUFFER() { CCE(cudaFree(_ptr)); }$/;"	f	class:SCALAR_MEMORY_BUFFER
+~device_matrix	src/device_matrix.cu	/^device_matrix<T>::~device_matrix() {$/;"	f	class:T

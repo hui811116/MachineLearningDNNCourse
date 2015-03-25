@@ -8,6 +8,7 @@ CUDA_DIR=/usr/local/cuda/
 EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
+CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 HEADEROBJ=obj/sigmoid.o
 
 # +==============================+
@@ -18,16 +19,13 @@ HEADEROBJ=obj/sigmoid.o
 
 libs=$(LIBCUMATDIR)lib/libcumatrix.a
 
+$(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
+	@echo "something wrong in tool/libcumatrix..."
+
 o3: CFLAGS+=-o3
 o3: all
 
 debug: CFLAGS+=-g -DDEBUG
-
-
-#$(LIBCUMATDIR)lib/libcumatrix.a: $(OBJ)
-#	rm -f $@
-#	ar rcs $@ $^
-#	ranlib $@
 
 vpath %.h include/
 vpath %.cpp src/
