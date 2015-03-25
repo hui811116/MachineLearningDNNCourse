@@ -9,11 +9,17 @@ EXECUTABLES=test.app
 LIBCUMATDIR=/home/larry/Documents/MLDS/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 HEADEROBJ=obj/dataset.o obj/dnn.o
+
+# +==============================+
+# +======== Phony Rules =========+
+# +==============================+
+
 .PHONY: debug all clean o3
 all: libs
 
 o3: CFLAGS+=-o3
 o3: all
+
 debug: CFLAGS+=-g -DDEBUG
 
 libs: $(OBJ) $(LIBCUMATDIR)lib/libcumatrix.a
@@ -39,8 +45,7 @@ all: $(OBJ) $(HEADEROBJ) matMultTest.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
 debug: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ)\
- $(LIBRARY) $(LD_LIBRARY) 
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
 	@rm -f $(EXECUTABLES) obj/*
