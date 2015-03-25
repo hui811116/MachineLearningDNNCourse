@@ -18,7 +18,7 @@ enum Method{
 class DNN{
 public:
 	DNN();
-	DNN(Dataset& data, float learningRate, const vector<size_t>& v, Method method);
+	DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method);
 //	DNN(const string& fn);
 	~DNN();
 
@@ -31,10 +31,10 @@ public:
 	void save(const string& fn);
 
 private:
-	void feedForward(mat& ouputMat, const mat& inputMat);
-	void backPropagate(mat& errorMat, const mat& foutMat);
+	void feedForward(mat& ouputMat, const mat& inputMat, bool train);
+	void backPropagate(mat& errorMat, const mat& foutMat, float learningRate);
 
-	Dataset& _data;
+	Dataset* _pData;
 	float _learningRate;
 	Method _method;
 	vector<Sigmoid*> _transforms;

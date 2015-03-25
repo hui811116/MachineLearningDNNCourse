@@ -20,14 +20,21 @@ void randomInit(device_matrix<T>& m) {
 
 int main(int argc, char** argv){
 	cout << "Test!\n";
+	// set network structure
 	vector<size_t> dimensions;
 	dimensions.push_back(4);
 	dimensions.push_back(7);
 	dimensions.push_back(5);
-
-	Dataset dataset;
-	DNN dnn(dataset, 3, 0.1, dimensions, ALL);
 	
+	// loading data
+	Dataset trainData;
+	Dataset testData;
+	Method method = ALL;
+	//start training
+	DNN dnn(&trainData, 0.1, dimensions, method);
+
+	dnn.train();
+
 	return 0;
 }
 
