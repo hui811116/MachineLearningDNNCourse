@@ -27,8 +27,8 @@ Sigmoid::Sigmoid(){
 	_input.resize(1,1);
 	_weight->fillwith(0);
 }
-Sigmoid::Sigmoid(const mat& m){
-	_weight=m;
+Sigmoid::Sigmoid(const mat& w){
+	_weight=w;
 	_sigout.resize(_weight.getRows(),1);
 	_input.resize(_weight.getCols()-1,1);
 }

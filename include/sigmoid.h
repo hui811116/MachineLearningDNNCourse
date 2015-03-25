@@ -11,15 +11,15 @@ class Sigmoid{
 public:
 	Sigmoid();
 	Sigmoid(const mat& w);
-	Sigmoid(size_t r, size_t c);
+	Sigmoid(size_t row, size_t col);
 	~Sigmoid();
 	
 	void forward(mat& out, const mat& in, bool train);
-	void backPropagate(mat& out, const mat& delta, float ln);	
+	void backPropagate(mat& out, const mat& delta, float rate);	
 	size_t getInputDim();
 	size_t getOutputDim();
 
-	void print(ofstream* os);
+	void print(ofstream* out);
 private:
 	void rand_init();
 	mat _weight;
