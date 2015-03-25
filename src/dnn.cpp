@@ -25,7 +25,7 @@ DNN::~DNN(){
 	}
 }
 
-void DNN::train(){
+void DNN::train(size_t batchSize){
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
