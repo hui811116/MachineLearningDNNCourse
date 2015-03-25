@@ -22,7 +22,7 @@ public:
 	void print(ofstream* os);
 private:
 	void rand_init();
-	mat operator & (const mat& left_vec, const mat& right_vec);
+	mat operator &(const mat& lv, const mat& rv);
 
 	mat _weight;
 	mat _input; //for backpropagation

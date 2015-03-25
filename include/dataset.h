@@ -1,5 +1,5 @@
-#ifndef __DATASET_H_
-#define __DATASET_H_
+#ifndef DATASET_H_
+#define DATASET_H_
 
 #include <string>
 #include <vector>
