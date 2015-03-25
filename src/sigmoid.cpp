@@ -19,7 +19,6 @@ using namespace std;
 using namespace func;
 
 typedef device_matrix<float> mat;
-typedef thrust::device_vector<float> vec;
 
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2);
@@ -27,8 +26,8 @@ Sigmoid::Sigmoid(){
 	_input.resize(1,1);
 	_weight->fillwith(0);
 }
-Sigmoid::Sigmoid(const mat& m){
-	_weight=m;
+Sigmoid::Sigmoid(const mat& w){
+	_weight=w;
 	_sigout.resize(_weight.getRows(),1);
 	_input.resize(_weight.getCols()-1,1);
 }
@@ -87,16 +86,4 @@ void Sigmoid::rand_init(){
 		h_data[i]=rand() / (float) RAND_MAX;
 	cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice);
 	delete [] h_data;
-}
-
-// element-wise operation
-
-mat Sigmoid::operator & (const mat& lv, const mat& rv){
-	assert(lv.size()==rv.size());
-	assert( lv.getRows() == rv.getRows() && rv.getCols() == rv.getCols());
-	mat result(lv.getRows(),lv.getCols());
-	thrust::device_ptr<float> dv1(lv.getData());
-	thrust::device_ptr<float> dv2(rv.getData());
-	thrust::transform(dv1,dv1 + lv.getRows() * lv.getCols(), dv2 , result.getData(), thrust::multiplies());
-	return result;
 }
