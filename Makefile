@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CFLAGS=
+CFLAGS= 
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
@@ -42,6 +42,13 @@ LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
+#<<<<<<< HEAD
+#all: $(OBJ) $(HEADEROBJ) matMultTest.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LD_LIBRARY) $(LIBRARY)
+
+#debug: $(OBJ) $(HEADEROBJ) temp.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LIBRARY) $(LD_LIBRARY) 
+#=======
 all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
@@ -50,6 +57,7 @@ debug: $(OBJ) $(HEADEROBJ) temp.cpp
 
 hui: matMultTest.cu $(libs)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
+#>>>>>>> 0575673311a3d8bab804965375214e0ed60aa639
 
 clean:
 	@rm -f $(EXECUTABLES) obj/*
