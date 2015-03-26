@@ -27,12 +27,12 @@ int main(int argc, char** argv){
 	dimensions.push_back(5);
 	
 	// loading data
-//	Dataset trainData;
+	Dataset trainData;
 //	Dataset testData;
 	Method method = ALL;
 	//start training
-//	DNN dnn(&trainData, 0.1, dimensions, method);
-
+	DNN dnn(&trainData, 0.1, dimensions, method);
+	dnn.debug();
 	//dnn.train(2);
 
 	return 0;

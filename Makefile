@@ -25,7 +25,7 @@ $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 o3: CFLAGS+=-o3
 o3: all
 
-# debug: CFLAGS+=-g -DDEBUG
+debug: CFLAGS+=-g -DDEBUG
 
 vpath %.h include/
 vpath %.cpp src/
@@ -44,7 +44,7 @@ TARGET=test.app
 all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-debug: $(OBJ) $(HEADEROBJ) temp.cpp
+larry: $(OBJ) $(HEADEROBJ) temp.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 
