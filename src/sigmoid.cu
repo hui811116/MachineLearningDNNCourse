@@ -80,12 +80,14 @@ void Sigmoid::rand_init(){
 }
 
 void Sigmoid::pushOne(mat& input){
-	size_t _s=input.size()+1;
-	float* h_data = new float [_s];
-	cudaMemcpy(h_data, input.getData(), input.size() * sizeof(float), cudaMemcpyDeviceToHost);
-	h_data[_s-1]=1;
-	input.resize(input.getRows()+1,input.getCols());
-	cudaMemcpy(input.getData(), h_data, input.size() * sizeof(float), cudaMemcpyHostToDevice);
+	device_matrix<float> tmp(~input);
+    float* h_data = new float [input.size()+input.getCols()];
+	cudaMemcpy(h_data, tmp.getData(), tmp.size() * sizeof(float), cudaMemcpyDeviceToHost);
+    for(size_t t=0;t<tmp.getRows();++t)
+	h_data[tmp.size()+t]=1;
+	tmp.resize(tmp.getRows(),tmp.getCols()+1);
+	cudaMemcpy(tmp.getData(), h_data, tmp.size() * sizeof(float), cudaMemcpyHostToDevice);
+    input=~tmp;
 	delete [] h_data;
 }
 
