@@ -39,20 +39,32 @@ void DNN::train(size_t batchSize){
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
-	mat outputMat;
+	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
-	float* outputData = outputMat.getData();
+	cout << endl;
+	float* h_data = new float [outputMat.size()];
+	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
 	for(size_t i = 0; i < outputMat.getCols(); i++){
-		float tempMax = outputData[0 + i];
-		size_t idx = 0;
+		float tempMax = h_data[0 + i*outputMat.getCols()];
+		size_t idx = 0;		
 		for(size_t j = 0; j < outputMat.getRows(); j++){
-			if(tempMax < outputData[j*outputMat.getRows()+i]){
-				tempMax = outputData[j*outputMat.getRows()+i];
+//			cout << h_data[j + i*outputMat.getCols()] << endl;
+			if(tempMax < h_data[j + i*outputMat.getCols()]){
+				tempMax = h_data[j + i*outputMat.getCols()];
 				idx = j;
 			}
 		}
 		result.push_back(idx);
 	}
+	for(size_t i = 0; i < outputMat.getCols(); i++){
+		cout << h_data[i] << " ";
+		for(size_t j = 1; j < outputMat.getRows(); j++){
+			cout << h_data[j*outputMat.getRows() + i] << " ";
+		}
+		cout << endl;
+	}
+	
+	delete [] h_data;
 }
 
 size_t DNN::getInputDimension(){
@@ -71,7 +83,7 @@ void DNN::save(const string& fn){
 }
 
 void DNN::debug(){
-	mat testMat(getInputDimension(), 1);
+	mat testMat(getInputDimension(), 3);
 	randomInit(testMat);
 	testMat.print();
 	cout << endl;
@@ -79,24 +91,23 @@ void DNN::debug(){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
-//	vector<size_t> result;
-	mat outputMat(1,1);
-	feedForward(outputMat, testMat, false);
-//  cout << "result size:" << result.size();
-//	for(size_t i = 0; i < result.size(); i++){
-//		cout << result.at(i) << endl;
-//	}
+	vector<size_t> result;
+	predict(result, testMat);
+	cout << "result size:" << result.size() << endl;
+	for(size_t i = 0; i < result.size(); i++){
+		cout << result.at(i) << endl;
+	}
 }
 //helper function
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 	mat tempInputMat = inputMat;
 	for(size_t i = 0; i < _transforms.size(); i++){
-		cout << i << endl;
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-	cout << "finish forward algorithm." << endl;
+	cout << "finished feedforward!" << endl;
+	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())

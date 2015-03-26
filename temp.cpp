@@ -23,8 +23,8 @@ int main(int argc, char** argv){
 	// set network structure
 	vector<size_t> dimensions;
 	dimensions.push_back(4);
-	dimensions.push_back(7);
-	dimensions.push_back(5);
+	dimensions.push_back(10);
+	dimensions.push_back(4);
 	
 	// loading data
 	Dataset trainData;
