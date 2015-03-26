@@ -23,16 +23,16 @@ int main(int argc, char** argv){
 	// set network structure
 	vector<size_t> dimensions;
 	dimensions.push_back(4);
-	dimensions.push_back(7);
-	dimensions.push_back(5);
+	dimensions.push_back(10);
+	dimensions.push_back(4);
 	
 	// loading data
-//	Dataset trainData;
+	Dataset trainData;
 //	Dataset testData;
 	Method method = ALL;
 	//start training
-//	DNN dnn(&trainData, 0.1, dimensions, method);
-
+	DNN dnn(&trainData, 0.1, dimensions, method);
+	dnn.debug();
 	//dnn.train(2);
 
 	return 0;

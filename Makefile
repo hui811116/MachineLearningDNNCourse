@@ -22,6 +22,9 @@ LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 	@echo "something wrong in tool/libcumatrix..."
 
+DIR:
+	@mkdir -p obj
+
 o3: CFLAGS+=-o3
 o3: all
 
@@ -31,7 +34,7 @@ vpath %.h include/
 vpath %.cpp src/
 vpath %.cu src/
 
-INCLUDE= -I include\
+INCLUDE= -I include/\
 	 -I $(LIBCUMATDIR)include/\
 	 -I $(CUDA_DIR)include/\
 	 -I $(CUDA_DIR)samples/common/inc/
@@ -41,10 +44,10 @@ LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
+all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-debug: $(OBJ) $(HEADEROBJ) temp.cpp
+larry: $(OBJ) $(HEADEROBJ) temp.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 
@@ -54,7 +57,7 @@ hui:$(HEADEROBJ) matMultTest.cu $(LIBS)
 Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
 clean:
-	@rm -f $(EXECUTABLES) obj/*
+	@rm -f $(EXECUTABLES) obj/* ./*.app
 
 # +==============================+
 # +===== Other Phony Target =====+

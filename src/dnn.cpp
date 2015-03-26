@@ -10,11 +10,21 @@ using namespace std;
 
 typedef device_matrix<float> mat;
 
+template <typename T>
+void randomInit(device_matrix<T>& m) {
+  T* h_data = new T [m.size()];
+  for (int i=0; i<m.size(); ++i)
+    h_data[i] = rand() / (T) RAND_MAX;
+  cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
+  delete [] h_data;
+}
+
+
 DNN::DNN(){}
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
 	size_t numOfLayers = v.size();
 	for(size_t i = 0; i < numOfLayers-1; i++){
-		Sigmoid* pTransform = new Sigmoid(v.at(i), v.at(i+1));
+		Sigmoid* pTransform = new Sigmoid(v.at(i+1), v.at(i));
 		_transforms.push_back(pTransform);
 	}
 }
@@ -29,21 +39,32 @@ void DNN::train(size_t batchSize){
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
-	mat outputMat;
+	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
-	result.reserve(outputMat.getCols());
-	float* outputData = outputMat.getData();
+	cout << endl;
+	float* h_data = new float [outputMat.size()];
+	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
 	for(size_t i = 0; i < outputMat.getCols(); i++){
-		float tempMax = outputData[0 + i];
-		size_t idx = 0;
+		float tempMax = h_data[0 + i*outputMat.getCols()];
+		size_t idx = 0;		
 		for(size_t j = 0; j < outputMat.getRows(); j++){
-			if(tempMax < outputData[j*outputMat.getRows()+i]){
-				tempMax = outputData[j*outputMat.getRows()+i];
+//			cout << h_data[j + i*outputMat.getCols()] << endl;
+			if(tempMax < h_data[j + i*outputMat.getCols()]){
+				tempMax = h_data[j + i*outputMat.getCols()];
 				idx = j;
 			}
 		}
 		result.push_back(idx);
 	}
+	for(size_t i = 0; i < outputMat.getCols(); i++){
+		cout << h_data[i] << " ";
+		for(size_t j = 1; j < outputMat.getRows(); j++){
+			cout << h_data[j*outputMat.getRows() + i] << " ";
+		}
+		cout << endl;
+	}
+	
+	delete [] h_data;
 }
 
 size_t DNN::getInputDimension(){
@@ -61,6 +82,22 @@ size_t DNN::getNumLayers(){
 void DNN::save(const string& fn){
 }
 
+void DNN::debug(){
+	mat testMat(getInputDimension(), 3);
+	randomInit(testMat);
+	testMat.print();
+	cout << endl;
+	for(size_t i = 0; i < _transforms.size(); i++){
+		(_transforms.at(i))->print();
+		cout << endl;
+	}
+	vector<size_t> result;
+	predict(result, testMat);
+	cout << "result size:" << result.size() << endl;
+	for(size_t i = 0; i < result.size(); i++){
+		cout << result.at(i) << endl;
+	}
+}
 //helper function
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
@@ -69,6 +106,8 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
+	cout << "finished feedforward!" << endl;
+	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())

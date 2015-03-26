@@ -115,6 +115,7 @@ namespace ext {
     thrust::device_ptr<T> ptr0(result.getData());
     thrust::device_ptr<T> ptr1(m.getData());
     thrust::transform(ptr1, ptr1 + m.getRows() * m.getCols(), ptr0, func::sigmoid<T>());
+	return result;
   }
   //ends here
 };

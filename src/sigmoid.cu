@@ -35,9 +35,7 @@ Sigmoid::~Sigmoid(){
 void Sigmoid::forward(mat& out, const mat& in, bool train){
 	//assume in is a vector
 	mat _inp = mat(in);
-	_inp.resize(in.getRows()+1,in.getCols());
-	float* h_data=_inp.getData();
-	h_data[in.getRows()]=1;
+	pushOne(_inp);
 	//fill with 1 for computation simplicity
 	out = ext::sigmoid( (_weight * _inp));
 	//if in training mode 
@@ -54,9 +52,7 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	out= _tmp & _sigout & (one-_sigout) ;   // this part need tesing
 	// update weight
 	mat _inp(_input);
-	_inp.resize(_input.getRows()+1,1);
-	float* h_data = _inp.getData();
-	h_data[_input.getRows()]=1;
+	pushOne(_inp);
 	gemm(out,_inp,_weight,-rate,(float)1.0,false,true);
 
 }
@@ -80,6 +76,16 @@ void Sigmoid::rand_init(){
 	for (size_t i=0; i<_s; ++i)
 		h_data[i]=rand() / (float) RAND_MAX;
 	cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice);
+	delete [] h_data;
+}
+
+void Sigmoid::pushOne(mat& input){
+	size_t _s=input.size()+1;
+	float* h_data = new float [_s];
+	cudaMemcpy(h_data, input.getData(), input.size() * sizeof(float), cudaMemcpyDeviceToHost);
+	h_data[_s-1]=1;
+	input.resize(input.getRows()+1,input.getCols());
+	cudaMemcpy(input.getData(), h_data, input.size() * sizeof(float), cudaMemcpyHostToDevice);
 	delete [] h_data;
 }
 

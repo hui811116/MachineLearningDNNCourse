@@ -30,6 +30,8 @@ public:
 	size_t getNumLayers();
 	void save(const string& fn);
 
+	void debug();
+
 private:
 	void feedForward(mat& ouputMat, const mat& inputMat, bool train);
 	void backPropagate(mat& errorMat, const mat& foutMat, float learningRate);
