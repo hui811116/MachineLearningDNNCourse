@@ -52,7 +52,7 @@ hui:$(HEADEROBJ) matMultTest.cu $(LIBS)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
 
 clean:
-	@rm -f $(EXECUTABLES) obj/*
+	@rm -f $(EXECUTABLES) obj/* ./*.app
 
 # +==============================+
 # +===== Other Phony Target =====+
