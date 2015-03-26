@@ -61,6 +61,8 @@ size_t DNN::getNumLayers(){
 void DNN::save(const string& fn){
 }
 
+void DNN::debug(){
+}
 //helper function
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){

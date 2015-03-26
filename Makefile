@@ -25,13 +25,13 @@ $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 o3: CFLAGS+=-o3
 o3: all
 
-debug: CFLAGS+=-g -DDEBUG
+# debug: CFLAGS+=-g -DDEBUG
 
 vpath %.h include/
 vpath %.cpp src/
 vpath %.cu src/
 
-INCLUDE= -I include\
+INCLUDE= -I include/\
 	 -I $(LIBCUMATDIR)include/\
 	 -I $(CUDA_DIR)include/\
 	 -I $(CUDA_DIR)samples/common/inc/
