@@ -22,10 +22,10 @@ Sigmoid::Sigmoid(const mat& w){
 	_sigout.resize(_weight.getRows(),1);
 	_input.resize(_weight.getCols()-1,1);
 }
-Sigmoid::Sigmoid(size_t row, size_t col){
-	_weight.resize(row,col+1);  // +1 for bias
-	_sigout.resize(row,1);
-	_input.resize(col,1);
+Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
+	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
+	_sigout.resize(out_dim,1);
+	_input.resize(inp_dim,1);
 	rand_init();
 }
 
