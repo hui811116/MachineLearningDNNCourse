@@ -19,8 +19,7 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	
 
 	ifstream fin(fn);
-	if(!fin) cout<<"Cant't open this file!!!\n";
-//	char line[30];
+	if(!fin) cout<<"Can't open this file!!!\n";
 	string s, tempStr;
 	while(getline(fin, s)){
 		count++;
@@ -30,30 +29,20 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 		unsigned int initialPos = 0;
 		split=0;
 		while(split<phonemeNum+1){
-			//cout<<
 			dataCount++;
 			split++;
-			//cout<<dataCount<<endl;
-			//cout<<
+			
 			tempStr= s.substr(initialPos, pos-initialPos);
 			if (split==1){
 				*(_dataNameMatrix+count-1) = tempStr;
-			//	dataNum++;
 				
 			}
 			else{
-				cout<<"ya1";
-				_dataMatrix[split-1][dataCount] = atof(tempStr.c_str());
-				cout<<"ya2";
+				_dataMatrix[split-2][count-1] = atof(tempStr.c_str());
 			}		
-			//s.substr(initialPos, pos-initialPos);
-			//<<endl;
 			initialPos = pos+1;
 			pos=s.find(" ", initialPos);
 		}		
-//		if(count==1){
-		//cout<<s<<endl;	
-//		dataCount++;
 	}		
 	cout<<count<<endl;
 	cout<<dataCount<<endl;
@@ -63,7 +52,9 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
-	delete _dataNameMatrix;
+	delete [] _dataNameMatrix;
+	for(int i =0 ; i<_numOfPhoneme;i++) delete _dataMatrix[i];
+	delete _dataMatrix;
 	
 };
 
