@@ -2,6 +2,7 @@
 #define DNN_H
 #include <vector>
 #include <string>
+#include <device_matrix.h>
 #include "sigmoid.h"
 #include "dataset.h"
 

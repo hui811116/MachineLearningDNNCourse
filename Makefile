@@ -10,6 +10,7 @@ LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 HEADEROBJ= obj/sigmoid.o
+LARRYOBJ = obj/*.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -17,7 +18,7 @@ HEADEROBJ= obj/sigmoid.o
 
 .PHONY: debug all clean o3
 
-libs=$(LIBCUMATDIR)lib/libcumatrix.a
+LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 
 $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 	@echo "something wrong in tool/libcumatrix..."
@@ -44,10 +45,10 @@ TARGET=test.app
 all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-debug: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LIBRARY) $(LD_LIBRARY)
+debug: temp.cpp $(LIBS) $(LARRYOBJ)	
+	g++ -std=c++0x -I include/ -I tool/libcumatrix/include/ -I /usr/local/cuda/samples/common/inc/ -I /usr/local/cuda/include/ -o temp.app obj/dnn.o obj/sigmoid.o tool/libcumatrix/lib/libcumatrix.a temp.cpp -L/usr/local/cuda/lib64/ -lcuda -lcublas -lcudart
 
-hui:$(HEADEROBJ) matMultTest.cu $(libs)
+hui:$(HEADEROBJ) matMultTest.cu $(LIBS)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
 
 clean:
@@ -58,6 +59,7 @@ clean:
 # +==============================+
 obj/%.o: src/%.cpp include/%.h
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $^
+#	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $^
 
 obj/%.o: %.cu
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<
