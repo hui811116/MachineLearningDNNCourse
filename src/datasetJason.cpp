@@ -12,6 +12,6 @@ mat Dataset::getValidSet(){
 
 }
 
-mat Dataset::dataSegment(){
+mat Dataset::dataSegment( float  ){
 
 }

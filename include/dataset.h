@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include "device_matrix.h"
 using namespace std;
-//typedef device_matrix<float> mat;
+typedef device_matrix<float> mat;
 class Dataset{
 public:
 	Dataset();
@@ -18,15 +18,15 @@ public:
 	size_t getNumOfData();
 	size_t getInputDim();
 	size_t getOutputDim();
-	void   getBatch(int batchSize, mat batch, mat batchLabel);
-	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
-	void   getValidSet(mat validData, mat validLabel);
+	//void   getBatch(int batchSize, mat batch, mat batchLabel);
+	//void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
+	//void   getValidSet(mat validData, mat validLabel);
 private:
 	size_t _featureDimension;
 	size_t _stateDimension;
 	size_t _numOfData;
 	size_t _numOfPhoneme;
-	void   dataSegment();
+	//void   dataSegment();
 	string* _dataNameMatrix;
 	//size_t _dataMatrix[][_numOfPhoneme]*;
 };

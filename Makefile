@@ -9,7 +9,7 @@ EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ= obj/sigmoid.o
+HEADEROBJ= obj/sigmoid.o obj/dnn.o obj/dataset.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -45,7 +45,7 @@ all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
 debug: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^ $(OBJ) $(LIBRARY) $(LD_LIBRARY)
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 hui:$(HEADEROBJ) matMultTest.cu $(libs)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
@@ -57,7 +57,7 @@ clean:
 # +===== Other Phony Target =====+
 # +==============================+
 obj/%.o: src/%.cpp include/%.h
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $^
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
 obj/%.o: %.cu
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<

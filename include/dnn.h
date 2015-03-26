@@ -4,7 +4,6 @@
 #include <string>
 #include "sigmoid.h"
 #include "dataset.h"
-
 using namespace std;
 
 typedef device_matrix<float> mat;
