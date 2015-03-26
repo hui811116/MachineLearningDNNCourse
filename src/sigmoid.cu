@@ -61,9 +61,13 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 
 }
 
-void Sigmoid::print(ostream& out){
+void Sigmoid::write(ostream& out){
+
 }
 
+void Sigmoid::print(){
+	_weight.print();
+}
 size_t Sigmoid::getInputDim(){
 	return _weight.getCols()-1;
 }
