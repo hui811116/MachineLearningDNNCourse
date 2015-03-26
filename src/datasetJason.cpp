@@ -1,10 +1,23 @@
 #include "dataset.h"
 #include <algorithm>
 #include <vector>
+#include <stdlib>
 using namespace std;
 
 void Dataset::getBatch(int batchSize, mat batch, mat batchLabel){
-	
+	// random initialize indices for this batch
+	int* randIndex = new int [batchSize];
+	for (int i = 0; i < batchSize; i++){
+		randIndex[i] = rand() % _trainSize; // shall check RAND_MAX 
+	}
+	float** batchFtre = new float*[batchSize];
+	int*    batchOutput = new int[batchSize];
+	for (int i = 0; i < batchSize; i++){
+		batchFtre[i] = _trainX[ randIndex[i] ];
+		batchOutput[i] = _trainY[ randIndex[i] ];
+	}
+	// convert them into mat format
+	mat tmpBatch()	
 }
 
 void Dataset::getTrainSet(int trainSize, mat trainData, mat trainLabel){
