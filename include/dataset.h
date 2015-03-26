@@ -21,6 +21,7 @@ public:
 	void   getBatch(int batchSize, mat batch, mat batchLabel);
 	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
 	void   getValidSet(mat validData, mat validLabel);
+	unsigned int split(const string &txt, vector<string> &strs, char ch);
 private:
 	size_t _featureDimension;
 	size_t _stateDimension;
@@ -28,6 +29,7 @@ private:
 	size_t _numOfPhoneme;
 	void   dataSegment();
 	string* _dataNameMatrix;
+	float** _dataMatrix;
 	//size_t _dataMatrix[][_numOfPhoneme]*;
 };
 
