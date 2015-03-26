@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 	vector<size_t> dimensions;
 	dimensions.push_back(4);
 	dimensions.push_back(10);
-	dimensions.push_back(4);
+	dimensions.push_back(6);
 	
 	// loading data
 	Dataset trainData;

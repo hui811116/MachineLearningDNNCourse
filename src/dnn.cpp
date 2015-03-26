@@ -44,25 +44,38 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	cout << endl;
 	float* h_data = new float [outputMat.size()];
 	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
-	for(size_t i = 0; i < outputMat.getCols(); i++){
-		float tempMax = h_data[0 + i*outputMat.getCols()];
+
+	for(size_t j = 0; j < outputMat.getCols(); j++){
+		float tempMax = h_data[j*outputMat.getRows()];
 		size_t idx = 0;		
-		for(size_t j = 0; j < outputMat.getRows(); j++){
-//			cout << h_data[j + i*outputMat.getCols()] << endl;
-			if(tempMax < h_data[j + i*outputMat.getCols()]){
-				tempMax = h_data[j + i*outputMat.getCols()];
-				idx = j;
+		for(size_t i = 0; i < outputMat.getRows(); i++){
+			cout << h_data[j*outputMat.getRows() + i] << " ";
+			if(tempMax < h_data[j*outputMat.getRows() + i]){
+				tempMax = h_data[j*outputMat.getRows() + i];
+				idx = i;
 			}
 		}
+		cout << endl;
 		result.push_back(idx);
 	}
-	for(size_t i = 0; i < outputMat.getCols(); i++){
+	/*
+	for(size_t i = 0; i < outputMat.getRows(); i++){
 		cout << h_data[i] << " ";
-		for(size_t j = 1; j < outputMat.getRows(); j++){
+		for(size_t j = 1; j < outputMat.getCols(); j++){
 			cout << h_data[j*outputMat.getRows() + i] << " ";
 		}
 		cout << endl;
 	}
+	
+	cout << endl;
+
+	for(size_t j = 0; j < outputMat.getCols(); j++){
+		for(size_t i = 0; i < outputMat.getRows(); i++){
+			cout << h_data[j*outputMat.getRows() + i] << " ";
+		}
+		cout << endl;
+	}
+	*/
 	
 	delete [] h_data;
 }
