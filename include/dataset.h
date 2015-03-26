@@ -18,9 +18,9 @@ public:
 	size_t getNumOfData();
 	size_t getInputDim();
 	size_t getOutputDim();
-	mat    getBatch(int batchSize);
-	mat    getTrainSet(int trainSize);
-	mat    getValidSet();
+	void   getBatch(int batchSize, mat batch, mat batchLabel);
+	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
+	void   getValidSet(mat validData, mat validLabel);
 private:
 	size_t _featureDimension;
 	size_t _stateDimension;
