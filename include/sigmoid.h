@@ -11,7 +11,7 @@ class Sigmoid{
 public:
 	Sigmoid();
 	Sigmoid(const mat& w);
-	Sigmoid(size_t row, size_t col);
+	Sigmoid(size_t out_dim, size_t inp_dim);
 	~Sigmoid();	
 	void forward(mat& out, const mat& in, bool train);
 	void backPropagate(mat& out, const mat& delta, float rate);	
