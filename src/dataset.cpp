@@ -21,7 +21,7 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	ifstream fin(fn);
 	if(!fin) cout<<"Can't open this file!!!\n";
 	string s, tempStr;
-	while(getline(fin, s)){
+	while(getline(fin, s)&&count<dataNum){
 		count++;
 
 		cout<<count<<endl;

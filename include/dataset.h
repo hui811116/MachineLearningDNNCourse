@@ -21,7 +21,6 @@ public:
 	void   getBatch(int batchSize, mat batch, mat batchLabel);
 	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
 	void   getValidSet(mat validData, mat validLabel);
-	unsigned int split(const string &txt, vector<string> &strs, char ch);
 private:
 	// dataset parameters
 	size_t _featureDimension;
