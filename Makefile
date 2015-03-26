@@ -22,6 +22,9 @@ LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 	@echo "something wrong in tool/libcumatrix..."
 
+DIR:
+	@mkdir -p obj
+
 o3: CFLAGS+=-o3
 o3: all
 
@@ -41,7 +44,7 @@ LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-all: $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
+all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
 larry: $(OBJ) $(HEADEROBJ) temp.cpp

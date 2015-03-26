@@ -19,6 +19,20 @@ void randomInit(device_matrix<T>& m) {
   delete [] h_data;
 }
 
+template <typename T>
+void pushOne(device_matrix<T>& m) {
+  T* h_data = new T [m.size()+1];
+  cudaMemcpy(h_data, m.getData(), m.size() * sizeof(T), cudaMemcpyDeviceToHost);
+  m.resize(m.getRows()+1,1);
+  h_data[m.size()-1]=1;
+cout<<"debug"<<endl;
+ for(size_t t =0; t<m.size();++t)
+	cout<<" "<<h_data[t];
+cout<<endl;
+  cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
+  delete [] h_data;
+}
+
 int main(){
 
 mat A(5,8),B(8,5);
@@ -73,6 +87,14 @@ cout<<endl;
 for(size_t t=0;t<10;++t)
 	delete [] _fptr[t];
 delete [] _fptr;
+
+
+printf("C=\n");
+C.print();
+
+printf("testing push one \n");
+pushOne(C);
+C.print();
 
 return 0;
 }

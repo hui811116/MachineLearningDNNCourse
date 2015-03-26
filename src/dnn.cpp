@@ -80,7 +80,7 @@ void DNN::debug(){
 		cout << endl;
 	}
 //	vector<size_t> result;
-	mat outputMat;
+	mat outputMat(1,1);
 	feedForward(outputMat, testMat, false);
 //  cout << "result size:" << result.size();
 //	for(size_t i = 0; i < result.size(); i++){

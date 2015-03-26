@@ -22,6 +22,7 @@ public:
 	void print();
 private:
 	void rand_init();
+	void pushOne(mat& input);
 	mat _weight;
 	mat _input; //for backpropagation
 	mat _sigout;  //output
