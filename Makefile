@@ -9,7 +9,7 @@ EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o
+HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o obj/datasetJason.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -65,5 +65,7 @@ clean:
 obj/%.o: src/%.cpp include/%.h
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
+obj/datasetJason.o: src/datasetJason.cpp include/dataset.h 
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 obj/%.o: %.cu
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<

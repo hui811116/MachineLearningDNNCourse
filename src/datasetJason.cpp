@@ -1,24 +1,34 @@
 #include "dataset.h"
+#include <algorithm>
+#include <vector>
+using namespace std;
 
-mat Dataset::getBatch(int batchSize){
-	mat A(5, 8);
-	return A;
+void Dataset::getBatch(int batchSize, mat batch, mat batchLabel){
 }
 
-mat Dataset::getTrainSet(int trainSize){
+void Dataset::getTrainSet(int trainSize, mat trainData, mat trainLabel){
 
-	mat A(5, 8);
-	return A;
 }
 
-mat Dataset::getValidSet(){
+void Dataset::getValidSet(mat validData, mat validLabel){
 
-	mat A(5, 8);
-	return A;
 }
 
-mat Dataset::dataSegment( float  ){
-
-	mat A(5, 8);
-	return A;
+void Dataset::dataSegment( float trainProp ){
+	// segment data into training and validating set
+	int trainSize = trainProp*getNumOfData();
+	int validSize = getNumOfData() - trainProp;
+	//create random permutation
+	vector<int> randIndex;
+	
+	for (int i = 0; i < getNumOfData(); i++){
+		randIndex.push_back( i+1 );
+	}
+	random_shuffle(randIndex.begin(), randIndex.end());
+	// print shuffled data
+	for (int i = 0; i < getNumOfData(); i++){
+		cout << randIndex[i] <<" ";
+	}
+	_trainX = new float*[trainSize];
+	
 }

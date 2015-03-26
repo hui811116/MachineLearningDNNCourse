@@ -27,10 +27,15 @@ private:
 	size_t _stateDimension;
 	size_t _numOfData;
 	size_t _numOfPhoneme;
-	void   dataSegment();
+	void   dataSegment( float trainProp);
 	string* _dataNameMatrix;
 	float** _dataMatrix;
-	//size_t _dataMatrix[][_numOfPhoneme]*;
+	// storing training matrix
+
+	float** _trainX;
+	float** _validX;
+	int** _trainY;
+	int** _validY;
 };
 
 #endif 

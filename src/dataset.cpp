@@ -70,7 +70,4 @@ Dataset::~Dataset(){
 size_t Dataset::getNumOfData(){}
 size_t Dataset::getInputDim(){}
 size_t Dataset::getOutputDim(){}
-void   Dataset::getBatch(int batchSize, mat batch, mat batchLabel){}
-void   Dataset::getTrainSet(int trainSize, mat trainData, mat trainLabel){}
-void   Dataset::getValidSet(mat validData, mat validLabel){}
 
