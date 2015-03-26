@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-//#include <device_matrix.h>
+#include <device_matrix.h>
 #include "dnn.h"
-//#include "dataset.h"
+#include "dataset.h"
 
 using namespace std;
 
