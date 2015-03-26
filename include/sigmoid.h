@@ -18,7 +18,8 @@ public:
 	size_t getInputDim();
 	size_t getOutputDim();
 
-	void print(ostream& out);
+	void write(ostream& out);
+	void print();
 private:
 	void rand_init();
 	mat _weight;

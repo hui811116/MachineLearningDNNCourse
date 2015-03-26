@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include "device_matrix.h"
 using namespace std;
-//typedef device_matrix<float> mat;
+typedef device_matrix<float> mat;
 class Dataset{
 public:
 	Dataset();
