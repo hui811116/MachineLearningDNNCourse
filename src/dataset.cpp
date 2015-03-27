@@ -19,9 +19,9 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	size_t count  = 0, dataCount = 0;
 	short split = 0;	
 	_dataNameMatrix  = new string[dataNum];	
-	_dataMatrix = new float*[phonemeNum];
-	for(int i = 0;i<phonemeNum;i++){
-		_dataMatrix[i] = new float [dataNum];
+	_dataMatrix = new float*[dataNum];
+	for(int i = 0;i<dataNum;i++){
+		_dataMatrix[i] = new float [phonemeNum];
 	}
 	
 
@@ -31,7 +31,7 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	while(getline(fin, s)&&count<dataNum){
 		count++;
 
-		cout<<count<<endl;
+i//		cout<<count<<endl;
 		unsigned int pos  = s.find(" ");
 		unsigned int initialPos = 0;
 		split=0;
@@ -45,7 +45,7 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 				
 			}
 			else{
-				_dataMatrix[split-2][count-1] = atof(tempStr.c_str());
+				_dataMatrix[count-1][split-2] = atof(tempStr.c_str());
 			}		
 			initialPos = pos+1;
 			pos=s.find(" ", initialPos);
