@@ -58,7 +58,7 @@ Dataset::~Dataset(){
 	
 };
 
-size_t Dataset::getNumOfData(){}
+size_t Dataset::getNumOfData(){ return _numOfData; }
 size_t Dataset::getInputDim(){}
 size_t Dataset::getOutputDim(){}
 
