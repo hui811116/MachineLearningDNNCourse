@@ -9,7 +9,7 @@ EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ= obj/sigmoid.o obj/dnn.o obj/dataset.o
+HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o obj/datasetJason.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -54,14 +54,20 @@ larry: $(OBJ) $(HEADEROBJ) temp.cpp
 hui:$(HEADEROBJ) matMultTest.cu $(LIBS)
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
 
+Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
 clean:
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
+jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
 obj/%.o: src/%.cpp include/%.h
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
+obj/datasetJason.o: src/datasetJason.cpp include/dataset.h 
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 obj/%.o: %.cu
 	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<

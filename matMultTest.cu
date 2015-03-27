@@ -21,15 +21,14 @@ void randomInit(device_matrix<T>& m) {
 
 template <typename T>
 void pushOne(device_matrix<T>& m) {
-  T* h_data = new T [m.size()+1];
-  cudaMemcpy(h_data, m.getData(), m.size() * sizeof(T), cudaMemcpyDeviceToHost);
-  m.resize(m.getRows()+1,1);
-  h_data[m.size()-1]=1;
-cout<<"debug"<<endl;
- for(size_t t =0; t<m.size();++t)
-	cout<<" "<<h_data[t];
-cout<<endl;
-  cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
+  device_matrix<T> tmp(~m);
+  T* h_data = new T [m.size()+m.getCols()];
+  cudaMemcpy(h_data, tmp.getData(), tmp.size() * sizeof(T), cudaMemcpyDeviceToHost);
+  tmp.resize(tmp.getRows(),tmp.getCols()+1);
+  for(size_t t=0;t<tmp.getRows();++t)
+  h_data[m.size()+t]=1;
+  cudaMemcpy(tmp.getData(), h_data, tmp.size() * sizeof(T), cudaMemcpyHostToDevice);
+  m=~tmp;
   delete [] h_data;
 }
 
@@ -48,7 +47,7 @@ printf("A * B= \n"); (A*B).print();
 
 //testing element-wise operation
 
-mat C(8,1), D(8,1);
+mat C(8,2), D(8,2,2.5);
 randomInit(C);
 randomInit(D);
 
@@ -88,13 +87,16 @@ for(size_t t=0;t<10;++t)
 	delete [] _fptr[t];
 delete [] _fptr;
 
-
+C.resize(8,3);
 printf("C=\n");
 C.print();
 
 printf("testing push one \n");
 pushOne(C);
 C.print();
+
+printf("testing ext::sigmoid\n");
+(ext::sigmoid(C)).print();
 
 return 0;
 }

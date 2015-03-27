@@ -22,13 +22,30 @@ public:
 	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
 	void   getValidSet(mat validData, mat validLabel);
 private:
+	// dataset parameters
 	size_t _featureDimension;
 	size_t _stateDimension;
 	size_t _numOfData;
 	size_t _numOfPhoneme;
-	void   dataSegment();
-	string* _dataNameMatrix;
-	//size_t _dataMatrix[][_numOfPhoneme]*;
+	int    _trainSize;
+	int    _validSize;
+	// datasetJason private functions
+	void   dataSegment( float trainProp);
+	mat    outputNumtoBin(int* outputVector); // change 0~47 to a 48 dim mat
+	//mat    fltFeatureToMat(float** inputFeature); 
+	
+	
+	// original data
+	string* _dataNameMatrix; // frame name
+	float** _dataMatrix; // input MFCC features
+	int* _labelMatrix; // output phoneme changed to integer
+	
+	// storing training matrix
+
+	float** _trainX;
+	float** _validX;
+	int* _trainY;
+	int* _validY;
 };
 
 #endif 
