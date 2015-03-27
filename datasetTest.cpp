@@ -15,6 +15,6 @@ int main()
 	const char* labelFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/label/train.lab";
 	
 	Dataset test = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename,labelDataNum, labelNum,phonemeNum);
-
+	test.printLabelMap(test.getLabelMap());
 	return 0;
 }

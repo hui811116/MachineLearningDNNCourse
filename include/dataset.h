@@ -18,10 +18,12 @@ public:
 	size_t getNumOfTrainData();
 	size_t getInputDim();
 	size_t getOutputDim();
+	map<string, int> getLabelMap();
 	void   getBatch(int batchSize, mat& batch, mat& batchLabel);
 	void   getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel);
 	void   getValidSet(mat& validData, vector<size_t>& validLabel);
 	void   dataSegment( float trainProp);
+	void   printLabelMap(map<string, int> labelMap);
 private:
 	// dataset parameters
 	size_t _featureDimension;
@@ -36,7 +38,7 @@ private:
 	mat    outputNumtoBin(int* outputVector, int vectorSize);
 		// change 0~47 to a 48 dim mat
 	mat    inputFtreToMat(float** input, int r, int c);	
-    void   prtPointer(float** input, int r, int c);	
+        void   prtPointer(float** input, int r, int c);	
 	// original data
 	string* _trainDataNameMatrix; // frame name
 	string* _testDataNameMatrix;
@@ -46,7 +48,7 @@ private:
 
 	int* _labelMatrix; // output phoneme changed to integer
 
-	map<string, int>labelMap; //Map phoneme to int
+	map<string, int> labelMap; //Map phoneme to int
 	
 	// storing training matrix
 

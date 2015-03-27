@@ -172,4 +172,11 @@ Dataset::~Dataset(){
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
 size_t Dataset::getInputDim(){}
 size_t Dataset::getOutputDim(){}
-
+map<string, int> Dataset::getLabelMap(){return labelMap;}
+void   Dataset::printLabelMap(map<string, int> Map){
+	map<string, int>::iterator labelMapIter;
+	for(labelMapIter = Map.begin();labelMapIter!=Map.end();labelMapIter++){
+		cout<<labelMapIter->first<<" "<<labelMapIter->second<<endl;
+	}
+	
+}
