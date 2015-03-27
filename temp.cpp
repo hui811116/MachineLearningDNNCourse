@@ -35,6 +35,7 @@ int main(int argc, char** argv){
 	dnn.debug();
 	//dnn.train(2);
 
+	cout << "back to main!\n";
 	return 0;
 }
 

@@ -22,7 +22,7 @@ public:
 //	DNN(const string& fn);
 	~DNN();
 
-	void train(size_t batchSize);
+	void train(size_t batchSize, size_t maxEpoch);
 	void predict(vector<size_t>& result, const mat& inputMat);
 
 	size_t getInputDimension();
