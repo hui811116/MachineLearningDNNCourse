@@ -24,8 +24,6 @@ Sigmoid::Sigmoid(const mat& w){
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
-	_sigout.resize(out_dim,1);
-	_input.resize(inp_dim,1);
 	rand_init();
 }
 
@@ -45,18 +43,20 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 
 // assume error pass through var "delta"
 void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
-	mat _tmp( (~_weight) * delta);
-	mat one(_tmp.getRows(),_tmp.getCols(),1);
-	out= _tmp & _sigout & (one-_sigout) ;   // this part need tesing
+
+	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
+	cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice);
+	mat _tmp( (~withoutBias) * delta);
+	mat one(_input.getRows(),_input.getCols(),1);
+	out=  _input & (one-_input) & _tmp;   // this part need tesing
+	
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	if(_inp.getCols()>1){
-		mat summat(_inp.getCols(),1,1);
-		_inp = _inp * summat;
-	}
-	gemm(out,_inp,_weight,-rate,(float)1.0,false,true);
-
+	mat gra= delta * (~_inp);
+	one.resize(_weight.getRows(),_weight.getCols(),-1*rate);
+	_weight -= gra & one;
+	//gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 
 void Sigmoid::write(FILE* out){

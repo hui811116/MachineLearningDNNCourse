@@ -41,7 +41,7 @@ INCLUDE= -I include/\
 
 LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
-CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)
+CPPFLAGS= -g -std=c++0x $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
 all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
