@@ -11,6 +11,16 @@ Dataset::Dataset(){
 	_numOfPhoneme=0;
 	_trainSize=0;
 	_validSize=0;
+
+	_trainDataNameMatrix = NULL;
+	_testDataNameMatrix = NULL;
+	_trainDataMatrix = NULL;
+	_testDataMatrix = NULL;
+	_labelMatrix = NULL;
+	_trainX = NULL;
+	_validX = NULL;
+	_trainY = NULL;
+	_validY = NULL;
 }
 Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t phonemeNum){
 	_numOfTrainData = trainDataNum;
@@ -156,15 +166,22 @@ Dataset::~Dataset(){
 	for(int i =0 ; i<_numOfTrainData;i++)
 		delete _trainDataMatrix[i];
 	if(_numOfPhoneme!=0)
-	delete [] _trainDataMatrix;
+		delete [] _trainDataMatrix;
 	
-	for (int i = 0;i<_numOfTestData;i++){
-		delete _testDataMatrix[i];
+	if(_testDataMatrix != NULL){
+		for (int i = 0;i<_numOfTestData;i++){
+			delete _testDataMatrix[i];
+		}
 	}
-	delete []_testDataMatrix;
-
-	delete []_testDataNameMatrix;
-	delete []_labelMatrix;
+	if(_testDataMatrix != NULL){
+		delete []_testDataMatrix;
+	}
+	if(_testDataNameMatrix != NULL){
+		delete []_testDataNameMatrix;
+	}
+	if(_labelMatrix != NULL){
+		delete []_labelMatrix;
+	}
 	//TODO deletion for pointers
 	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };
