@@ -13,13 +13,11 @@ typedef device_matrix<float> mat;
 
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2);
-	_sigout.resize(2,1);
 	_input.resize(1,1);
 	_weight.fillwith(0);
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
-	_sigout.resize(_weight.getRows(),1);
 	_input.resize(_weight.getCols()-1,1);
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
@@ -37,7 +35,6 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 	out = ext::sigmoid( (_weight * _inp));
 	if(train){
 		_input = in;
-		_sigout = _weight * (_inp);	
 	}
 }
 
@@ -53,16 +50,28 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-
+/*
 	mat gra= delta * (~_inp);
 	one.resize(_weight.getRows(),_weight.getCols(),-1*rate/(float)_input.getCols());
 	_weight -= gra & one;
-
-	//gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
+*/
+	gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 
-void Sigmoid::write(FILE* out){
-	_weight.print(out,4,' ');
+void Sigmoid::write(ofstream& out){
+	float* h_data = new float[_weight.size()];
+	cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost);
+    out<<"\n<sigmoid> "<<_weight.getRows()<<" "<<_weight.getCols()<<endl;
+    for(size_t i=0;i<_weight.getRows();++i){
+    for(size_t j=0;j<_weight.getCols()-1;++j){
+                out<<" "<<h_data[_weight.getRows()*j+i]; 
+            }
+            out<<endl;
+    }
+    out<<"<bias> "<<_weight.getRows()<<endl;
+    for(size_t t=0;t<_weight.getRows();++t)
+                out<<" "<<h_data[_weight.getRows()*(_weight.getCols()-1)+t];
+    out<<endl;
 }
 
 void Sigmoid::print(FILE* fid, int precision, char delimiter){

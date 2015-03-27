@@ -54,7 +54,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			tempStr= s.substr(initialPos, pos-initialPos);
 			if (split==1){
 				*(_trainDataNameMatrix+count-1) = tempStr;
-				cout<<*(_trainDataNameMatrix+count-1)<<endl;	
+			//	cout<<*(_trainDataNameMatrix+count-1)<<endl;	
 			}
 			else{
 				_trainDataMatrix[count-1][split-2] = atof(tempStr.c_str());
@@ -63,10 +63,11 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = pos+1;
 			pos=s.find(" ", initialPos);
 		}		
-	}		
+	}
+    /*
 	cout<<count<<endl;
 	cout<<dataCount<<endl;
-	
+	*/
 	fin.close();	
 	
 	size_t testCount = 0, testDataCount = 0;
@@ -77,7 +78,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		_testDataMatrix[i] = new float [phonemeNum];
 	}
 	
-	cout<<"Test starts"<<endl;
+	//cout<<"Test starts"<<endl;
 	ifstream finTest(testPath);
 	if(!finTest) cout<<"Can't open this file!!!\n";
 	string sTest, tempStrTest;
@@ -96,7 +97,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		//	cout<<"After test subsrt"<<endl;
 			if (split==1){
 				*(_testDataNameMatrix+testCount-1) = tempStrTest;
-				cout<<*(_testDataNameMatrix+testCount-1)<<endl;	
+				//cout<<*(_testDataNameMatrix+testCount-1)<<endl;	
 			}
 			else{
 				_testDataMatrix[testCount-1][split-2] = atof(tempStrTest.c_str());
@@ -105,10 +106,11 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = posTest+1;
 			posTest=sTest.find(" ", initialPos);
 		}		
-	}		
+	}
+    /*
 	cout<<testCount<<endl;
 	cout<<testDataCount<<endl;
-	
+	*/
 	finTest.close();
 
 		
@@ -138,7 +140,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 						numForLabel++;
 						//preLabel = tempStrLabel;
 						labelMap.insert(pair<string, int>(tempStrLabel, numForLabel));	
-						cout<<numForLabel<<endl;
+						//cout<<numForLabel<<endl;
 					}
 					preLabel = tempStrLabel;
 				}
@@ -151,15 +153,15 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = pos+1;
 			pos=sLabel.find(",", initialPos);
 		}		
-	}		
+	}
+    /*
 	cout<<countLabel<<endl;
 	cout<<labelDataCount<<endl;
-	
+	*/
 	finLabel.close();	
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
-	cout<<"GG"<<endl;	
 	if(_numOfTrainData!=0)
 		delete [] _trainDataNameMatrix;
 

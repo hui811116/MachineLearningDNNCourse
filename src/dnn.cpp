@@ -84,7 +84,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			pastEin = Ein;
 			Eout = computeErr(validLabel, validResult);
 			cout.precision(5);
-			cout << "Validate error: " << Eout*100 << " %\n";
+	//		cout << "Validate error: " << Eout*100 << " %\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
@@ -149,7 +149,7 @@ void DNN::save(const string& fn){
 	ofstream ofs(fn);
 	if (ofs.is_open()){
 		for(size_t i = 0; i < _transforms.size(); i++){
-			//(_transforms.at(i))->write(ofs);
+			(_transforms.at(i))->write(ofs);
 		}
 	}
 	ofs.close();
