@@ -33,12 +33,10 @@ Sigmoid::~Sigmoid(){
 }
 
 void Sigmoid::forward(mat& out, const mat& in, bool train){
-	//assume in is a vector
 	mat _inp = mat(in);
 	pushOne(_inp);
 	//fill with 1 for computation simplicity
 	out = ext::sigmoid( (_weight * _inp));
-	//if in training mode 
 	if(train){
 		_input = in;
 		_sigout = _weight * (_inp);	
@@ -67,16 +65,19 @@ void Sigmoid::print(FILE* fid, int precision, char delimiter){
 
 	char format[16];
 	sprintf(format,"%c%%.%de",delimiter,(precision>0)? precision :0);
+	
 	fprintf(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()); // <sigmoid> outputDimension inputDimension
 	for(size_t i=0;i<_weight.getRows();++i){
 		for(size_t j=0;j<_weight.getCols()-1;++j)
 			fprintf(fid,format,h_data[j*_weight.getRows()+i]);
 		fprintf(fid,"\n");
 	}
-	fprintf(fid,"<bias> %d",_weight.getRows()); // <bias> output dimensions
+	
+	fprintf(fid,"<bias> %d \n",_weight.getRows()); // <bias> output dimensions
 	for(size_t t=0;t<_weight.getRows();++t)
 		fprintf(fid,format,h_data[_weight.getRows() * (_weight.getCols()-1) + t]);
 	fprintf(fid,"\n");
+	
 	delete [] h_data;
 }
 size_t Sigmoid::getInputDim(){
@@ -105,6 +106,4 @@ void Sigmoid::pushOne(mat& input){
     input=~tmp;
 	delete [] h_data;
 }
-
-// element-wise operation
 

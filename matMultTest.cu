@@ -32,7 +32,7 @@ void pushOne(device_matrix<T>& m) {
   delete [] h_data;
 }
 
-int main(){
+int main(int argc,char** argv){
 
 mat A(5,8),B(8,5);
 randomInit(A);
@@ -97,6 +97,8 @@ C.print();
 
 printf("testing ext::sigmoid\n");
 (ext::sigmoid(C)).print();
+
+n1.print();
 
 return 0;
 }
