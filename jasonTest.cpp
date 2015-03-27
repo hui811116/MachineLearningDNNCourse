@@ -5,7 +5,7 @@ typedef device_matrix<float> mat;
 int main(){
 	cout << "This is the data set test\n";	
 	size_t  phonemeNum = 39;
-	size_t trainDataNum = 20;
+	size_t trainDataNum = 40;
 	size_t testDataNum = 10;
 	size_t labelDataNum = 1124823;
 	size_t labelNum = 48;
@@ -19,7 +19,12 @@ int main(){
     // segmentation
 	test.dataSegment(0.8);
 	// test
-	mat batch;
+	mat trainBatch, validBatch;
 	mat batchLabel;
-	test.getBatch(5, batch, batchLabel);
+	//test.getBatch(5, batch, batchLabel);
+	vector<size_t> trainPhoneme;
+	vector<size_t> validPhoneme;
+	test.getTrainSet( 32, trainBatch, trainPhoneme );
+	test.getValidSet( validBatch, validPhoneme );
+
 }

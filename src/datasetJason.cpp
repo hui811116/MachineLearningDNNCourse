@@ -8,7 +8,7 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// random initialize indices for this batch
 	int* randIndex = new int [batchSize];
 	for (int i = 0; i < batchSize; i++){
-		randIndex[i] = rand() % _trainSize; // shall check RAND_MAX 
+		randIndex[i] = rand() % _trainSize; 
 	}
 	float** batchFtre = new float*[batchSize];
 	int*    batchOutput = new int[batchSize];
@@ -23,6 +23,8 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// for debugging, print both matrices
 	cout << "This is the feature matrix\n";
 	batch.print();
+	cout << "from trainX pointer:\n";
+	prtPointer(batchFtre, _numOfLabel, batchSize);
 	cout << "This is the label matrix\n";
 	batchLabel.print();
 }
@@ -32,6 +34,8 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 	trainLabel.clear();
 	for (int i = 0; i < trainSize; i++)
 		trainLabel.push_back( _trainY[i] );
+	cout << "get Train Set:\n";
+	trainData.print();
 }
 
 void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
@@ -39,7 +43,10 @@ void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
 	validLabel.clear();
 	for (int i = 0; i < _validSize; i++)
 		validLabel.push_back( _validY[i] );
+	cout << "getValidSet:\n";
+	validData.print();
 }
+
 
 void Dataset::dataSegment( float trainProp ){
 	cout << "start data segmenting:\n";
