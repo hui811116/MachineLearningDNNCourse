@@ -13,21 +13,21 @@ using namespace std;
 
 typedef device_matrix<float> mat;
 
-
 float computeErr(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 template <typename T>
 void randomInit(device_matrix<T>& m) {
-  T* h_data = new T [m.size()];
-  for (int i=0; i<m.size(); ++i)
-    h_data[i] = rand() / (T) RAND_MAX;
-  cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
-  delete [] h_data;
+	T* h_data = new T [m.size()];
+	for (int i=0; i<m.size(); ++i)
+		h_data[i] = rand() / (T) RAND_MAX;
+	cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
+	delete [] h_data;
 }
 
 
-DNN::DNN(){}
+DNN::DNN():_pData(NULL), _method(ALL){}
+
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
 	size_t numOfLayers = v.size();
 	for(size_t i = 0; i < numOfLayers-1; i++){
@@ -35,6 +35,7 @@ DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method met
 		_transforms.push_back(pTransform);
 	}
 }
+
 DNN::~DNN(){
 	while(!_transforms.empty()){
 		delete _transforms.back();
@@ -42,7 +43,7 @@ DNN::~DNN(){
 	}
 }
 
-void DNN::train(size_t batchSize){
+void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	
 	mat trainSet;
 	vector<size_t> trainLabel;
@@ -55,9 +56,8 @@ void DNN::train(size_t batchSize){
 	float pastEout = Eout;
 	_pData->getTrainSet(10, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
-	for(size_t i = 0; i < MAX_EPOCH; i++){
-		if(i%10000==0)
-			cout << "iter: " << i <<endl;
+	size_t num = 0;
+	for(; num < maxEpoch; num++){
 		mat batchData;
 		mat batchLabel;
 		mat batchOutput;
@@ -69,11 +69,13 @@ void DNN::train(size_t batchSize){
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
+		if( num % 500 == 0 ){
+/*
 				for(size_t t=0;t<trainLabel.size();t++)
 					cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
 				cout<<endl;
-
-		if( i%500 == 0 ){
+*/
+		
 			Ein = computeErr(trainLabel, trainResult);
 			if(Ein > pastEin){
 				//cout << "Something wrong had happened, training err does not decrease.\n";
@@ -81,7 +83,8 @@ void DNN::train(size_t batchSize){
 			}
 			pastEin = Ein;
 			Eout = computeErr(validLabel, validResult);
-			cout<<"error rate: "<<Ein<<endl;
+			cout.precision(5);
+			cout << "Validate error: " << Eout*100 << " %\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
@@ -92,7 +95,9 @@ void DNN::train(size_t batchSize){
 				break;
 			}
 		}
-	}	
+	}
+	cout << "Finished training for " << num << " epochs.\n";
+	save("debug.mat");
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
@@ -114,21 +119,13 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	}
 	/*
 	for(size_t i = 0; i < outputMat.getRows(); i++){
-		cout << h_data[i] << " ";
-		for(size_t j = 1; j < outputMat.getCols(); j++){
+		for(size_t j = 0; j < outputMat.getCols(); j++){
 			cout << h_data[j*outputMat.getRows() + i] << " ";
 		}
 		cout << endl;
 	}
 	
 	cout << endl;
-
-	for(size_t j = 0; j < outputMat.getCols(); j++){
-		for(size_t i = 0; i < outputMat.getRows(); i++){
-			cout << h_data[j*outputMat.getRows() + i] << " ";
-		}
-		cout << endl;
-	}
 	*/
 	
 	delete [] h_data;
@@ -147,6 +144,13 @@ size_t DNN::getNumLayers(){
 }
 
 void DNN::save(const string& fn){
+	ofstream ofs(fn);
+	if (ofs.is_open()){
+		for(size_t i = 0; i < _transforms.size(); i++){
+			//(_transforms.at(i))->write(ofs);
+		}
+	}
+	ofs.close();
 }
 
 void DNN::debug(){
@@ -176,8 +180,8 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-//	cout << "finished feedforward!" << endl;
-//	outputMat.print();
+	cout << "finished feedforward!" << endl;
+	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
