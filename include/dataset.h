@@ -36,7 +36,7 @@ private:
 	mat    outputNumtoBin(int* outputVector, int vectorSize);
 		// change 0~47 to a 48 dim mat
 	mat    inputFtreToMat(float** input, int r, int c);	
-	
+    void   prtPointer(float** input, int r, int c);	
 	// original data
 	string* _trainDataNameMatrix; // frame name
 	string* _testDataNameMatrix;
