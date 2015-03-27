@@ -48,5 +48,5 @@ int main(){
 	dimension.push_back(39);
 	DNN dnn( &test, 0.01, dimension, BATCH );
 	cout << "start dnn training:\n";
-	dnn.train(5);
+	dnn.train(5,100000);
 }

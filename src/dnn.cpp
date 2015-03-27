@@ -44,7 +44,7 @@ DNN::~DNN(){
 }
 
 void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
-	
+//	_transforms[0]->print(stdout,4,' ');
 	mat trainSet;
 	vector<size_t> trainLabel;
 	mat validSet;
@@ -96,8 +96,10 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			}
 		}
 	}
+//	_transforms[0]->print(stdout,4,' ');
 	cout << "Finished training for " << num << " epochs.\n";
 	save("debug.mat");
+	
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
@@ -180,8 +182,8 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-	cout << "finished feedforward!" << endl;
-	outputMat.print();
+//	cout << "finished feedforward!" << endl;
+//	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())

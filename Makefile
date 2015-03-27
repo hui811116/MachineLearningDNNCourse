@@ -51,8 +51,8 @@ larry: $(OBJ) $(HEADEROBJ) temp.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 
-hui:$(HEADEROBJ) matMultTest.cu $(LIBS)
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o hui.app $^ $(LD_LIBRARY) $(LIBRARY)
+hui:$(HEADEROBJ) matMultTest.cu
+	$(NVCC) $(NVCCFLAGS) $(CFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
 
 Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 

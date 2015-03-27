@@ -47,15 +47,17 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
 	cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice);
 	mat _tmp( (~withoutBias) * delta);
-	mat one(_input.getRows(),_input.getCols(),1);
+	mat one(_input.getRows(),_input.getCols(),1/(float)_input.getCols());
 	out=  _input & (one-_input) & _tmp;   // this part need tesing
 	
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
+
 	mat gra= delta * (~_inp);
-	one.resize(_weight.getRows(),_weight.getCols(),-1*rate);
+	one.resize(_weight.getRows(),_weight.getCols(),-1*rate/(float)_input.getCols());
 	_weight -= gra & one;
+
 	//gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 

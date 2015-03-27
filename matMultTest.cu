@@ -6,6 +6,10 @@
 #include <device_math.h>
 #include "sigmoid.h"
 
+#include <cublas_v2.h>
+#include <helper_cuda.h>
+#include <cuda_memory_manager.h>
+
 using namespace std;
 
 typedef device_matrix<float> mat;
@@ -99,6 +103,9 @@ printf("testing ext::sigmoid\n");
 (ext::sigmoid(C)).print();
 
 n1.print();
+C.print();
+(C-1).print();
+
 
 return 0;
 }
