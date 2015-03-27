@@ -24,8 +24,6 @@ Sigmoid::Sigmoid(const mat& w){
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
-	_sigout.resize(out_dim,1);
-	_input.resize(inp_dim,1);
 	rand_init();
 }
 
@@ -33,12 +31,10 @@ Sigmoid::~Sigmoid(){
 }
 
 void Sigmoid::forward(mat& out, const mat& in, bool train){
-	//assume in is a vector
 	mat _inp = mat(in);
 	pushOne(_inp);
 	//fill with 1 for computation simplicity
 	out = ext::sigmoid( (_weight * _inp));
-	//if in training mode 
 	if(train){
 		_input = in;
 		_sigout = _weight * (_inp);	
@@ -47,22 +43,46 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 
 // assume error pass through var "delta"
 void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
-	mat _tmp( (~_weight) * delta);
-	mat one(_tmp.getRows(),_tmp.getCols(),1);
-	out= _tmp & _sigout & (one-_sigout) ;   // this part need tesing
+
+	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
+	cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice);
+	mat _tmp( (~withoutBias) * delta);
+	mat one(_input.getRows(),_input.getCols(),1);
+	out=  _input & (one-_input) & _tmp;   // this part need tesing
+	
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	gemm(out,_inp,_weight,-rate,(float)1.0,false,true);
-
+	mat gra= delta * (~_inp);
+	one.resize(_weight.getRows(),_weight.getCols(),-1*rate);
+	_weight -= gra & one;
+	//gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 
-void Sigmoid::write(ostream& out){
-
+void Sigmoid::write(FILE* out){
+	_weight.print(out,4,' ');
 }
 
-void Sigmoid::print(){
-	_weight.print();
+void Sigmoid::print(FILE* fid, int precision, char delimiter){
+	float* h_data = new float[_weight.size()];
+	cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost);
+
+	char format[16];
+	sprintf(format,"%c%%.%de",delimiter,(precision>0)? precision :0);
+	
+	fprintf(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()); // <sigmoid> outputDimension inputDimension
+	for(size_t i=0;i<_weight.getRows();++i){
+		for(size_t j=0;j<_weight.getCols()-1;++j)
+			fprintf(fid,format,h_data[j*_weight.getRows()+i]);
+		fprintf(fid,"\n");
+	}
+	
+	fprintf(fid,"<bias> %d \n",_weight.getRows()); // <bias> output dimensions
+	for(size_t t=0;t<_weight.getRows();++t)
+		fprintf(fid,format,h_data[_weight.getRows() * (_weight.getCols()-1) + t]);
+	fprintf(fid,"\n");
+	
+	delete [] h_data;
 }
 size_t Sigmoid::getInputDim(){
 	return _weight.getCols()-1;
@@ -90,6 +110,4 @@ void Sigmoid::pushOne(mat& input){
     input=~tmp;
 	delete [] h_data;
 }
-
-// element-wise operation
 

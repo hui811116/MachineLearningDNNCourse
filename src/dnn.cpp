@@ -54,8 +54,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	
-	_pData->getTrainSet(10000, trainSet, trainLabel);
+	_pData->getTrainSet(10, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -70,10 +69,16 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 		if( num % 500 == 0 ){
+/*
+				for(size_t t=0;t<trainLabel.size();t++)
+					cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
+				cout<<endl;
+*/
+		
 			Ein = computeErr(trainLabel, trainResult);
 			if(Ein > pastEin){
-				cout << "Something wrong had happened, training err does not decrease.\n";
-				exit(1);
+				//cout << "Something wrong had happened, training err does not decrease.\n";
+				//exit(1);
 			}
 			pastEin = Ein;
 			Eout = computeErr(validLabel, validResult);
@@ -97,7 +102,6 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
-	cout << endl;
 	float* h_data = new float [outputMat.size()];
 	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
 
@@ -105,13 +109,11 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 		float tempMax = h_data[j*outputMat.getRows()];
 		size_t idx = 0;		
 		for(size_t i = 0; i < outputMat.getRows(); i++){
-			cout << h_data[j*outputMat.getRows() + i] << " ";
 			if(tempMax < h_data[j*outputMat.getRows() + i]){
 				tempMax = h_data[j*outputMat.getRows() + i];
 				idx = i;
 			}
 		}
-		cout << endl;
 		result.push_back(idx);
 	}
 	/*
@@ -144,7 +146,7 @@ void DNN::save(const string& fn){
 	ofstream ofs(fn);
 	if (ofs.is_open()){
 		for(size_t i = 0; i < _transforms.size(); i++){
-			(_transforms.at(i))->write(ofs);
+			//(_transforms.at(i))->write(ofs);
 		}
 	}
 	ofs.close();
@@ -155,10 +157,12 @@ void DNN::debug(){
 	randomInit(testMat);
 	testMat.print();
 	cout << endl;
+/*
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
+*/
 	vector<size_t> result;
 	predict(result, testMat);
 	cout << "result size:" << result.size() << endl;
@@ -199,13 +203,11 @@ void computeLabel(vector<size_t>& result,const mat& outputMat){
 		float tempMax = h_data[j*outputMat.getRows()];
 		size_t idx = 0;		
 		for(size_t i = 0; i < outputMat.getRows(); i++){
-//			cout << h_data[j*outputMat.getRows() + i] << " ";
 			if(tempMax < h_data[j*outputMat.getRows() + i]){
 				tempMax = h_data[j*outputMat.getRows() + i];
 				idx = i;
 			}
 		}
-//		cout << endl;
 		result.push_back(idx);
 	}
 }
@@ -218,5 +220,6 @@ float computeErr(const vector<size_t>& ans, const vector<size_t>& output){
 			accCount++;
 		}
 	}
-	return 1-(float)accCount/ans.size();
+	return 1.0-(float)accCount/ans.size();
+
 }
