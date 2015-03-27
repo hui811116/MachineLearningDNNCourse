@@ -67,9 +67,9 @@ void Sigmoid::print(FILE* fid, int precision, char delimiter){
 
 	char format[16];
 	sprintf(format,"%c%%.%de",delimiter,(precision>0)? precision :0);
-	fprint(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()) // <sigmoid> outputDimension inputDimension
+	fprintf(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()); // <sigmoid> outputDimension inputDimension
 	for(size_t i=0;i<_weight.getRows();++i){
-		for(size_t j=0;j_weight.getCols()-1;++j)
+		for(size_t j=0;j<_weight.getCols()-1;++j)
 			fprintf(fid,format,h_data[j*_weight.getRows()+i]);
 		fprintf(fid,"\n");
 	}
