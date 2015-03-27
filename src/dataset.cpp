@@ -172,6 +172,8 @@ Dataset::~Dataset(){
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
 size_t Dataset::getInputDim(){}
 size_t Dataset::getOutputDim(){}
+float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
+float** Dataset::getTestDataMatrix(){return _testDataMatrix;}
 map<string, int> Dataset::getLabelMap(){return labelMap;}
 void   Dataset::printLabelMap(map<string, int> Map){
 	map<string, int>::iterator labelMapIter;
