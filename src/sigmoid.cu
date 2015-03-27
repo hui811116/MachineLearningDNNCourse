@@ -51,6 +51,10 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
+	if(_inp.getCols()>1){
+		mat summat(_inp.getCols(),1,1);
+		_inp = _inp * summat;
+	}
 	gemm(out,_inp,_weight,-rate,(float)1.0,false,true);
 
 }
