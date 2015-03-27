@@ -149,14 +149,22 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
-	
+	cout<<"GG"<<endl;	
 	if(_numOfTrainData!=0)
 		delete [] _trainDataNameMatrix;
 
-	for(int i =0 ; i<_numOfPhoneme;i++)
+	for(int i =0 ; i<_numOfTrainData;i++)
 		delete _trainDataMatrix[i];
 	if(_numOfPhoneme!=0)
 	delete [] _trainDataMatrix;
+	
+	for (int i = 0;i<_numOfTestData;i++){
+		delete _testDataMatrix[i];
+	}
+	delete []_testDataMatrix;
+
+	delete []_testDataNameMatrix;
+	delete []_labelMatrix;
 	//TODO deletion for pointers
 	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };
