@@ -18,9 +18,10 @@ public:
 	size_t getNumOfData();
 	size_t getInputDim();
 	size_t getOutputDim();
-	void   getBatch(int batchSize, mat batch, mat batchLabel);
-	void   getTrainSet(int trainSize, mat trainData, mat trainLabel);
-	void   getValidSet(mat validData, mat validLabel);
+	void   getBatch(int batchSize, mat& batch, mat& batchLabel);
+	void   getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel);
+	void   getValidSet(mat& validData, vector<size_t>& validLabel);
+	void   dataSegment( float trainProp);
 private:
 	// dataset parameters
 	size_t _featureDimension;
@@ -30,10 +31,9 @@ private:
 	int    _trainSize;
 	int    _validSize;
 	// datasetJason private functions
-	void   dataSegment( float trainProp);
-	mat    outputNumtoBin(int* outputVector); // change 0~47 to a 48 dim mat
-	//mat    fltFeatureToMat(float** inputFeature); 
-	
+	mat    outputNumtoBin(int* outputVector, int vectorSize);
+		// change 0~47 to a 48 dim mat
+	mat    inputFtreToMat(float** input, int r, int c);	
 	
 	// original data
 	string* _dataNameMatrix; // frame name
