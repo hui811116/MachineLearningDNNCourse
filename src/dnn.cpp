@@ -68,11 +68,11 @@ void DNN::train(size_t batchSize){
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
-/*
+
 				for(size_t t=0;t<trainLabel.size();t++)
 					cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
 				cout<<endl;
-*/
+
 		if( i%500 == 0 ){
 			Ein = computeErr(trainLabel, trainResult);
 			if(Ein > pastEin){
