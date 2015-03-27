@@ -4,7 +4,14 @@
 #include <vector>
 //typedef device_matrix<float> mat;
 
-Dataset::Dataset(){};
+Dataset::Dataset(){
+	_featureDimension=0;
+	_stateDimension=0;
+	_numOfData=0;
+	_numOfPhoneme=0;
+	_trainSize=0;
+	_validSize=0;
+}
 Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	_numOfData = dataNum;
 	_numOfPhoneme = phonemeNum;
@@ -52,10 +59,16 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
-	delete [] _dataNameMatrix;
-	for(int i =0 ; i<_numOfPhoneme;i++) delete _dataMatrix[i];
-	delete _dataMatrix;
 	
+	if(_numOfData!=0)
+		delete [] _dataNameMatrix;
+
+	for(int i =0 ; i<_numOfPhoneme;i++)
+		delete _dataMatrix[i];
+	if(_numOfPhoneme!=0)
+	delete [] _dataMatrix;
+	//TODO deletion for pointers
+	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };
 
 size_t Dataset::getNumOfData(){ return _numOfData; }

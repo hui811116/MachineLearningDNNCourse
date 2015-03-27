@@ -161,6 +161,7 @@ void DNN::debug(){
 	for(size_t i = 0; i < result.size(); i++){
 		cout << result.at(i) << endl;
 	}
+	cout<<"end debug: "<<endl;
 }
 //helper function
 
