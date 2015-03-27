@@ -31,7 +31,7 @@ Dataset::Dataset(const char* fn, size_t dataNum, size_t phonemeNum){
 	while(getline(fin, s)&&count<dataNum){
 		count++;
 
-i//		cout<<count<<endl;
+//		cout<<count<<endl;
 		unsigned int pos  = s.find(" ");
 		unsigned int initialPos = 0;
 		split=0;
