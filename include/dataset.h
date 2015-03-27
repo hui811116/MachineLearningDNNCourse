@@ -10,12 +10,12 @@ typedef device_matrix<float> mat;
 class Dataset{
 public:
 	Dataset();
-	Dataset(const char* fn, size_t dataNum, size_t phonemeNum);
+	Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelNum, size_t phonemeNum);
 	Dataset(const Dataset& data);
 	~Dataset();
 	
 	
-	size_t getNumOfData();
+	size_t getNumOfTrainData();
 	size_t getInputDim();
 	size_t getOutputDim();
 	void   getBatch(int batchSize, mat& batch, mat& batchLabel);
@@ -26,7 +26,9 @@ private:
 	// dataset parameters
 	size_t _featureDimension;
 	size_t _stateDimension;
-	size_t _numOfData;
+	size_t _numOfTrainData;
+	size_t _numOfTestData;
+	size_t _numOfLabel;
 	size_t _numOfPhoneme;
 	int    _trainSize;
 	int    _validSize;
@@ -36,8 +38,12 @@ private:
 	mat    inputFtreToMat(float** input, int r, int c);	
 	
 	// original data
-	string* _dataNameMatrix; // frame name
-	float** _dataMatrix; // input MFCC features
+	string* _trainDataNameMatrix; // frame name
+	string* _testDataNameMatrix;
+
+	float** _trainDataMatrix; // input MFCC features
+	float** _testDataMatrix;
+
 	int* _labelMatrix; // output phoneme changed to integer
 	
 	// storing training matrix
