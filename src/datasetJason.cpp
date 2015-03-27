@@ -21,12 +21,14 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
 
 	// for debugging, print both matrices
+	/*
 	cout << "This is the feature matrix\n";
 	batch.print();
 	cout << "from trainX pointer:\n";
 	prtPointer(batchFtre, _numOfLabel, batchSize);
 	cout << "This is the label matrix\n";
 	batchLabel.print();
+	*/
 }
 
 void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel){
@@ -35,7 +37,7 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 	for (int i = 0; i < trainSize; i++)
 		trainLabel.push_back( _trainY[i] );
 	cout << "get Train Set:\n";
-	trainData.print();
+	//trainData.print();
 }
 
 void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){

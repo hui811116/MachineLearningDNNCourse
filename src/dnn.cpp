@@ -53,9 +53,10 @@ void DNN::train(size_t batchSize){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	
+	cout <<"debug1\n";
 	_pData->getTrainSet(10000, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
+	cout << "start iteration\n";
 	for(size_t i = 0; i < MAX_EPOCH; i++){
 		mat batchData;
 		mat batchLabel;
@@ -67,12 +68,13 @@ void DNN::train(size_t batchSize){
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
-		/* TODO */
+
 		if( i%500 == 0 ){
 			Ein = computeErr(trainLabel, trainResult);
+			cout << "iteration " << i << ": Ein is " <<Ein <<endl;
 			if(Ein > pastEin){
-				cout << "Something wrong had happened, training err does not decrease.\n";
-				exit(1);
+				//cout << "Something wrong had happened, training err does not decrease.\n";
+				//exit(1);
 			}
 			pastEin = Ein;
 			Eout = computeErr(validLabel, validResult);
