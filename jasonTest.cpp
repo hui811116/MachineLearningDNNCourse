@@ -1,12 +1,16 @@
 #include <iostream>
+#include <ctime>
 #include "dataset.h"
+#include <cstdlib>
+#include <cstdio>
 #include "dnn.h"
 using namespace std;
 typedef device_matrix<float> mat;
 int main(){
+	srand(time(NULL));
 	cout << "This is the data set test\n";	
 	size_t  phonemeNum = 39;
-	size_t trainDataNum = 20;
+	size_t trainDataNum = 60;
 	size_t testDataNum = 10;
 	size_t labelDataNum = 1124823;
 	size_t labelNum = 48;
@@ -17,19 +21,26 @@ int main(){
 	
 	Dataset test = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename,labelDataNum, labelNum,phonemeNum);
     // segmentation
-	test.prtPointer(test.getTrainDataMatrix(), phonemeNum,trainDataNum);
-	test.prtPointer(test.getTestDataMatrix(), phonemeNum,testDataNum);
+	//test.prtPointer(test.getTrainDataMatrix(), phonemeNum,trainDataNum);
+	//test.prtPointer(test.getTestDataMatrix(), phonemeNum,testDataNum);
 	test.dataSegment(0.8);
 	// test
-	/*
-	mat trainBatch, validBatch;
+	
+	mat trainBatch, validBatch, batch;
 	mat batchLabel;
-	//test.getBatch(5, batch, batchLabel);
-	vector<size_t> trainPhoneme;
+	test.getBatch(5, batch, batchLabel);
+	cout << "print Label:\n";
+	batchLabel.print();
+	//vector<size_t> trainPhoneme;
+	//vector<size_t> validPhoneme;
+	//test.getTrainSet( 32, trainBatch, trainPhoneme );
+	
+	cout << "output Valid phoneme:\n";
 	vector<size_t> validPhoneme;
-	test.getTrainSet( 32, trainBatch, trainPhoneme );
 	test.getValidSet( validBatch, validPhoneme );
-	*/
+	//for (int i = 0; i < validPhoneme.size(); i++)
+	//	cout <<validPhoneme[i] << " ";
+
 	cout << "constructing dnn:\n";
 	vector<size_t> dimension;
 	dimension.push_back(48);

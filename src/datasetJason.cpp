@@ -63,7 +63,7 @@ void Dataset::dataSegment( float trainProp ){
 	for (int i = 0; i < getNumOfTrainData(); i++){
 		randIndex.push_back( i );
 	}
-	//random_shuffle(randIndex.begin(), randIndex.end());
+	random_shuffle(randIndex.begin(), randIndex.end());
 	// print shuffled data
 	cout << "start shuffling:\n";
 	/*
