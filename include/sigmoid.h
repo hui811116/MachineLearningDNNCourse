@@ -18,8 +18,8 @@ public:
 	size_t getInputDim();
 	size_t getOutputDim();
 
-	void write(ostream& out);
-	void print();
+	void write(FILE* out);
+	void print(FILE* fid = stdout,int precision = 6, char delimiter = ' ');
 private:
 	void rand_init();
 	void pushOne(mat& input);
