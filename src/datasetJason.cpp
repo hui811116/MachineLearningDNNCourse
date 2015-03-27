@@ -46,7 +46,7 @@ void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
 	for (int i = 0; i < _validSize; i++)
 		validLabel.push_back( _validY[i] );
 	cout << "getValidSet:\n";
-	validData.print();
+	//validData.print();
 }
 
 
@@ -66,9 +66,11 @@ void Dataset::dataSegment( float trainProp ){
 	//random_shuffle(randIndex.begin(), randIndex.end());
 	// print shuffled data
 	cout << "start shuffling:\n";
+	/*
 	for (int i = 0; i < getNumOfTrainData(); i++){
 		cout << randIndex[i] <<" ";
 	}
+	*/
 	// 
 	cout << "put feature into training set\n";
 	cout << "trainingsize = " << _trainSize <<endl;
@@ -87,6 +89,7 @@ void Dataset::dataSegment( float trainProp ){
 		_validY[i] = _labelMatrix[ randIndex[_trainSize + i] ];
 	}
 	// debugging, print out train x y valid x y
+	/*
 	prtPointer(_trainX, _numOfLabel, _trainSize);
 	prtPointer(_validX, _numOfLabel, _validSize);
 	cout << "print train phoneme:\n";
@@ -95,6 +98,7 @@ void Dataset::dataSegment( float trainProp ){
 	cout << "print valid phoneme:\n";
 	for (int i = 0; i < _validSize; i++)
 		cout << _validY[i] << " ";
+	*/
 }
 mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 {

@@ -58,12 +58,13 @@ void DNN::train(size_t batchSize){
 	_pData->getValidSet(validSet, validLabel);
 	cout << "start iteration\n";
 	for(size_t i = 0; i < MAX_EPOCH; i++){
+		cout << "iter: " << i <<endl;
 		mat batchData;
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
 		feedForward(batchOutput, batchData, true);
-		backPropagate(batchOutput-batchLabel, _learningRate);
+	//	backPropagate(batchOutput-batchLabel, _learningRate);
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
