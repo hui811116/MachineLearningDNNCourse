@@ -10,7 +10,7 @@ typedef device_matrix<float> mat;
 class Dataset{
 public:
 	Dataset();
-	Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelNum, size_t phonemeNum);
+	Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t phonemeNum);
 	Dataset(const Dataset& data);
 	~Dataset();
 	
@@ -45,6 +45,8 @@ private:
 	float** _testDataMatrix;
 
 	int* _labelMatrix; // output phoneme changed to integer
+
+	map<string, int>labelMap; //Map phoneme to int
 	
 	// storing training matrix
 
