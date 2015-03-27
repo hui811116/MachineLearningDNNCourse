@@ -17,7 +17,7 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 		batchOutput[i] = _trainY[ randIndex[i] ];
 	}
 	// convert them into mat format
-	batch = inputFtreToMat( batchFtre, _numOfPhoneme, batchSize);
+	batch = inputFtreToMat( batchFtre, _numOfLabel, batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
 
 	// for debugging, print both matrices
@@ -37,7 +37,7 @@ void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
 
 void Dataset::dataSegment( float trainProp ){
 	cout << "start data segmenting:\n";
-	cout << "num of data is "<< _numOfData << endl;
+	cout << "num of data is "<< getNumOfTrainData() << endl;
 	// segment data into training and validating set
 	_trainSize = trainProp*getNumOfData();
 	_validSize = getNumOfData() - _trainSize;
@@ -75,19 +75,19 @@ void Dataset::dataSegment( float trainProp ){
 }
 mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 {
-	float* tmpVector = new float[ vectorSize * _numOfPhoneme ];
+	float* tmpVector = new float[ vectorSize * _numOfLabel ];
 	for (int i = 0; i < vectorSize; i++){
-		for (int j = 0; j < _numOfPhoneme; j++){
-			*(tmpVector + i*_numOfPhoneme + j) = (outputVector[i] == j)?1:0;
+		for (int j = 0; j < _numOfLabel; j++){
+			*(tmpVector + i*_numOfLabel + j) = (outputVector[i] == j)?1:0;
 		}
 	}
 
-	mat outputMat(tmpVector, _numOfPhoneme, vectorSize);
+	mat outputMat(tmpVector, _numOfLabel, vectorSize);
 	delete[] tmpVector;
 	return outputMat;
 }
 mat Dataset::inputFtreToMat(float** input, int r, int c){
-	// r shall be the number of phonemes
+	// r shall be the number of Labels
 	// c shall be the number of data
 	float* inputReshaped = new float[r * c];
 	for (int i = 0; i < c; i++){
