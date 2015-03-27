@@ -4,11 +4,18 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <cassert>
 #include <device_matrix.h>
+
+#define MAX_EPOCH 1000000
 
 using namespace std;
 
 typedef device_matrix<float> mat;
+
+
+float computeErr(const vector<size_t>& ans, const vector<size_t>& output);
+void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 template <typename T>
 void randomInit(device_matrix<T>& m) {
@@ -36,6 +43,50 @@ DNN::~DNN(){
 }
 
 void DNN::train(size_t batchSize){
+	
+	mat trainSet;
+	vector<size_t> trainLabel;
+	mat validSet;
+	vector<size_t> validLabel;
+	size_t errRise = 0;
+	float Ein = 1;
+	float pastEin = Ein;
+	float Eout = 1;
+	float pastEout = Eout;
+	
+	_pData->getTrainSet(10000, trainSet, trainLabel);
+	_pData->getValidSet(validSet, validLabel);
+	for(size_t i = 0; i < MAX_EPOCH; i++){
+		mat batchData;
+		mat batchLabel;
+		mat batchOutput;
+		_pData->getBatch(batchSize, batchData, batchLabel);
+		feedForward(batchOutput, batchData, true);
+		backPropagate(batchOutput-batchLabel, _learningRate);
+		vector<size_t> trainResult;
+		vector<size_t> validResult;
+		predict(trainResult, trainSet);
+		predict(validResult, validSet);
+		/* TODO */
+		if( i%500 == 0 ){
+			Ein = computeErr(trainLabel, trainResult);
+			if(Ein > pastEin){
+				cout << "Something wrong had happened, training err does not decrease.\n";
+				exit(1);
+			}
+			pastEin = Ein;
+			Eout = computeErr(validLabel, validResult);
+			if(Eout > pastEout){
+				errRise++;
+			}
+			else{
+				errRise = 0;
+			}
+			if(errRise == 2){
+				break;
+			}
+		}
+	}	
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
@@ -119,13 +170,14 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-	cout << "finished feedforward!" << endl;
-	outputMat.print();
+//	cout << "finished feedforward!" << endl;
+//	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
-void DNN::backPropagate(mat& errorMat, const mat& deltaMat, float learningRate){
+void DNN::backPropagate(const mat& deltaMat, float learningRate){
 	mat tempMat = deltaMat;
+	mat errorMat;
 	for(int i = _transforms.size()-1; i >= 0; i--){
 		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate);
 		tempMat = errorMat;
@@ -134,3 +186,32 @@ void DNN::backPropagate(mat& errorMat, const mat& deltaMat, float learningRate){
 
 //Helper Functions
 
+void computeLabel(vector<size_t>& result,const mat& outputMat){
+	float* h_data = new float [outputMat.size()];
+	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
+
+	for(size_t j = 0; j < outputMat.getCols(); j++){
+		float tempMax = h_data[j*outputMat.getRows()];
+		size_t idx = 0;		
+		for(size_t i = 0; i < outputMat.getRows(); i++){
+//			cout << h_data[j*outputMat.getRows() + i] << " ";
+			if(tempMax < h_data[j*outputMat.getRows() + i]){
+				tempMax = h_data[j*outputMat.getRows() + i];
+				idx = i;
+			}
+		}
+//		cout << endl;
+		result.push_back(idx);
+	}
+}
+
+float computeErr(const vector<size_t>& ans, const vector<size_t>& output){
+	assert(ans.size() == output.size());
+	size_t accCount = 0;
+	for(size_t i = 0; i < ans.size(); i++){
+		if(ans.at(i) == output.at(i)){
+			accCount++;
+		}
+	}
+	return 1-(float)accCount/ans.size();
+}

@@ -34,7 +34,7 @@ public:
 
 private:
 	void feedForward(mat& ouputMat, const mat& inputMat, bool train);
-	void backPropagate(mat& errorMat, const mat& foutMat, float learningRate);
+	void backPropagate(const mat& foutMat, float learningRate);
 
 	Dataset* _pData;
 	float _learningRate;
