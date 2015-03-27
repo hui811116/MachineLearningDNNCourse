@@ -6,8 +6,8 @@ typedef device_matrix<float> mat;
 int main(){
 	cout << "This is the data set test\n";	
 	size_t  phonemeNum = 39;
-	size_t trainDataNum = 20000;
-	size_t testDataNum = 1000;
+	size_t trainDataNum = 20;
+	size_t testDataNum = 10;
 	size_t labelDataNum = 1124823;
 	size_t labelNum = 48;
 
@@ -17,6 +17,8 @@ int main(){
 	
 	Dataset test = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename,labelDataNum, labelNum,phonemeNum);
     // segmentation
+	test.prtPointer(test.getTrainDataMatrix(), phonemeNum,trainDataNum);
+	test.prtPointer(test.getTestDataMatrix(), phonemeNum,testDataNum);
 	test.dataSegment(0.8);
 	// test
 	/*
