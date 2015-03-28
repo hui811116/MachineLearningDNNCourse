@@ -41,9 +41,10 @@ int main(int argc, char** argv){
 
 	dataset.dataSegment(0.8);
 	//start training
-	DNN dnn(&dataset, 0.05, dimensions, BATCH);
+	DNN dnn(&dataset, 0.01, dimensions, BATCH);
 	//dnn.debug();
-	dnn.train(50, 3000);
+	dnn.train(5, 2);
+	//dnn.train(200, 10000000);
 
 	return 0;
 }
