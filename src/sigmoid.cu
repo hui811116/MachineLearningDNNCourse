@@ -47,7 +47,6 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat one(_input.getRows(),_input.getCols(),1/(float)_input.getCols());
 	mat diff= (ext::sigmoid(_input)) & (ext::sigmoid(one-_input));
 	out = diff & _tmp;   // this part need tesing
-	
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
@@ -58,7 +57,7 @@ void Sigmoid::getSigDiff(mat& result,const mat& error){
 	assert((error.getRows()!=_weight.getRows())&&(error.getCols()!=_input.getCols()));
 	mat one(_weight.getRows(),_input.getCols(),1);
 	result = (_weight * _input);
-	result = (ext::sigmoid(result)) & (ext::sigmoid(one-result));
+	result = (ext::sigmoid(result)) & (ext::sigmoid(one-result)) & error;
 }
 
 void Sigmoid::write(ofstream& out){
