@@ -7,7 +7,7 @@
 #include <cassert>
 #include <device_matrix.h>
 
-#define MAX_EPOCH 1000000
+#define MAX_EPOCH 10000000
 
 using namespace std;
 
@@ -83,16 +83,21 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		cout << endl;
 */
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
+
+		//Reserve
 		mat lastDelta;
 		_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
 		backPropagate(lastDelta , _learningRate);
+
+		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
+
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 500 == 0 ){
+		if( num % 5000 == 0 ){
 			
 			//DEBUG
 			//	for(size_t t=0;t<trainLabel.size();t++)
@@ -107,7 +112,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			pastEin = Ein;
 			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
-			cout << "Training error: " << Ein*100 << " %\n";
+			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %\n";
 			if(Eout > pastEout){
 				errRise++;
 			}

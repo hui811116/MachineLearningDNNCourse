@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
 #include <device_matrix.h>
 #include "dnn.h"
 #include "dataset.h"
@@ -19,7 +20,7 @@ void randomInit(device_matrix<T>& m) {
 }
 
 int main(int argc, char** argv){
-	srand(time(NULL));
+	srand((unsigned)time(0));
 	
 	size_t labelNum = 48;
 	size_t phonemeNum = 39;
@@ -36,14 +37,13 @@ int main(int argc, char** argv){
 	// set network structure
 	vector<size_t> dimensions;
 	dimensions.push_back(39);
-	dimensions.push_back(5);
+	dimensions.push_back(128);
 	dimensions.push_back(48);
 
 	dataset.dataSegment(0.8);
 	//start training
-	DNN dnn(&dataset, 0.05, dimensions, BATCH);
-	//dnn.debug();
-	dnn.train(200, 100000);
+	DNN dnn(&dataset, 0.0001, dimensions, BATCH);
+	dnn.train(1000, 10000000);
 
 	return 0;
 }
