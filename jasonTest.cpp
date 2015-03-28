@@ -10,7 +10,7 @@ int main(){
 	srand(time(NULL));
 	cout << "This is the data set test\n";	
 	size_t  phonemeNum = 39;
-	size_t trainDataNum = 60;
+	size_t trainDataNum = 1000;
 	size_t testDataNum = 10;
 	size_t labelDataNum = 1124823;
 	size_t labelNum = 48;
