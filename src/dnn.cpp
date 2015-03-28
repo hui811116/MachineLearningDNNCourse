@@ -61,8 +61,33 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
+
+		cout << "Batch Data\n";
+		batchData.print();
+		cout << endl;
+		
+		cout << "Batch Label\n";
+		batchLabel.print();
+		cout << endl;
+
+		cout << "Initial transform matrix\n";
+		for(size_t i = 0; i < _transforms.size(); i++){
+			(_transforms.at(i))->print();
+			cout << endl;
+		}
+
 		feedForward(batchOutput, batchData, true);
-		backPropagate(batchOutput-batchLabel, _learningRate);
+
+		cout << "Batch output\n";
+
+		backPropagate((batchLabel-batchOutput)*2 , _learningRate);
+
+		cout << "Matrix after bp\n";
+		for(size_t i = 0; i < _transforms.size(); i++){
+			(_transforms.at(i))->print();
+			cout << endl;
+		}
+
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
