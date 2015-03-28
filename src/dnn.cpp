@@ -85,8 +85,9 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 
 		//Reserve
-		mat lastDelta;
-		_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
+		//mat lastDelta;
+		//_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
+		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 2);
 		backPropagate(lastDelta , _learningRate);
 
 		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
@@ -183,21 +184,41 @@ void DNN::save(const string& fn){
 void DNN::debug(){
 
 	mat testMat(getInputDimension(), 3);
+	mat testLabel(getOutputDimension(),3);
 	randomInit(testMat);
+	randomInit(testLabel);
+	cout.precision(5);
 	testMat.print();
+	cout << endl;
+	testLabel.print();
 	cout << endl;
 
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
+	mat output;
+		feedForward(output,testMat,true);
+	mat one(output.getRows(),output.getCols(),1.0);
+	mat last(output & (one-output) & (output-testLabel) * 2);
+	cout<<endl;
+	last.print();
+	cout<<endl;
 
+	backPropagate(last,_learningRate);
+
+	for(size_t i = 0; i < _transforms.size(); i++){
+		(_transforms.at(i))->print();
+		cout << endl;
+	}
+/*
 	vector<size_t> result;
 	predict(result, testMat);
 	cout << "result size:" << result.size() << endl;
 	for(size_t i = 0; i < result.size(); i++){
 		cout << result.at(i) << endl;
 	}
+*/
 	cout<<"End of debug!"<<endl;
 }
 //helper function
