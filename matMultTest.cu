@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
 #include <device_matrix.h>
 
 #include <device_arithmetic.h>
@@ -37,6 +39,8 @@ void pushOne(device_matrix<T>& m) {
 }
 
 int main(int argc,char** argv){
+
+srand(time(0));
 
 mat A(5,8),B(8,5);
 randomInit(A);
@@ -94,6 +98,7 @@ for(size_t t=0;t<10;++t)
 delete [] _fptr;
 
 C.resize(8,3);
+randomInit(C);
 printf("C=\n");
 C.print();
 
@@ -105,22 +110,36 @@ printf("testing ext::sigmoid\n");
 (ext::sigmoid(C)).print();
 
 n1.print();
+
+printf("minus const num\n");
 C.print();
+printf("\n");
 (C-1).print();
 
-A.resize(5,8);B.resize(8,5);
+A.resize(5,8);B.resize(5,8);
 randomInit(A);randomInit(B);
+printf("A=\n");
+A.print();
+printf("B=\n");
+B.print();
+
 C.resize(5,5);
 randomInit(C);
 printf("C=\n");
 C.print();
-printf("A*B=\n");
-mat tem=A*B;
+printf("A*(~B)=\n");
+mat tem=A*(~B);
 tem.print();
-gemm(A,B,C,(float)1,(float)2,false,false);
+mat tem2=C-A*(~B);
+gemm(A,B,C,(float)-1,(float)1,false,true);
 printf("C=\n");
 C.print();
+printf("tem2=\n");
+tem2.print();
 
-
+mat tem3(tem2.getRows(),tem2.getCols()-1);
+cudaMemcpy(tem3.getData(),tem2.getData(),tem3.size() * sizeof(float), cudaMemcpyDeviceToDevice);
+printf("wightout weight\n");
+tem3.print();
 return 0;
 }
