@@ -61,7 +61,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-/*
+
 		cout << "Batch Data: " << num << endl;
 		batchData.print();
 		cout << endl;
@@ -75,13 +75,13 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
-*/
+
 		feedForward(batchOutput, batchData, true);
-/*
+
 		cout << "Batch output: " << num << endl;
 		batchOutput.print();
 		cout << endl;
-*/
+
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 		mat lastDelta;
 		_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
