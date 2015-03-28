@@ -38,7 +38,8 @@ int main(int argc, char** argv){
 	dimensions.push_back(48);
 	dimensions.push_back(5);
 	dimensions.push_back(39);
-	
+
+	dataset.Segment(0.8);
 	//start training
 	DNN dnn(&dataset, 0.1, dimensions, BATCH);
 	//dnn.debug();

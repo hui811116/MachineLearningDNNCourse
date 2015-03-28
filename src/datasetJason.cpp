@@ -116,10 +116,12 @@ mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 mat Dataset::inputFtreToMat(float** input, int r, int c){
 	// r shall be the number of Labels
 	// c shall be the number of data
+	cout << "size is : " << r << " " << c<<endl;
 	float* inputReshaped = new float[r * c];
 	for (int i = 0; i < c; i++){
 		for (int j = 0; j < r; j++){
-			*(inputReshaped + i*r + j) = *(*(input + i) +j);
+			//*(inputReshaped + i*r + j) = *(*(input + i) +j);
+			*(inputReshaped + i*r + j) = input[i][j];
 		}
 	}
 	mat outputMat(inputReshaped, r, c);
