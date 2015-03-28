@@ -40,27 +40,25 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 
 // assume error pass through var "delta"
 void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
-
+	assert(delta.getRows()==_weight.getRows()&&delta.getCols()==_input.getCols());
 	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
 	cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice);
 	mat _tmp( (~withoutBias) * delta);
 	mat one(_input.getRows(),_input.getCols(),1/(float)_input.getCols());
-	out=  _input & (one-_input) & _tmp;   // this part need tesing
+	mat diff= (ext::sigmoid(_input)) & (ext::sigmoid(one-_input));
+	out = diff & _tmp;   // this part need tesing
 	
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-/*
-	mat gra= delta * (~_inp);
-	one.resize(_weight.getRows(),_weight.getCols(),-1*rate/(float)_input.getCols());
-	_weight -= gra & one;
-*/
 	gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 
 void Sigmoid::getSigDiff(mat& result,const mat& error){
-	assert((error.getRows()!=_weight.getRows())||(error.getCols()!=_input.getCols()));
-	result = (_weight * _input) & error;
+	assert((error.getRows()!=_weight.getRows())&&(error.getCols()!=_input.getCols()));
+	mat one(_weight.getRows(),_input.getCols(),1);
+	result = (_weight * _input);
+	result = (ext::sigmoid(result)) & (ext::sigmoid(one-result));
 }
 
 void Sigmoid::write(ofstream& out){
