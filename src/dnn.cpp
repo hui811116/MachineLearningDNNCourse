@@ -53,7 +53,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	_pData->getTrainSet(10, trainSet, trainLabel);
+	_pData->getTrainSet(500, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -61,32 +61,29 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-
-		cout << "Batch Data\n";
+/*
+		cout << "Batch Data: " << num << endl;
 		batchData.print();
 		cout << endl;
 		
-		cout << "Batch Label\n";
+		cout << "Batch Label: " << num << endl;;
 		batchLabel.print();
 		cout << endl;
 
-		cout << "Initial transform matrix\n";
+		cout << "Transform matrix: " << num << endl;
 		for(size_t i = 0; i < _transforms.size(); i++){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
-
+*/
 		feedForward(batchOutput, batchData, true);
-
-		cout << "Batch output\n";
-
-		backPropagate((batchLabel-batchOutput)*2 , _learningRate);
-
-		cout << "Matrix after bp\n";
-		for(size_t i = 0; i < _transforms.size(); i++){
-			(_transforms.at(i))->print();
-			cout << endl;
-		}
+/*
+		cout << "Batch output: " << num << endl;
+		batchOutput.print();
+		cout << endl;
+*/
+		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
+		backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(-2) , _learningRate);
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
@@ -96,9 +93,9 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		if( num % 500 == 0 ){
 			
 			//DEBUG
-				for(size_t t=0;t<trainLabel.size();t++)
-					cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
-				cout<<endl;
+			//	for(size_t t=0;t<trainLabel.size();t++)
+			//		cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
+			//	cout<<endl;
 		
 			Ein = computeErrRate(trainLabel, trainResult);
 			if(Ein > pastEin){
@@ -120,10 +117,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			}
 		}
 	}
-//	_transforms[0]->print(stdout,4,' ');
 	cout << "Finished training for " << num << " epochs.\n";
-	save("debug.mat");
-	
+	//save("debug.mat");	
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
@@ -153,7 +148,6 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	
 	cout << endl;
 	*/
-	
 	delete [] h_data;
 }
 
@@ -208,7 +202,7 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-	outputMat.print();
+	//outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
