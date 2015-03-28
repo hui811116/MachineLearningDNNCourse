@@ -51,14 +51,10 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	mat _inp(_input);
 	pushOne(_inp);
 	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
-	//gemm(delta,_inp,_weight,-1*rate,(float)1.0,false,true);
+	//gemm(delta,_inp,_weight,(float)-1.0*rate/(float)_input.getCols(),(float)1.0,false,true);
 }
 
 void Sigmoid::getSigDiff(mat& delta,const mat& error){
-/*
-	cout<<"error:  "<<error.getRows()<<" "<<error.getCols()<<endl;
-	cout<<"_weight:"<<_weight.getRows()<<" "<<"_input:"<<_input.getCols()<<endl;
-*/
 	assert( (error.getRows()==_weight.getRows()) && (error.getCols()==_input.getCols()) );
 	mat one(_weight.getRows(),_input.getCols(),1);
 	mat _inp(_input);
