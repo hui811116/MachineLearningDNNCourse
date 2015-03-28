@@ -57,6 +57,8 @@ randomInit(D);
 
 printf("C=\n");
 C.print();
+printf("C*2=\n");
+(C * 2).print();
 printf("D=\n");
 D.print();
 
