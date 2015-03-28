@@ -54,7 +54,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			tempStr= s.substr(initialPos, pos-initialPos);
 			if (split==1){
 				*(_trainDataNameMatrix+count-1) = tempStr;
-			//	cout<<*(_trainDataNameMatrix+count-1)<<endl;	
+				//cout<<*(_trainDataNameMatrix+count-1)<<endl;	
 			}
 			else{
 				_trainDataMatrix[count-1][split-2] = atof(tempStr.c_str());
@@ -63,11 +63,10 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = pos+1;
 			pos=s.find(" ", initialPos);
 		}		
-	}
-    /*
-	cout<<count<<endl;
-	cout<<dataCount<<endl;
-	*/
+	}		
+	//cout<<count<<endl;
+	//cout<<dataCount<<endl;
+	
 	fin.close();	
 	
 	size_t testCount = 0, testDataCount = 0;
@@ -84,8 +83,8 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	string sTest, tempStrTest;
 	while(getline(finTest, sTest)&&testCount<testDataNum){
 		testCount++;
-	//	cout<<testCount<<endl;
-//		cout<<count<<endl;
+		//cout<<testCount<<endl;
+		//cout<<count<<endl;
 		unsigned int posTest  = sTest.find(" ");
 		unsigned int initialPos = 0;
 		split=0;
@@ -94,7 +93,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			split++;
 			
 			tempStrTest= sTest.substr(initialPos, posTest-initialPos);
-		//	cout<<"After test subsrt"<<endl;
+			//cout<<"After test subsrt"<<endl;
 			if (split==1){
 				*(_testDataNameMatrix+testCount-1) = tempStrTest;
 				//cout<<*(_testDataNameMatrix+testCount-1)<<endl;	
@@ -106,11 +105,10 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = posTest+1;
 			posTest=sTest.find(" ", initialPos);
 		}		
-	}
-    /*
-	cout<<testCount<<endl;
-	cout<<testDataCount<<endl;
-	*/
+	}		
+	//cout<<testCount<<endl;
+	//cout<<testDataCount<<endl;
+	
 	finTest.close();
 
 		
@@ -125,7 +123,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	while(getline(finLabel, sLabel)){
 		countLabel++;
 
-//		cout<<count<<endl;
+		//cout<<count<<endl;
 		unsigned int pos  = sLabel.find(",");
 		unsigned int initialPos = 0;
 		split=0;
@@ -153,11 +151,10 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = pos+1;
 			pos=sLabel.find(",", initialPos);
 		}		
-	}
-    /*
-	cout<<countLabel<<endl;
-	cout<<labelDataCount<<endl;
-	*/
+	}		
+	//cout<<countLabel<<endl;
+	//cout<<labelDataCount<<endl;
+	
 	finLabel.close();	
 };
 Dataset::Dataset(const Dataset& data){};

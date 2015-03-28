@@ -13,7 +13,7 @@ using namespace std;
 
 typedef device_matrix<float> mat;
 
-float computeErr(const vector<size_t>& ans, const vector<size_t>& output);
+float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 template <typename T>
@@ -44,7 +44,6 @@ DNN::~DNN(){
 }
 
 void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
-//	_transforms[0]->print(stdout,4,' ');
 	mat trainSet;
 	vector<size_t> trainLabel;
 	mat validSet;
@@ -70,21 +69,21 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		predict(validResult, validSet);
 
 		if( num % 500 == 0 ){
-/*
+			
+			//DEBUG
 				for(size_t t=0;t<trainLabel.size();t++)
 					cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
 				cout<<endl;
-*/
 		
-			Ein = computeErr(trainLabel, trainResult);
+			Ein = computeErrRate(trainLabel, trainResult);
 			if(Ein > pastEin){
 				//cout << "Something wrong had happened, training err does not decrease.\n";
 				//exit(1);
 			}
 			pastEin = Ein;
-			Eout = computeErr(validLabel, validResult);
+			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
-	//		cout << "Validate error: " << Eout*100 << " %\n";
+			cout << "Training error: " << Ein*100 << " %\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
@@ -156,25 +155,27 @@ void DNN::save(const string& fn){
 }
 
 void DNN::debug(){
+
 	mat testMat(getInputDimension(), 3);
 	randomInit(testMat);
 	testMat.print();
 	cout << endl;
-/*
+
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
-*/
+
 	vector<size_t> result;
 	predict(result, testMat);
 	cout << "result size:" << result.size() << endl;
 	for(size_t i = 0; i < result.size(); i++){
 		cout << result.at(i) << endl;
 	}
-	cout<<"end debug: "<<endl;
+	cout<<"End of debug!"<<endl;
 }
 //helper function
+
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 	mat tempInputMat = inputMat;
@@ -182,8 +183,7 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-//	cout << "finished feedforward!" << endl;
-//	outputMat.print();
+	outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
@@ -213,9 +213,10 @@ void computeLabel(vector<size_t>& result,const mat& outputMat){
 		}
 		result.push_back(idx);
 	}
+	delete [] h_data;
 }
 
-float computeErr(const vector<size_t>& ans, const vector<size_t>& output){
+float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output){
 	assert(ans.size() == output.size());
 	size_t accCount = 0;
 	for(size_t i = 0; i < ans.size(); i++){
@@ -224,5 +225,4 @@ float computeErr(const vector<size_t>& ans, const vector<size_t>& output){
 		}
 	}
 	return 1.0-(float)accCount/ans.size();
-
 }

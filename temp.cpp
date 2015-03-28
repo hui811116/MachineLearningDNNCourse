@@ -19,23 +19,30 @@ void randomInit(device_matrix<T>& m) {
 }
 
 int main(int argc, char** argv){
-	cout << "Test!\n";
+	srand(time(NULL));
+	
+	size_t labelNum = 48;
+	size_t phonemeNum = 39;
+	size_t trainDataNum = 60;
+	size_t testDataNum = 10;
+	size_t labelDataNum = 1124823;
+
+	const char* trainFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/train.ark";	
+	const char* testFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/test.ark";
+	const char* labelFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/label/train.lab";
+	
+	Dataset dataset = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename, labelDataNum, labelNum, phonemeNum);
+
 	// set network structure
 	vector<size_t> dimensions;
-	dimensions.push_back(4);
-	dimensions.push_back(10);
-	dimensions.push_back(6);
+	dimensions.push_back(48);
+	dimensions.push_back(5);
+	dimensions.push_back(39);
 	
-	// loading data
-	Dataset trainData;
-//	Dataset testData;
-	Method method = ALL;
 	//start training
-	DNN dnn(&trainData, 0.1, dimensions, method);
+	DNN dnn(&dataset, 0.1, dimensions, BATCH);
 	dnn.debug();
-	//dnn.train(2);
 
-	cout << "back to main!\n";
 	return 0;
 }
 
