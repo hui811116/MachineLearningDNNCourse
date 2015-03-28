@@ -50,7 +50,8 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	gemm(delta,_inp,_weight,-1*rate/(float)_input.getCols(),(float)1.0,false,true);
+	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
+	//gemm(delta,_inp,_weight,-1*rate,(float)1.0,false,true);
 }
 
 void Sigmoid::getSigDiff(mat& delta,const mat& error){

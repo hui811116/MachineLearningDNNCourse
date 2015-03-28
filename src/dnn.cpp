@@ -84,7 +84,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 */
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 		mat lastDelta;
-		_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * (-2) );
+		_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
 		backPropagate(lastDelta , _learningRate);
 
 		vector<size_t> trainResult;
