@@ -17,7 +17,7 @@ public:
 	void backPropagate(mat& out, const mat& delta, float rate);	
 	size_t getInputDim();
 	size_t getOutputDim();
-	void getSigDiff(mat& result,const mat& error);
+	void getSigDiff(mat& delta,const mat& error);
 
 	void write(ofstream& out);
 	void print(FILE* fid = stdout,int precision = 6, char delimiter = ' ');
