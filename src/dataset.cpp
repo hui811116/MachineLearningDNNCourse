@@ -5,7 +5,7 @@
 //typedef device_matrix<float> mat;
 
 Dataset::Dataset(){
-	_featureDimension=0;
+	_featureDimension=39;
 	_stateDimension=0;
 	_numOfTrainData=0;
 	_numOfPhoneme=0;
@@ -186,7 +186,7 @@ Dataset::~Dataset(){
 };
 
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
-size_t Dataset::getInputDim(){}
+size_t Dataset::getInputDim(){ return 39; }
 size_t Dataset::getOutputDim(){}
 float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
 float** Dataset::getTestDataMatrix(){return _testDataMatrix;}

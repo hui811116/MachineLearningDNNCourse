@@ -35,9 +35,9 @@ int main(int argc, char** argv){
 
 	// set network structure
 	vector<size_t> dimensions;
-	dimensions.push_back(48);
-	dimensions.push_back(5);
 	dimensions.push_back(39);
+	dimensions.push_back(5);
+	dimensions.push_back(48);
 
 	dataset.dataSegment(0.8);
 	//start training

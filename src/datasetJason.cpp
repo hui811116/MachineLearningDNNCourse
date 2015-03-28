@@ -17,7 +17,7 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 		batchOutput[i] = _trainY[ randIndex[i] ];
 	}
 	// convert them into mat format
-	batch = inputFtreToMat( batchFtre, _numOfLabel, batchSize);
+	batch = inputFtreToMat( batchFtre, getInputDim(), batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
 
 	// for debugging, print both matrices
@@ -32,7 +32,7 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 }
 
 void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel){
-	trainData = inputFtreToMat(_trainX, _numOfLabel, trainSize);
+	trainData = inputFtreToMat(_trainX, getInputDim(), trainSize);
 	trainLabel.clear();
 	for (int i = 0; i < trainSize; i++)
 		trainLabel.push_back( _trainY[i] );
@@ -41,7 +41,7 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 }
 
 void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
-	validData = inputFtreToMat(_validX, _numOfLabel, _validSize);
+	validData = inputFtreToMat(_validX, getInputDim(), _validSize);
 	validLabel.clear();
 	for (int i = 0; i < _validSize; i++)
 		validLabel.push_back( _validY[i] );
@@ -116,6 +116,7 @@ mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 mat Dataset::inputFtreToMat(float** input, int r, int c){
 	// r shall be the number of Labels
 	// c shall be the number of data
+	//cout << "Ftre to Mat size is : " << r << " " << c<<endl;
 	//cout << "size is : " << r << " " << c<<endl;
 	float* inputReshaped = new float[r * c];
 	for (int i = 0; i < c; i++){
@@ -129,7 +130,7 @@ mat Dataset::inputFtreToMat(float** input, int r, int c){
 	return outputMat;
 }
 void Dataset::prtPointer(float** input, int r, int c){
-	cout << "this prints the pointer of size: " << r << " " << c << endl;
+	//cout << "this prints the pointer of size: " << r << " " << c << endl;
 	for (int i = 0; i < c; i++){
 		cout << i << endl;
 		for(int j = 0; j < r; j++){
