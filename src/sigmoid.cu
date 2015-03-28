@@ -58,6 +58,11 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	gemm(delta,_inp,_weight,-rate,(float)1.0,false,true);
 }
 
+void Sigmoid::getSigDiff(mat& result,const mat& error){
+	assert((error.getRows()!=_weight.getRows())||(error.getCols()!=_input.getCols()));
+	result = (_weight * _input) & error;
+}
+
 void Sigmoid::write(ofstream& out){
 	float* h_data = new float[_weight.size()];
 	cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost);

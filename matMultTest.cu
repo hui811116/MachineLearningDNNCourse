@@ -106,6 +106,19 @@ n1.print();
 C.print();
 (C-1).print();
 
+A.resize(5,8);B.resize(8,5);
+randomInit(A);randomInit(B);
+C.resize(5,5);
+randomInit(C);
+printf("C=\n");
+C.print();
+printf("A*B=\n");
+mat tem=A*B;
+tem.print();
+gemm(A,B,C,(float)1,(float)2,false,false);
+printf("C=\n");
+C.print();
+
 
 return 0;
 }
