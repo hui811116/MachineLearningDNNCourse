@@ -42,12 +42,12 @@ int main(int argc, char** argv){
 
 	dataset.dataSegment(0.8);
 	//start training
-	DNN dnn(&dataset, 0.0001, dimensions, BATCH);
+	DNN dnn(&dataset, 0.5, dimensions, BATCH);
 
 	//dnn.train(5, 2000);
 	//dnn.debug();
 	
-	dnn.train(500, 20000);
+	//dnn.train(500, 1000);
 	//dnn.train(200, 10000000);
 	dnn.save("MdlEta1e-4");
 	cout << "learnRate: 0.0001 done";
