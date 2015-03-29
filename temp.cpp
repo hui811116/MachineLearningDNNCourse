@@ -49,7 +49,7 @@ int main(int argc, char** argv){
 	
 	//dnn.train(500, 1000);
 	//dnn.train(200, 10000000);
-	dnn.save("MdlEta1e-4");
+	dnn.save("MdlEta1e-4.mdl");
 	cout << "learnRate: 0.0001 done";
 	/*
 	DNN dnn2(&dataset, 0.1, dimensions, BATCH);

@@ -141,7 +141,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			}
 		}
 		if (num%2000 == 0){
-			save("MdlTmp");
+			save("MdlTmp.mdl");
 		} 
 	}
 	cout << "Finished training for " << num << " epochs.\n";
@@ -292,5 +292,5 @@ float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output){
 			accCount++;
 		}
 	}
-	return 1.0-(float)accCount/ans.size();
+	return 1.0-(float)accCount/(float)ans.size();
 }
