@@ -22,7 +22,7 @@ PARSER::PARSER(const PARSER& p){
 }
 PARSER::~PARSER(){}
 
-void PARSER::addMustHave(string name,bool isNum){
+void PARSER::addMust(string name,bool isNum){
         if(!name.empty()){
         if(!isNum){
                 _mustHave.push_back(toUpperCase(name));

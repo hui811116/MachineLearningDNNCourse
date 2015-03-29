@@ -20,7 +20,7 @@ class PARSER{
     PARSER();
     PARSER(const PARSER& p);
     ~PARSER();
-    void addMustHave(string name,bool isNum);
+    void addMust(string name,bool isNum);
     void addOption(string name,bool isNum);
     
     bool read(int argc,char** argv);
