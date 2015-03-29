@@ -11,6 +11,8 @@
 #include <cublas_v2.h>
 #include <helper_cuda.h>
 #include <cuda_memory_manager.h>
+#include "parser.h"
+
 
 using namespace std;
 
@@ -40,18 +42,14 @@ void pushOne(device_matrix<T>& m) {
 
 int main(int argc,char** argv){
 
+PARSER p;
+
+
 srand(time(0));
 
 mat A(5,8),B(8,5);
 randomInit(A);
 randomInit(B);
-
-printf("A=\n");
-A.print();
-printf("B=\n");
-B.print();
-
-printf("A * B= \n"); (A*B).print();
 
 //testing element-wise operation
 
@@ -59,48 +57,12 @@ mat C(8,2), D(8,2,2.5);
 randomInit(C);
 randomInit(D);
 
-printf("C=\n");
-C.print();
-printf("C*2=\n");
-(C * 2).print();
-printf("D=\n");
-D.print();
-
-printf("C & D= \n"); (C&D).print();
-
 //testing sigmoid function
 
 Sigmoid n1(5,5);
 
-//float**
-
-float** _fptr=new float*[10];
-for(size_t t=0;t<10;++t){
-	_fptr[t]=new float[20];
-}
-
-for(size_t t=0;t<10;++t){
-	for(size_t k=0;k<20;++k)
-		_fptr[t][k]=t+100*k;
-}
-
-float* test=_fptr[2];
-
-for(size_t t=0;t<20;++t){
-	cout<<" "<<test[t];
-	if(t+1%5==0)
-		cout<<endl;
-}
-cout<<endl;
-
-for(size_t t=0;t<10;++t)
-	delete [] _fptr[t];
-delete [] _fptr;
-
 C.resize(8,3);
 randomInit(C);
-printf("C=\n");
-C.print();
 
 printf("testing push one \n");
 pushOne(C);
@@ -118,28 +80,12 @@ printf("\n");
 
 A.resize(5,8);B.resize(5,8);
 randomInit(A);randomInit(B);
-printf("A=\n");
-A.print();
-printf("B=\n");
-B.print();
 
 C.resize(5,5);
 randomInit(C);
-printf("C=\n");
-C.print();
-printf("A*(~B)=\n");
-mat tem=A*(~B);
-tem.print();
-mat tem2=C-A*(~B);
 gemm(A,B,C,(float)-1,(float)1,false,true);
 printf("C=\n");
 C.print();
-printf("tem2=\n");
-tem2.print();
 
-mat tem3(tem2.getRows(),tem2.getCols()-1);
-cudaMemcpy(tem3.getData(),tem2.getData(),tem3.size() * sizeof(float), cudaMemcpyDeviceToDevice);
-printf("wightout weight\n");
-tem3.print();
 return 0;
 }

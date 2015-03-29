@@ -53,7 +53,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	_pData->getTrainSet(500, trainSet, trainLabel);
+	_pData->getTrainSet(50000, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -61,7 +61,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-/*
+		/*
 		cout << "Batch Data: " << num << endl;
 		batchData.print();
 		cout << endl;
@@ -75,13 +75,13 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
-*/
+		*/
 		feedForward(batchOutput, batchData, true);
-/*
+		/*
 		cout << "Batch output: " << num << endl;
 		batchOutput.print();
 		cout << endl;
-*/
+		*/
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 
 		//Reserve
@@ -98,7 +98,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 5000 == 0 ){
+		if( num % 200 == 0 ){
 			
 			//DEBUG
 			//	for(size_t t=0;t<trainLabel.size();t++)
@@ -124,6 +124,9 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 				break;
 			}
 		}
+		if (num%2000 == 0){
+			save("MdlTmp");
+		} 
 	}
 	cout << "Finished training for " << num << " epochs.\n";
 	//save("debug.mat");	
@@ -189,28 +192,30 @@ void DNN::debug(){
 	randomInit(testLabel);
 	cout.precision(5);
 	testMat.print();
-	cout << endl;
+//	cout << endl;
 	testLabel.print();
-	cout << endl;
-
+//	cout << endl;
+/*
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
+*/
 	mat output;
 		feedForward(output,testMat,true);
 	mat one(output.getRows(),output.getCols(),1.0);
 	mat last(output & (one-output) & (output-testLabel) * 2);
-	cout<<endl;
+/*	cout<<endl;
 	last.print();
 	cout<<endl;
-
+*/
 	backPropagate(last,_learningRate);
-
+/*
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
+*/
 /*
 	vector<size_t> result;
 	predict(result, testMat);

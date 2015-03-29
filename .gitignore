@@ -27,3 +27,12 @@ obj/*.o
 *.exe
 *.out
 *.app
+
+# Log file
+*.log
+
+# Tags
+tags
+
+# Model file
+*.mdl
