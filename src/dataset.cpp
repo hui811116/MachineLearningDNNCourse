@@ -163,13 +163,13 @@ Dataset::~Dataset(){
 		delete [] _trainDataNameMatrix;
 
 	for(int i =0 ; i<_numOfTrainData;i++)
-		delete _trainDataMatrix[i];
+		delete[] _trainDataMatrix[i];
 	if(_numOfPhoneme!=0)
 		delete [] _trainDataMatrix;
 	
 	if(_testDataMatrix != NULL){
 		for (int i = 0;i<_numOfTestData;i++){
-			delete _testDataMatrix[i];
+			delete[] _testDataMatrix[i];
 		}
 	}
 	if(_testDataMatrix != NULL){
@@ -181,6 +181,19 @@ Dataset::~Dataset(){
 	if(_labelMatrix != NULL){
 		delete []_labelMatrix;
 	}
+	if (_trainX != NULL){
+		//for (int i = 0; i < _trainSize; i++ )
+		//	delete[] _trainX[i];
+		delete[] _trainX;
+	}
+	if (_validX != NULL){
+		//for (int i = 0; i < _validSize; i++ )
+		//	delete[] _validX[i];
+		delete[] _validX;
+	}
+	delete[] _trainY;
+	delete[] _validY;
+
 	//TODO deletion for pointers
 	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };

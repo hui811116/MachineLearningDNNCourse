@@ -53,7 +53,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	_pData->getTrainSet(500, trainSet, trainLabel);
+	_pData->getTrainSet(50, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -119,9 +119,11 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 				break;
 			}
 		}
+		/* save model after a certain steps
 		if (num%2000 == 0){
 			save("MdlTmp");
 		} 
+		*/
 	}
 	cout << "Finished training for " << num << " epochs.\n";
 	//save("debug.mat");	

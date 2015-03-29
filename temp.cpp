@@ -23,7 +23,7 @@ int main(int argc, char** argv){
 	
 	size_t labelNum = 48;
 	size_t phonemeNum = 39;
-	size_t trainDataNum = 1124823;
+	size_t trainDataNum = 110;
 	size_t testDataNum = 180406;
 	size_t labelDataNum = 1124823;
 
@@ -42,7 +42,7 @@ int main(int argc, char** argv){
 	dataset.dataSegment(0.8);
 	//start training
 	DNN dnn(&dataset, 0.01, dimensions, BATCH);
-	dnn.train(5, 2000);
+	dnn.train(5, 20);
 	//dnn.debug();
 	/*
 	dnn.train(500, 10000);
