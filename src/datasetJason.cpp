@@ -19,7 +19,11 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// convert them into mat format
 	batch = inputFtreToMat( batchFtre, getInputDim(), batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
-
+	
+	// free tmp pointers
+	delete[] randIndex;
+	delete[] batchOutput;
+	delete[] batchFtre;
 	// for debugging, print both matrices
 	/*
 	cout << "This is the feature matrix\n";

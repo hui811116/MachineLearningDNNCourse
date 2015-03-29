@@ -53,7 +53,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	_pData->getTrainSet(500, trainSet, trainLabel);
+	_pData->getTrainSet(50, trainSet, trainLabel);
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -61,7 +61,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-
+		/*
 		cout << "Batch Data: " << num << endl;
 		batchData.print();
 		cout << endl;
@@ -75,13 +75,13 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
-
+		*/
 		feedForward(batchOutput, batchData, true);
-
+		/*
 		cout << "Batch output: " << num << endl;
 		batchOutput.print();
 		cout << endl;
-
+		*/
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 2);
 	//	_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
@@ -92,7 +92,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 2000 == 0 ){
+		if( num % 200 == 0 ){
 			
 			//DEBUG
 			//	for(size_t t=0;t<trainLabel.size();t++)
@@ -108,6 +108,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
 			cout << "Training error: " << Ein*100 << " %\n";
+			cout << "Validating error: " << Eout*100 << "%\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
@@ -118,6 +119,9 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 				break;
 			}
 		}
+		if (num%2000 == 0){
+			save("MdlTmp");
+		} 
 	}
 	cout << "Finished training for " << num << " epochs.\n";
 	//save("debug.mat");	
