@@ -9,7 +9,7 @@ EXECUTABLES=hui
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o obj/datasetJason.o
+HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
 
 # +==============================+
 # +======== Phony Rules =========+

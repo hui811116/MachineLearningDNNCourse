@@ -33,3 +33,6 @@ obj/*.o
 
 # Tags
 tags
+
+# Model file
+*.mdl

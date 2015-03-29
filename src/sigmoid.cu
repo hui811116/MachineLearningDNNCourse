@@ -26,7 +26,7 @@ Sigmoid::Sigmoid(const mat& w){
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
 	rand_init();
-    _weight/=inp_dim;
+   // _weight/=inp_dim;
 }
 
 Sigmoid::~Sigmoid(){
