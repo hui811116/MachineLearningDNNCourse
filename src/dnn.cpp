@@ -292,5 +292,5 @@ float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output){
 			accCount++;
 		}
 	}
-	return 1.0-(float)accCount/ans.size();
+	return 1.0-(float)accCount/(float)ans.size();
 }
