@@ -11,7 +11,7 @@ Dataset::Dataset(){
 	_numOfPhoneme=0;
 	_trainSize=0;
 	_validSize=0;
-
+	
 	_trainDataNameMatrix = NULL;
 	_testDataNameMatrix = NULL;
 	_trainDataMatrix = NULL;
@@ -22,11 +22,13 @@ Dataset::Dataset(){
 	_trainY = NULL;
 	_validY = NULL;
 }
-Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t phonemeNum){
+Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t inputDim, size_t outputDim, size_t phonemeNum){
 	_numOfTrainData = trainDataNum;
 	_numOfTestData = testDataNum;
 	_numOfLabel = labelNum;
 	_numOfPhoneme = phonemeNum;
+	_featureDimension = inputDim;
+	_stateDimension = outputDim;
 
 	size_t count  = 0, dataCount = 0;
 	short split = 0;	
@@ -134,15 +136,15 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			tempStrLabel = sLabel.substr(initialPos, pos-initialPos);
 			if (split==2){
 				if(tempStrLabel.compare(preLabel)!=0){
-					if(labelMap.find(tempStrLabel)==labelMap.end()){
+					if(_labelMap.find(tempStrLabel)==_labelMap.end()){
 						numForLabel++;
 						//preLabel = tempStrLabel;
-						labelMap.insert(pair<string, int>(tempStrLabel, numForLabel));	
+						_labelMap.insert(pair<string, int>(tempStrLabel, numForLabel));	
 						//cout<<numForLabel<<endl;
 					}
 					preLabel = tempStrLabel;
 				}
-			*(_labelMatrix+countLabel-1)=labelMap.find(tempStrLabel)->second;
+			*(_labelMatrix+countLabel-1)=_labelMap.find(tempStrLabel)->second;
 								//cout<<tempStrLabel<<endl;		
 					
 			//*(_labelMatrix+countLabel-1) = tempStrLabel;
@@ -185,12 +187,65 @@ Dataset::~Dataset(){
 	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };
 
+void Dataset::saveCSV(){
+	
+	string name, phoneme;
+	ofstream fout("Prediction.csv");
+	if(!fout){
+		cout<<"Can't write the file!"<<endl;
+	}
+	fout<<"Id,Prediction\n";
+	
+	fout.close();
+}
+
+
+//Get function
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
-size_t Dataset::getInputDim(){ return 39; }
-size_t Dataset::getOutputDim(){}
+size_t Dataset::getNumOfTestData(){return _numOfTestData;}
+size_t Dataset::getNumOfLabel(){return _numOfLabel;}
+size_t Dataset::getNumOfPhoneme(){return _numOfPhoneme;}
+size_t Dataset::getInputDim(){ return _featureDimension; }
+size_t Dataset::getOutputDim(){return _stateDimension;}
 float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
 float** Dataset::getTestDataMatrix(){return _testDataMatrix;}
-map<string, int> Dataset::getLabelMap(){return labelMap;}
+map<string, int> Dataset::getLabelMap(){return _labelMap;}
+map<string, string> Dataset::getTo39PhonemeMap(){return _To39PhonemeMap;}
+
+//Load function
+void Dataset::loadTo39PhonemeMap(const char* mapFilePath){
+	ifstream fin(mapFilePath);
+	if(!fin) cout<<"Can't open the file!\n";
+	string s, sKey, sVal;//For map
+	while(getline(fin, s)){
+		 int pos = 0;
+		 int initialPos = 0;
+		int judge = 1;
+		while(pos!=string::npos){
+				
+			pos = s.find("\t", initialPos);
+			if(judge==1) sKey = s.substr(initialPos, pos-initialPos);
+			else
+			{
+				sVal = s.substr(initialPos, pos-initialPos);
+		//		cout<<sKey<<" "<<sVal<<endl;
+				_To39PhonemeMap.insert(pair<string,string>(sKey,sVal));
+			}
+			initialPos = pos+1;
+//			pos=s.find("\t", initialPos);
+			judge++;
+		}
+	}
+	fin.close();
+}
+
+//Print function
+void Dataset::printTo39PhonemeMap(map<string, string> Map){
+	map<string, string>::iterator MapIter;
+	for(MapIter = Map.begin();MapIter!=Map.end();MapIter++){
+		cout<<MapIter->first<<"\t"<<MapIter->second<<endl;	
+	}
+}	
 void   Dataset::printLabelMap(map<string, int> Map){
 	map<string, int>::iterator labelMapIter;
 	for(labelMapIter = Map.begin();labelMapIter!=Map.end();labelMapIter++){
