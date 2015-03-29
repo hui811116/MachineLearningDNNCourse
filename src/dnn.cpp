@@ -77,6 +77,22 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		}
 		*/
 		feedForward(batchOutput, batchData, true);
+		float* h_data = new float [batchOutput.size()];
+		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
+
+		for(size_t j = 0; j < batchOutput.getCols(); j++){
+			float sum = 0.0;	
+			for(size_t i = 0; i < batchOutput.getRows(); i++){
+				sum += h_data[j*batchOutput.getRows() + i];
+			}
+			for(size_t i = 0; i < batchOutput.getRows(); i++){
+				h_data[j*batchOutput.getRows() + i] /= sum;
+			}
+		}
+	
+		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
+		
+		delete [] h_data;
 		/*
 		cout << "Batch output: " << num << endl;
 		batchOutput.print();

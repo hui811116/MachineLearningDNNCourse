@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 	//dnn.train(5, 2000);
 	//dnn.debug();
 	
-	dnn.train(500, 10000);
+	dnn.train(500, 20000);
 	//dnn.train(200, 10000000);
 	dnn.save("MdlEta1e-4");
 	cout << "learnRate: 0.0001 done";
