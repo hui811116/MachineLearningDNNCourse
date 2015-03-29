@@ -3,6 +3,9 @@
 #include <vector>
 #include <fstream>
 #include <cassert>
+#include <cmath>
+#include <ctime>
+#include <cstdlib>
 // nvcc compiler
 #include <device_arithmetic.h>
 #include <device_math.h>
@@ -23,6 +26,7 @@ Sigmoid::Sigmoid(const mat& w){
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
 	rand_init();
+    _weight/=inp_dim;
 }
 
 Sigmoid::~Sigmoid(){
@@ -108,10 +112,11 @@ size_t Sigmoid::getOutputDim(){
 	return _weight.getRows();
 }
 void Sigmoid::rand_init(){
+    srand(time(0));
 	size_t _s=_weight.size();
 	float* h_data = new float [_s];
 	for (size_t i=0; i<_s; ++i)
-		h_data[i]=rand() / (float) RAND_MAX;
+		h_data[i]=(rand() / (float) RAND_MAX) -0.5;
 	cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice);
 	delete [] h_data;
 }
