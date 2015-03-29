@@ -7,7 +7,7 @@
 #include <cassert>
 #include <device_matrix.h>
 
-#define MAX_EPOCH 1000000
+#define MAX_EPOCH 10000000
 
 using namespace std;
 
@@ -77,15 +77,37 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		}
 		*/
 		feedForward(batchOutput, batchData, true);
+		float* h_data = new float [batchOutput.size()];
+		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
+
+		for(size_t j = 0; j < batchOutput.getCols(); j++){
+			float sum = 0.0;	
+			for(size_t i = 0; i < batchOutput.getRows(); i++){
+				sum += h_data[j*batchOutput.getRows() + i];
+			}
+			for(size_t i = 0; i < batchOutput.getRows(); i++){
+				h_data[j*batchOutput.getRows() + i] /= sum;
+			}
+		}
+	
+		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
+		
+		delete [] h_data;
 		/*
 		cout << "Batch output: " << num << endl;
 		batchOutput.print();
 		cout << endl;
 		*/
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
+
+		//Reserve
+		//mat lastDelta;
+		//_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
 		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 2);
-	//	_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
 		backPropagate(lastDelta , _learningRate);
+
+		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
+
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
@@ -107,8 +129,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			pastEin = Ein;
 			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
-			cout << "Training error: " << Ein*100 << " %\n";
-			cout << "Validating error: " << Eout*100 << "%\n";
+			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
