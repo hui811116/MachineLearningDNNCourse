@@ -2,7 +2,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 //typedef device_matrix<float> mat;
+struct mapData {
+	size_t phoneme;
+	float* inputFeature;
+};
+typedef map<string, mapData> NameFtreMap;
 
 Dataset::Dataset(){
 	_featureDimension=39;
@@ -35,40 +41,47 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	for(int i = 0;i<trainDataNum;i++){
 		_trainDataMatrix[i] = new float [phonemeNum];
 	}
-	
-
+	cout << "inputting train feature file:\n";	
+	NameFtreMap InputMap;
 	ifstream fin(trainPath);
 	if(!fin) cout<<"Can't open this file!!!\n";
 	string s, tempStr;
-	while(getline(fin, s)&&count<trainDataNum){
+	while(getline(fin, s) && count<trainDataNum){
 		count++;
 
 //		cout<<count<<endl;
 		unsigned int pos  = s.find(" ");
 		unsigned int initialPos = 0;
 		split=0;
+		string tmpName;
+	    mapData tmpData;
+		tmpData.inputFeature = new float[phonemeNum];	
 		while(split<phonemeNum+1){
 			dataCount++;
 			split++;
 			
 			tempStr= s.substr(initialPos, pos-initialPos);
 			if (split==1){
-				*(_trainDataNameMatrix+count-1) = tempStr;
+				//*(_trainDataNameMatrix+count-1) = tempStr;
 				//cout<<*(_trainDataNameMatrix+count-1)<<endl;	
+				tmpName = tempStr;
 			}
+
 			else{
-				_trainDataMatrix[count-1][split-2] = atof(tempStr.c_str());
-				//cout<<_dataMatrix[count-1][split-2]<<endl;
+				//_trainDataMatrix[count-1][split-2] = atof(tempStr.c_str());
+				//cout<<_trainDataMatrix[count-1][split-2]<<endl;
+				tmpData.inputFeature[split-2] = atof(tempStr.c_str());
 			}		
 			initialPos = pos+1;
 			pos=s.find(" ", initialPos);
 		}		
+		InputMap.insert(pair<string, mapData>(tmpName, tmpData));
 	}		
 	//cout<<count<<endl;
 	//cout<<dataCount<<endl;
 	
 	fin.close();	
-	
+	cout << "inputting testing file:\n";
 	size_t testCount = 0, testDataCount = 0;
 	 split = 0;	
 	_testDataNameMatrix  = new string[testDataNum];	
@@ -111,7 +124,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	
 	finTest.close();
 
-		
+	cout << "inputting training label file:\n";
 	size_t countLabel  = 0, labelDataCount = 0, numForLabel=0;
 	 split = 0;	
 		
@@ -127,11 +140,14 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		unsigned int pos  = sLabel.find(",");
 		unsigned int initialPos = 0;
 		split=0;
+		string tmpName;
 		while(split<2){
 			labelDataCount++;
 			split++;
 			
 			tempStrLabel = sLabel.substr(initialPos, pos-initialPos);
+			if (split == 1) tmpName = tempStrLabel;
+
 			if (split==2){
 				if(tempStrLabel.compare(preLabel)!=0){
 					if(labelMap.find(tempStrLabel)==labelMap.end()){
@@ -142,8 +158,9 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 					}
 					preLabel = tempStrLabel;
 				}
-			*(_labelMatrix+countLabel-1)=labelMap.find(tempStrLabel)->second;
-								//cout<<tempStrLabel<<endl;		
+			//*(_labelMatrix+countLabel-1)=labelMap.find(tempStrLabel)->second;
+			InputMap.find(tmpName)->second.phoneme =labelMap.find(tempStrLabel)->second; 
+			//cout<<tempStrLabel<<endl;		
 					
 			//*(_labelMatrix+countLabel-1) = tempStrLabel;
 			//	cout<<*(_labelMatrix+count-1)<<endl;	
@@ -156,6 +173,16 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	//cout<<labelDataCount<<endl;
 	
 	finLabel.close();	
+
+	// put things into dataMatrix
+	cout << "putting them into pointers:\n";
+	int mapCount = 0;
+	for (NameFtreMap::const_iterator it = InputMap.begin();
+		 it != InputMap.end(); ++it){
+		 _trainDataMatrix[mapCount] = it->second.inputFeature;
+		 _labelMatrix[mapCount] = it->second.phoneme;
+		 mapCount ++;
+	}
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){

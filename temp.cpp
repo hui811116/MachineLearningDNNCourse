@@ -30,7 +30,7 @@ int main(int argc, char** argv){
 	const char* trainFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/train.ark";	
 	const char* testFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/test.ark";
 	const char* labelFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/label/train.lab";
-	
+		
 	Dataset dataset = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename, labelDataNum, labelNum, phonemeNum);
 
 	// set network structure
@@ -41,15 +41,15 @@ int main(int argc, char** argv){
 
 	dataset.dataSegment(0.8);
 	//start training
-	DNN dnn(&dataset, 0.01, dimensions, BATCH);
-	dnn.train(5, 2000);
+	DNN dnn(&dataset, 0.0001, dimensions, BATCH);
+	//dnn.train(5, 2000);
 	//dnn.debug();
-	/*
+	
 	dnn.train(500, 10000);
 	//dnn.train(200, 10000000);
-	dnn.save("MdlEta1e-2");
-	cout << "learnRate: 0.01 done";
-
+	dnn.save("MdlEta1e-4");
+	cout << "learnRate: 0.0001 done";
+	/*
 	DNN dnn2(&dataset, 0.1, dimensions, BATCH);
 	//dnn.debug();
 	dnn2.train(500, 10000);
