@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <cassert>
 #include <device_matrix.h>
@@ -53,6 +54,14 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
+	float minEout = Eout;
+	/*	
+	vector<Sigmoid*> tempBestMdls;
+	for(size_t i = 0; i < _transforms.size(); i++){
+		Sigmoid* pTransform = new Sigmoid(*_transforms.at(i));
+		tempBestMdls.push_back(pTransform);
+	}
+	*/
 	_pData->getTrainSet(25000, trainSet, trainLabel);
 	_pData->getValidSet(100000, validSet, validLabel);
 	size_t num = 0;
@@ -129,15 +138,18 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			pastEin = Ein;
 			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
-			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %\n";
+			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %,  epoch:" << num <<"\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
 			else{
 				errRise = 0;
 			}
-			if(errRise == 2){
-				break;
+			if(minEout < Eout){
+				minEout = Eout;
+				//for(size_t i = 0; i < _transforms.size(); i++){
+				//	(*tempBestMdls.at(i)) = (*_transforms.at(i));
+				//}
 			}
 		}
 		/* save model after a certain steps
@@ -147,7 +159,22 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		*/
 	}
 	cout << "Finished training for " << num << " epochs.\n";
-	//save("debug.mat");	
+
+	/*
+	ofstream ofs("bestMdl");
+	cout << "bestMdl: Error at" << minEout << endl;  
+	if (ofs.is_open()){
+		for(size_t i = 0; i < tempBestMdls.size(); i++){
+			(tempBestMdls.at(i))->write(ofs);
+		}
+	}
+	ofs.close();	
+
+	while(!tempBestMdls.empty()){
+		delete tempBestMdls.back();
+		tempBestMdls.pop_back();
+	}
+	*/
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
@@ -180,6 +207,13 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	delete [] h_data;
 }
 
+void DNN::setDataset(Dataset* pData){
+	_pData = pData;
+}
+void DNN::setLearningRate(float learningRate){
+	_learningRate = learningRate;
+}
+
 size_t DNN::getInputDimension(){
 	return _transforms.front()->getInputDim();
 }
@@ -202,39 +236,74 @@ void DNN::save(const string& fn){
 	ofs.close();
 }
 
+void DNN::load(const string& fn){
+	ifstream ifs(fn);
+	char buf[50000];
+	if(ifs.is_open()){
+		while(ifs.getline(buf, sizeof(buf)) != 0 ){
+			string tempStr(buf);
+			size_t found = tempStr.find_first_of(">");
+			if(found !=std::string::npos ){
+				stringstream ss(tempStr.substr(found+1));
+				string rows, cols;
+				size_t rowNum, colNum;
+				ss >> rows >> cols;
+				rowNum = stoi(rows);
+				colNum = stoi(cols);
+				size_t totalEle = rowNum * colNum;
+				float* h_data = new float[totalEle];
+				float* h_data_bias = new float[rowNum];
+				for(size_t i = 0; i < rowNum; i++){
+					if(ifs.getline(buf, sizeof(buf)) == 0){
+						cerr << "Wrong file format!\n";
+					}
+					tempStr.assign(buf);
+					stringstream ss1(tempStr);	
+					for(size_t j = 0; j < colNum; j++){
+						ss1 >> h_data[ j*rowNum + i ];
+					}
+				}
+				ifs.getline(buf, sizeof(buf));
+				ifs.getline(buf, sizeof(buf));
+				tempStr.assign(buf);
+				stringstream ss2(tempStr);
+				float temp;
+				for(size_t i = 0; i < rowNum; i++){
+					ss2 >> h_data_bias[i];
+				}
+				mat weightMat(rowNum, colNum);
+				mat biasMat(rowNum, 1);		
+				cudaMemcpy(weightMat.getData(), h_data, totalEle * sizeof(float), cudaMemcpyHostToDevice);
+				cudaMemcpy(biasMat.getData(), h_data_bias, rowNum * sizeof(float), cudaMemcpyHostToDevice);
+				
+				Sigmoid* pTransform = new Sigmoid(weightMat, biasMat);
+				_transforms.push_back(pTransform);
+				delete [] h_data;
+				delete [] h_data_bias;
+			}
+		}
+	}
+	ifs.close();
+}
+
 void DNN::debug(){
 
 	mat testMat(getInputDimension(), 3);
-	mat testLabel(getOutputDimension(),3);
+	mat testLabel(getOutputDimension(), 3);
 	randomInit(testMat);
 	randomInit(testLabel);
 	cout.precision(5);
 	testMat.print();
-//	cout << endl;
-//	testLabel.print();
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
 	mat output;
-		feedForward(output,testMat,true);
+	feedForward(output,testMat,true);
 	mat one(output.getRows(),output.getCols(),1.0);
 	mat last(output & (one-output) & (output-testLabel) * 2);
 	backPropagate(last,_learningRate);
-/*
-	for(size_t i = 0; i < _transforms.size(); i++){
-		(_transforms.at(i))->print();
-		cout << endl;
-	}
-*/
-/*
-	vector<size_t> result;
-	predict(result, testMat);
-	cout << "result size:" << result.size() << endl;
-	for(size_t i = 0; i < result.size(); i++){
-		cout << result.at(i) << endl;
-	}
-*/
+
 	cout<<"End of debug!"<<endl;
 }
 //helper function
@@ -246,7 +315,6 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 		(_transforms.at(i))->forward(outputMat, tempInputMat, train);
 		tempInputMat = outputMat;
 	}
-	//outputMat.print();
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())

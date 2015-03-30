@@ -25,11 +25,13 @@ public:
 	void train(size_t batchSize, size_t maxEpoch);
 	void predict(vector<size_t>& result, const mat& inputMat);
 
+	void setDataset(Dataset* pData);
+	void setLearningRate(float learningRate);
 	size_t getInputDimension();
 	size_t getOutputDimension();
 	size_t getNumLayers();
 	void save(const string& fn);
-
+	void load(const string& fn);
 	void debug();
 
 private:
