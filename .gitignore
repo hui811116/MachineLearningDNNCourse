@@ -38,5 +38,6 @@ tags
 *.mdl
 model/*.mdl
 
-# Temp
+# Temp and Testing cpp files
 temp.cpp
+*Test.cpp
