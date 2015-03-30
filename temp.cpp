@@ -32,22 +32,19 @@ int main(int argc, char** argv){
 	const char* testFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/test.ark";
 	const char* labelFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/label/train.lab";
 		
-	Dataset dataset = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename, labelDataNum, labelNum, phonemeNum);
-
+	Dataset dataset = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename, labelDataNum, labelNum,39,48, phonemeNum);
 	// set network structure
 	vector<size_t> dimensions;
 	dimensions.push_back(39);
 	dimensions.push_back(128);
 	dimensions.push_back(48);
-
 	dataset.dataSegment(0.8);
 	//start training
 	DNN dnn(&dataset, 0.0001, dimensions, BATCH);
 
-	//dnn.train(5, 2000);
 	//dnn.debug();
 	
-	dnn.train(500, 20000);
+	dnn.train(128, 20000);
 	//dnn.train(200, 10000000);
 	dnn.save("MdlEta1e-4.mdl");
 	cout << "learnRate: 0.0001 done";
