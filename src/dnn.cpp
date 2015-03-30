@@ -53,8 +53,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float pastEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
-	_pData->getTrainSet(50000, trainSet, trainLabel);
-	_pData->getValidSet(validSet, validLabel);
+	_pData->getTrainSet(25000, trainSet, trainLabel);
+	_pData->getValidSet(100000, validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
 		mat batchData;
@@ -69,17 +69,19 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		cout << "Batch Label: " << num << endl;;
 		batchLabel.print();
 		cout << endl;
-
+		
 		cout << "Transform matrix: " << num << endl;
 		for(size_t i = 0; i < _transforms.size(); i++){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
 		*/
+		//cout << "start ff\n";
 		feedForward(batchOutput, batchData, true);
+		//cout << "done feedForward\n";
 		float* h_data = new float [batchOutput.size()];
 		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
+		cout << "segment 1 \n";
 		for(size_t j = 0; j < batchOutput.getCols(); j++){
 			float sum = 0.0;	
 			for(size_t i = 0; i < batchOutput.getRows(); i++){

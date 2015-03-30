@@ -19,7 +19,6 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// convert them into mat format
 	batch = inputFtreToMat( batchFtre, getInputDim(), batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
-	
 	// free tmp pointers
 	delete[] randIndex;
 	delete[] batchOutput;
@@ -70,14 +69,17 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 	trainFtre = NULL;
 }
 
-void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
-	validData = inputFtreToMat(_validX, getInputDim(), _validSize);
+void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLabel){
+	if (validSize > _validSize){
+		cout << "requested valid set size is too big, can only feed in " << _validSize << " data.\n";
+	validSize = _validSize;
+	}
+	validData = inputFtreToMat(_validX, getInputDim(), validSize);
 	validLabel.clear();
-	for (int i = 0; i < _validSize; i++)
+	for (int i = 0; i < validSize; i++)
 		validLabel.push_back( _validY[i] );
-	cout << "getValidSet:\n";
-	//validData.print();
 }
+
 
 
 void Dataset::dataSegment( float trainProp ){
