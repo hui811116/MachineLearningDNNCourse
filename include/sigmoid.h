@@ -15,6 +15,7 @@ public:
 	Sigmoid(const mat& w);
 	Sigmoid(size_t out_dim, size_t inp_dim);
 	~Sigmoid();	
+	Sigmoid& operator = (const Sigmoid& sig);
 	void forward(mat& out, const mat& in, bool train);
 	void backPropagate(mat& out, const mat& delta, float rate = 1, float momentum = 0);	
 	size_t getInputDim();
