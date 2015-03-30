@@ -61,7 +61,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		tempBestMdls.push_back(pTransform);
 	}
 
-	_pData->getTrainSet(50000, trainSet, trainLabel);
+	_pData->getTrainSet(60000, trainSet, trainLabel); //50000
 	_pData->getValidSet(validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
@@ -137,7 +137,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			pastEin = Ein;
 			Eout = computeErrRate(validLabel, validResult);
 			cout.precision(5);
-			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %\n";
+			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %,  epoch:" << num <<"\n";
 			if(Eout > pastEout){
 				errRise++;
 			}
@@ -146,6 +146,9 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			}
 			if(minEout < Eout){
 				minEout = Eout;
+				for(size_t i = 0; i < _transforms.size(); i++){
+					(*tempBestMdls.at(i)) = (*_transforms.at(i));
+				}
 			}
 		}
 		if (num%2000 == 0){
@@ -153,6 +156,19 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		} 
 	}
 	cout << "Finished training for " << num << " epochs.\n";
+
+	// save best mdl
+	ofstream ofs("bestMdl");
+	cout << "bestMdl: Error at" << minEout << endl;  
+	if (ofs.is_open()){
+		for(size_t i = 0; i < tempBestMdls.size(); i++){
+			(tempBestMdls.at(i))->write(ofs);
+		}
+	}
+	ofs.close();
+
+	//	
+
 	while(!tempBestMdls.empty()){
 		delete tempBestMdls.back();
 		tempBestMdls.pop_back();

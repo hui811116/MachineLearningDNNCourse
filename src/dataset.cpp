@@ -188,9 +188,10 @@ Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
 	if(_numOfTrainData!=0)
 		delete [] _trainDataNameMatrix;
-
-	for(int i =0 ; i<_numOfTrainData;i++)
-		delete _trainDataMatrix[i];
+	if(_trainDataMatrix != NULL){
+		for(int i =0 ; i<_numOfTrainData;i++)
+			delete _trainDataMatrix[i];
+	}
 	if(_numOfPhoneme!=0)
 		delete [] _trainDataMatrix;
 	

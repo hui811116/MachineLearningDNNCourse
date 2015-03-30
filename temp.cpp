@@ -28,6 +28,10 @@ int main(int argc, char** argv){
 	size_t testDataNum = 180406;
 	size_t labelDataNum = 1124823;
 
+	//trainDataNum = 1000;
+	//testDataNum = 1000;
+	//labelDataNum = 1000;
+
 	const char* trainFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/train.ark";	
 	const char* testFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/mfcc/test.ark";
 	const char* labelFilename = "/home/larry/Documents/data/MLDS_HW1_RELEASE_v1/label/train.lab";
@@ -48,7 +52,7 @@ int main(int argc, char** argv){
 	//dnn.debug();
 	
 	dnn.train(500, 15000);
-	//dnn.train(200, 10000000);
+	//dnn.train(10, 10);
 	dnn.save("MdlEta1e-4.mdl");
 	cout << "learnRate: 0.0001 done";
 	/*
