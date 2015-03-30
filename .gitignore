@@ -36,3 +36,6 @@ tags
 
 # Model file
 *.mdl
+
+# temp.cpp
+temp.cpp

@@ -57,8 +57,8 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		split=0;
 		string tmpName;
 	    mapData tmpData;
-		tmpData.inputFeature = new float[phonemeNum];	
-		while(split<phonemeNum+1){
+		tmpData.inputFeature = new float[inputDim];	
+		while(split<inputDim+1){
 			dataCount++;
 			split++;
 			
@@ -89,7 +89,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	_testDataNameMatrix  = new string[testDataNum];	
 	_testDataMatrix = new float*[testDataNum];
 	for(int i = 0;i<testDataNum;i++){
-		_testDataMatrix[i] = new float [phonemeNum];
+		_testDataMatrix[i] = new float [inputDim];
 	}
 	
 	//cout<<"Test starts"<<endl;
@@ -103,7 +103,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		unsigned int posTest  = sTest.find(" ");
 		unsigned int initialPos = 0;
 		split=0;
-		while(split<phonemeNum+1){
+		while(split<inputDim+1){
 			testDataCount++;
 			split++;
 			

@@ -25,6 +25,7 @@ int main(int argc, char** argv){
 	size_t labelNum = 48;
 	size_t phonemeNum = 39;
 	size_t trainDataNum = 50;
+	size_t trainDataNum = 1124823;
 	size_t testDataNum = 180406;
 	size_t labelDataNum = 1124823;
 	size_t inFtreDim = 69;
