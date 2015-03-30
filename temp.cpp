@@ -46,10 +46,9 @@ int main(int argc, char** argv){
 	//start training
 	DNN dnn(&dataset, 0.0001, dimensions, BATCH);
 
-	//dnn.train(5, 2000);
 	//dnn.debug();
 	
-	dnn.train(100, 5000);
+	dnn.train(128, 20000);
 	//dnn.train(200, 10000000);
 	dnn.save("MdlEta1e-4.mdl");
 	cout << "learnRate: 0.0001 done";

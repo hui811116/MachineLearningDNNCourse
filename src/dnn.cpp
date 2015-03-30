@@ -109,7 +109,6 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 
 		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
 
-
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
@@ -212,22 +211,15 @@ void DNN::debug(){
 	cout.precision(5);
 	testMat.print();
 //	cout << endl;
-	testLabel.print();
-//	cout << endl;
-/*
+//	testLabel.print();
 	for(size_t i = 0; i < _transforms.size(); i++){
 		(_transforms.at(i))->print();
 		cout << endl;
 	}
-*/
 	mat output;
 		feedForward(output,testMat,true);
 	mat one(output.getRows(),output.getCols(),1.0);
 	mat last(output & (one-output) & (output-testLabel) * 2);
-/*	cout<<endl;
-	last.print();
-	cout<<endl;
-*/
 	backPropagate(last,_learningRate);
 /*
 	for(size_t i = 0; i < _transforms.size(); i++){

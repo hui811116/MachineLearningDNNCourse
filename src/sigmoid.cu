@@ -17,9 +17,12 @@ typedef device_matrix<float> mat;
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2,0);
 	_input.resize(1,1,0);
+	_prediff.resize(1,1);
 }
 Sigmoid::Sigmoid(const Sigmoid& s){
 	_weight=s._weight;
+	_input.resize(1,1);
+	_prediff.resize(1,1);
 	//NOTE::copy constructor won't copy input!
 }
 Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
@@ -41,14 +44,19 @@ Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
 
 	delete [] h_data;
 	delete [] b_data;
+	_prediff.resize(1,1);
+	_input.resize(1,1);
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
-	//_input.resize(_weight.getCols()-1,1);
+	_input.resize(_weight.getCols()-1,1);
+	_prediff.resize(1,1);
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
 	rand_init();
+	_input.resize(1,1);
+	_prediff.resize(1,1);
 	//_weight/=sqrt(inp_dim);
 }
 
@@ -77,11 +85,13 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate, float moment
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	if(_prediff.size()==_weight.size())
+
+	if(( _prediff.size()==_weight.size()) &&( momentum!= 0 ))
 	_prediff = delta * ~_input + _prediff * momentum ;
 	else
 	_prediff = delta * ~_input;
-	_weight = _weight - _prediff * rate;
+	_weight = _weight -  _prediff * rate;
+
 	//_weight = _weight - prediff * (rate/(float)(_weight.getCols()-1);
 	//NOTE: below are the case without momentum
 	//gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
