@@ -27,7 +27,7 @@ class Dataset{
 	map<string, string> getTo39PhonemeMap();
 	void   getBatch(int batchSize, mat& batch, mat& batchLabel);
 	void   getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel);
-	void   getValidSet(mat& validData, vector<size_t>& validLabel);
+	void   getValidSet(int validSize, mat& validData, vector<size_t>& validLabel);
 	void   dataSegment( float trainProp);
 	void   printLabelMap(map<string, int> labelMap);
 	void   printTo39PhonemeMap(map<string, string>);

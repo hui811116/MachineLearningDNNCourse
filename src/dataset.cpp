@@ -188,6 +188,12 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 		 _labelMatrix[mapCount] = it->second.phoneme;
 		 mapCount ++;
 	}
+	/*
+	for (NameFtreMap::const_iterator it = InputMap.begin();
+		 it != InputMap.end(); ++it){
+		 delete[] it->second.inputFeature;
+	}
+	*/
 };
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
