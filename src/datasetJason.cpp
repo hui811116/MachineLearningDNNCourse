@@ -26,6 +26,9 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	//for (int i = 0; i < batchSize; i++)
 	//	delete[] batchFtre[i];
 	delete[] batchFtre;
+	randIndex = NULL;
+	batchOutput = NULL;
+	batchFtre = NULL;
 	// for debugging, print both matrices
 	/*
 	cout << "This is the feature matrix\n";
@@ -63,6 +66,8 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 	//trainData.print();
 	delete[] randIndex;
 	delete[] trainFtre;
+	randIndex = NULL;
+	trainFtre = NULL;
 }
 
 void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
@@ -136,6 +141,7 @@ mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 
 	mat outputMat(tmpVector, _numOfLabel, vectorSize);
 	delete[] tmpVector;
+	tmpVector = NULL;
 	return outputMat;
 }
 mat Dataset::inputFtreToMat(float** input, int r, int c){
@@ -152,6 +158,7 @@ mat Dataset::inputFtreToMat(float** input, int r, int c){
 	}
 	mat outputMat(inputReshaped, r, c);
 	delete[] inputReshaped;
+	inputReshaped = NULL;
 	return outputMat;
 }
 void Dataset::prtPointer(float** input, int r, int c){
