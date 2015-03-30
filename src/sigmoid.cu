@@ -71,7 +71,7 @@ void Sigmoid::getSigDiff(mat& delta,const mat& error){
 void Sigmoid::write(ofstream& out){
 	float* h_data = new float[_weight.size()];
 	CCE(cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost));
-    out<<"\n<sigmoid> "<<_weight.getRows()<<" "<<_weight.getCols()<<endl;
+    out<<"<sigmoid> "<<_weight.getRows()<<" "<<_weight.getCols()<<endl;
     for(size_t i=0;i<_weight.getRows();++i){
     for(size_t j=0;j<_weight.getCols()-1;++j){
                 out<<" "<<h_data[_weight.getRows()*j+i]; 
@@ -81,7 +81,6 @@ void Sigmoid::write(ofstream& out){
     out<<"<bias> "<<_weight.getRows()<<endl;
     for(size_t t=0;t<_weight.getRows();++t)
                 out<<" "<<h_data[_weight.getRows()*(_weight.getCols()-1)+t];
-    out<<endl;
 	delete [] h_data;
 }
 
