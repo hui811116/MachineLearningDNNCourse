@@ -14,14 +14,39 @@ using namespace std;
 
 typedef device_matrix<float> mat;
 
+srand(time(0));
+
 Sigmoid::Sigmoid(){
-	_weight.resize(1,2);
-	_input.resize(1,1);
-	_weight.fillwith(0);
+	_weight.resize(1,2,0);
+	_input.resize(1,1,0);
+}
+Sigmoid::Sigmoid(const Sigmoid& s){
+	_weight=s._weight;
+	//NOTE::copy constructor won't copy input!
+}
+Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
+	size_t r=bias.getRows(), c=bias.getCols();
+	assert(r==1 || c==1);
+	if(c==1){
+		c=r;r=1; //swap
+	}
+	assert(wpart.getRows()==c);
+	float* h_data= new float[wpart.size()+bias.size()];
+	float* b_data= new float[bias.size()];
+	CCE(cudaMemcpy(h_data,wpart.getData(), wpart.size() * sizeof(float),cudaMemcpyDeviceToHost));
+	CCE(cudaMemcpy(b_data,bias.getData(),bias.size() * sizeof(float),cudaMemcpyDeviceToHost));
+	for(size_t t=0;t<bias.size();++t)
+		h_data[t+wpart.size()]=b_data[t];
+
+	_weight.resize(wpart.getRows(),wpart.getCols()+1);
+	CCE(cudaMemcpy(_weight.getData(),h_data,_weight.size() * sizeof(float),cudaMemcpyHostToDevice));
+
+	delete [] h_data;
+	delete [] b_data;
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
-	_input.resize(_weight.getCols()-1,1);
+	//_input.resize(_weight.getCols()-1,1);
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
@@ -43,7 +68,7 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 }
 
 // assume error pass through var "delta"
-void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
+void Sigmoid::backPropagate(mat& out, const mat& delta, float rate, float momentum){
 	assert( (delta.getRows()==_weight.getRows()) && (delta.getCols()==_input.getCols()) );
 	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
 	CCE(cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
@@ -54,7 +79,14 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
+	if(_prediff.size()==_weight.size())
+	_prediff = delta * ~_input + _prediff * momentum ;
+	else
+	_prediff = delta * ~_input;
+	_weight = _weight - _prediff * rate;
+	//_weight = _weight - prediff * (rate/(float)(_weight.getCols()-1);
+	//NOTE: below are the case without momentum
+	//gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
 	//gemm(delta,_inp,_weight,(float)-1.0*rate/(float)_input.getCols(),(float)1.0,false,true);
 }
 
@@ -113,7 +145,6 @@ size_t Sigmoid::getOutputDim(){
 	return _weight.getRows();
 }
 void Sigmoid::rand_init(){
-    srand(time(0));
 	size_t _s=_weight.size();
 	float* h_data = new float [_s];
 	for (size_t i=0; i<_s; ++i)
