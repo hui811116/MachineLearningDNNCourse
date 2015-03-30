@@ -10,11 +10,13 @@ typedef device_matrix<float> mat;
 class Sigmoid{
 public:
 	Sigmoid();
+	Sigmoid(const Sigmoid& s);
+	Sigmoid(const mat& wpart, const mat& bias);
 	Sigmoid(const mat& w);
 	Sigmoid(size_t out_dim, size_t inp_dim);
 	~Sigmoid();	
 	void forward(mat& out, const mat& in, bool train);
-	void backPropagate(mat& out, const mat& delta, float rate);	
+	void backPropagate(mat& out, const mat& delta, float rate = 1, float momentum = 0);	
 	size_t getInputDim();
 	size_t getOutputDim();
 	void getSigDiff(mat& delta,const mat& error);
@@ -25,6 +27,7 @@ private:
 	void rand_init();
 	void pushOne(mat& input);
 	mat _weight;
+	mat _prediff;
 	mat _input; //for backpropagation
 };
 
