@@ -207,6 +207,13 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	delete [] h_data;
 }
 
+void DNN::setDataset(Dataset* pData){
+	_pData = pData;
+}
+void DNN::setLearningRate(float learningRate){
+	_learningRate = learningRate;
+}
+
 size_t DNN::getInputDimension(){
 	return _transforms.front()->getInputDim();
 }
@@ -251,26 +258,24 @@ void DNN::load(const string& fn){
 						cerr << "Wrong file format!\n";
 					}
 					tempStr.assign(buf);
-					ss.str(tempStr);
-					string temp;
+					stringstream ss1(tempStr);	
 					for(size_t j = 0; j < colNum; j++){
-						ss >> temp;
-						h_data[ j*rowNum + i ] = stof(temp);
+						ss1 >> h_data[ j*rowNum + i ];
 					}
 				}
 				ifs.getline(buf, sizeof(buf));
 				ifs.getline(buf, sizeof(buf));
 				tempStr.assign(buf);
-				ss.str(tempStr);
-				string temp;
+				stringstream ss2(tempStr);
+				float temp;
 				for(size_t i = 0; i < rowNum; i++){
-					ss >> temp;
-					h_data_bias[i] = stof(temp);
+					ss2 >> h_data_bias[i];
 				}
-				mat weightMat;
-				mat biasMat;		
+				mat weightMat(rowNum, colNum);
+				mat biasMat(rowNum, 1);		
 				cudaMemcpy(weightMat.getData(), h_data, totalEle * sizeof(float), cudaMemcpyHostToDevice);
 				cudaMemcpy(biasMat.getData(), h_data_bias, rowNum * sizeof(float), cudaMemcpyHostToDevice);
+				
 				Sigmoid* pTransform = new Sigmoid(weightMat, biasMat);
 				_transforms.push_back(pTransform);
 				delete [] h_data;
