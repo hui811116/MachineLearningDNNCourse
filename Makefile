@@ -56,6 +56,10 @@ hui:$(HEADEROBJ) matMultTest.cu
 
 Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
 	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
+
+CSV: $(OBJ) $(HEADEROBJ) testPredictOutput.cpp 
+	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV.app $^ $(LIBRARY) $(LD_LIBRARY) 
+
 clean:
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
