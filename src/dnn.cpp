@@ -62,8 +62,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		tempBestMdls.push_back(pTransform);
 	}
 	*/
-	_pData->getTrainSet(60000, trainSet, trainLabel); //50000
-	_pData->getValidSet(validSet, validLabel);
+	_pData->getTrainSet(25000, trainSet, trainLabel);
+	_pData->getValidSet(100000, validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
 		mat batchData;
@@ -78,17 +78,18 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		cout << "Batch Label: " << num << endl;;
 		batchLabel.print();
 		cout << endl;
-
+		
 		cout << "Transform matrix: " << num << endl;
 		for(size_t i = 0; i < _transforms.size(); i++){
 			(_transforms.at(i))->print();
 			cout << endl;
 		}
 		*/
+		//cout << "start ff\n";
 		feedForward(batchOutput, batchData, true);
+		//cout << "done feedForward\n";
 		float* h_data = new float [batchOutput.size()];
 		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
 		for(size_t j = 0; j < batchOutput.getCols(); j++){
 			float sum = 0.0;	
 			for(size_t i = 0; i < batchOutput.getRows(); i++){
@@ -116,7 +117,6 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		backPropagate(lastDelta , _learningRate);
 
 		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
-
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
@@ -152,9 +152,11 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 				//}
 			}
 		}
+		/* save model after a certain steps
 		if (num%2000 == 0){
 			save("MdlTmp.mdl");
 		} 
+		*/
 	}
 	cout << "Finished training for " << num << " epochs.\n";
 
@@ -287,8 +289,10 @@ void DNN::debug(){
 	randomInit(testLabel);
 	cout.precision(5);
 	testMat.print();
-	testLabel.print();
-	
+	for(size_t i = 0; i < _transforms.size(); i++){
+		(_transforms.at(i))->print();
+		cout << endl;
+	}
 	mat output;
 	feedForward(output,testMat,true);
 	mat one(output.getRows(),output.getCols(),1.0);

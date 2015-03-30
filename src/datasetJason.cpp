@@ -19,11 +19,15 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// convert them into mat format
 	batch = inputFtreToMat( batchFtre, getInputDim(), batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
-	
 	// free tmp pointers
 	delete[] randIndex;
 	delete[] batchOutput;
+	//for (int i = 0; i < batchSize; i++)
+	//	delete[] batchFtre[i];
 	delete[] batchFtre;
+	randIndex = NULL;
+	batchOutput = NULL;
+	batchFtre = NULL;
 	// for debugging, print both matrices
 	/*
 	cout << "This is the feature matrix\n";
@@ -61,16 +65,21 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 	//trainData.print();
 	delete[] randIndex;
 	delete[] trainFtre;
+	randIndex = NULL;
+	trainFtre = NULL;
 }
 
-void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){
-	validData = inputFtreToMat(_validX, getInputDim(), _validSize);
+void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLabel){
+	if (validSize > _validSize){
+		cout << "requested valid set size is too big, can only feed in " << _validSize << " data.\n";
+	validSize = _validSize;
+	}
+	validData = inputFtreToMat(_validX, getInputDim(), validSize);
 	validLabel.clear();
-	for (int i = 0; i < _validSize; i++)
+	for (int i = 0; i < validSize; i++)
 		validLabel.push_back( _validY[i] );
-	cout << "getValidSet:\n";
-	//validData.print();
 }
+
 
 
 void Dataset::dataSegment( float trainProp ){
@@ -134,6 +143,7 @@ mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)
 
 	mat outputMat(tmpVector, _numOfLabel, vectorSize);
 	delete[] tmpVector;
+	tmpVector = NULL;
 	return outputMat;
 }
 mat Dataset::inputFtreToMat(float** input, int r, int c){
@@ -150,6 +160,7 @@ mat Dataset::inputFtreToMat(float** input, int r, int c){
 	}
 	mat outputMat(inputReshaped, r, c);
 	delete[] inputReshaped;
+	inputReshaped = NULL;
 	return outputMat;
 }
 void Dataset::prtPointer(float** input, int r, int c){
