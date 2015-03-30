@@ -26,7 +26,7 @@ Sigmoid::Sigmoid(const mat& w){
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
 	rand_init();
-    _weight/=inp_dim;
+	//_weight/=sqrt(inp_dim);
 }
 
 Sigmoid::~Sigmoid(){
@@ -46,7 +46,7 @@ void Sigmoid::forward(mat& out, const mat& in, bool train){
 void Sigmoid::backPropagate(mat& out, const mat& delta, float rate){
 	assert( (delta.getRows()==_weight.getRows()) && (delta.getCols()==_input.getCols()) );
 	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
-	cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice);
+	CCE(cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
 	mat _tmp( (~withoutBias) * delta);
 	mat one(_input.getRows(),_input.getCols(),1);
 	mat diff= (_input) & (one-_input);
@@ -70,7 +70,7 @@ void Sigmoid::getSigDiff(mat& delta,const mat& error){
 
 void Sigmoid::write(ofstream& out){
 	float* h_data = new float[_weight.size()];
-	cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost);
+	CCE(cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost));
     out<<"\n<sigmoid> "<<_weight.getRows()<<" "<<_weight.getCols()<<endl;
     for(size_t i=0;i<_weight.getRows();++i){
     for(size_t j=0;j<_weight.getCols()-1;++j){
@@ -82,11 +82,12 @@ void Sigmoid::write(ofstream& out){
     for(size_t t=0;t<_weight.getRows();++t)
                 out<<" "<<h_data[_weight.getRows()*(_weight.getCols()-1)+t];
     out<<endl;
+	delete [] h_data;
 }
 
 void Sigmoid::print(FILE* fid, int precision, char delimiter){
 	float* h_data = new float[_weight.size()];
-	cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost);
+	CCE(cudaMemcpy( h_data, _weight.getData(), _weight.size() * sizeof(float), cudaMemcpyDeviceToHost));
 
 	char format[16];
 	sprintf(format,"%c%%.%de",delimiter,(precision>0)? precision :0);
@@ -117,18 +118,18 @@ void Sigmoid::rand_init(){
 	float* h_data = new float [_s];
 	for (size_t i=0; i<_s; ++i)
 		h_data[i]=(rand() / (float) RAND_MAX) -0.5;
-	cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice);
+	CCE(cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice));
 	delete [] h_data;
 }
 
 void Sigmoid::pushOne(mat& input){
 	device_matrix<float> tmp(~input);
     float* h_data = new float [input.size()+input.getCols()];
-	cudaMemcpy(h_data, tmp.getData(), tmp.size() * sizeof(float), cudaMemcpyDeviceToHost);
+	CCE(cudaMemcpy(h_data, tmp.getData(), tmp.size() * sizeof(float), cudaMemcpyDeviceToHost));
     for(size_t t=0;t<tmp.getRows();++t)
 	h_data[tmp.size()+t]=1;
 	tmp.resize(tmp.getRows(),tmp.getCols()+1);
-	cudaMemcpy(tmp.getData(), h_data, tmp.size() * sizeof(float), cudaMemcpyHostToDevice);
+	CCE(cudaMemcpy(tmp.getData(), h_data, tmp.size() * sizeof(float), cudaMemcpyHostToDevice));
     input=~tmp;
 	delete [] h_data;
 }
