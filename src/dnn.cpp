@@ -55,13 +55,15 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	float Eout = 1;
 	float pastEout = Eout;
 	float minEout = Eout;
-		
+	
+	/*	
 	vector<Sigmoid*> tempBestMdls;
 	for(size_t i = 0; i < _transforms.size(); i++){
 		Sigmoid* pTransform = new Sigmoid(*_transforms.at(i));
 		tempBestMdls.push_back(pTransform);
 	}
-	
+	*/
+
 	_pData->getTrainSet(25000, trainSet, trainLabel);
 	_pData->getValidSet(100000, validSet, validLabel);
 	size_t num = 0;
@@ -70,21 +72,6 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-		/*
-		cout << "Batch Data: " << num << endl;
-		batchData.print();
-		cout << endl;
-		
-		cout << "Batch Label: " << num << endl;;
-		batchLabel.print();
-		cout << endl;
-		
-		cout << "Transform matrix: " << num << endl;
-		for(size_t i = 0; i < _transforms.size(); i++){
-			(_transforms.at(i))->print();
-			cout << endl;
-		}
-		*/
 		//cout << "start ff\n";
 		feedForward(batchOutput, batchData, true);
 		//cout << "done feedForward\n";
@@ -98,19 +85,13 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			for(size_t i = 0; i < batchOutput.getRows(); i++){
 				h_data[j*batchOutput.getRows() + i] /= sum;
 			}
-		}
-	
+		}	
 		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
-		
 		delete [] h_data;
-		/*
-		cout << "Batch output: " << num << endl;
-		batchOutput.print();
-		cout << endl;
-		*/
+
+
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 
-		//Reserve
 		//mat lastDelta;
 		//_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
 		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 2);
@@ -147,9 +128,17 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 			}
 			if(minEout > Eout){
 				minEout = Eout;
-				for(size_t i = 0; i < _transforms.size(); i++){
-					(*tempBestMdls.at(i)) = (*_transforms.at(i));
+				//for(size_t i = 0; i < _transforms.size(); i++){
+				//	(*tempBestMdls.at(i)) = (*_transforms.at(i));
+				//}
+				ofstream ofs("best.mdl");
+				cout << "bestMdl: Error at" << minEout << endl;  
+				if (ofs.is_open()){
+					for(size_t i = 0; i < _transforms.size(); i++){
+						(_transforms.at(i))->write(ofs);
+					}
 				}
+				ofs.close();	
 			}
 		}
 		/* save model after a certain steps
@@ -159,21 +148,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		*/
 	}
 	cout << "Finished training for " << num << " epochs.\n";
-
-	
-	ofstream ofs("bestMdl");
 	cout << "bestMdl: Error at" << minEout << endl;  
-	if (ofs.is_open()){
-		for(size_t i = 0; i < tempBestMdls.size(); i++){
-			(tempBestMdls.at(i))->write(ofs);
-		}
-	}
-	ofs.close();	
-
-	while(!tempBestMdls.empty()){
-		delete tempBestMdls.back();
-		tempBestMdls.pop_back();
-	}
+	
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
