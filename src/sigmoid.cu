@@ -17,10 +17,12 @@ typedef device_matrix<float> mat;
 
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2,0);
+	_prediff.resize(1,2,0);
 	rand_init();
 }
 Sigmoid::Sigmoid(const Sigmoid& s){
 	_weight=s._weight;
+	_prediff=s._prediff;
 	//NOTE::copy constructor won't copy input!
 }
 Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
@@ -42,9 +44,11 @@ Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
 
 	delete [] h_data;
 	delete [] b_data;
+	_prediff.resize(_weight.getRows(),_weight.getCols(),0);
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
+	_prediff.resize(w.getRows(),w.getCols());
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
