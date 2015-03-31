@@ -64,8 +64,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	}
 	*/
 
-	_pData->getTrainSet(25000, trainSet, trainLabel);
-	_pData->getValidSet(100000, validSet, validLabel);
+	_pData->getTrainSet(50000, trainSet, trainLabel);
+	_pData->getValidSet(10000, validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
 		mat batchData;
@@ -153,6 +153,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
+	//inputMat.print();
 	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
 	float* h_data = new float [outputMat.size()];

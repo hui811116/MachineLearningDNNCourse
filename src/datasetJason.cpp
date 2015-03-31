@@ -74,11 +74,26 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 		cout << "requested valid set size is too big, can only feed in " << _validSize << " data.\n";
 	validSize = _validSize;
 	}
-	validData = inputFtreToMat(_validX, getInputDim(), validSize);
 	validLabel.clear();
-	for (int i = 0; i < validSize; i++)
+	// random choose index
+	cout << validSize << " " << _validSize << endl;
+	int* randIndex = new int [validSize];
+	for (int i = 0; i < validSize; i++){
+		if (validSize == _validSize)
+			randIndex[i] = i;
+		else
+			randIndex[i] = rand() % _validSize; 
+	}
+	float** validFtre = new float*[validSize];
+	for (int i = 0; i < validSize; i++){
+		validFtre[i] = _validX[ randIndex[i] ];
 		validLabel.push_back( _validY[i] );
+	}
+	validData = inputFtreToMat(validFtre, getInputDim(), validSize);
+	delete[] validFtre;
+	delete[] randIndex;
 }
+
 
 
 
