@@ -88,11 +88,13 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 	float** validFtre = new float*[validSize];
 	for (int i = 0; i < validSize; i++){
 		validFtre[i] = _validX[ randIndex[i] ];
-		validLabel.push_back( _validY[i] );
+		validLabel.push_back( _validY[ randIndex[i] ] );
 	}
 	validData = inputFtreToMat(validFtre, getInputDim(), validSize);
 	delete[] validFtre;
 	delete[] randIndex;
+	validFtre = NULL;
+	randIndex = NULL;
 }
 
 
