@@ -9,7 +9,6 @@
 // nvcc compiler
 #include <device_arithmetic.h>
 #include <device_math.h>
-
 #include <random>
 
 using namespace std;
@@ -52,6 +51,7 @@ Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	//rand_init(); // uniform -0.5 ~ 0.5
 	init_norm(0.1); // variance=0.1
 	_weight=_weight/(float)sqrt(inp_dim);
+	_prediff.resize(out_dim,inp_dim+1,0);
 }
 
 Sigmoid::~Sigmoid(){
@@ -81,15 +81,16 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate, float moment
 	CCE(cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
 	mat _tmp( (~withoutBias) * delta);
 	mat one(_input.getRows(),_input.getCols(),1);
-	mat diff= (_input) & (one-_input);
-	out = diff & _tmp;   // this part need tesing
+	out = _input & (one-_input) & _tmp;   // this part need tesing
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-	//_weight = _weight - prediff * (rate/(float)(_weight.getCols()-1);
-	//NOTE: below are the case without momentum
 	rate=rate/(float)_input.getCols();
-	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
+	mat nw = ( (delta * ~inp) * -rate) + (_prediff * momentum);
+	_weight += nw;
+	_prediff = nw;
+	//nw.print();    //next weight change;
+	//gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
 }
 
 void Sigmoid::getSigDiff(mat& delta,const mat& error){
