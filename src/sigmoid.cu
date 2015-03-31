@@ -10,19 +10,18 @@
 #include <device_arithmetic.h>
 #include <device_math.h>
 
+#include <random>
+
 using namespace std;
 
 typedef device_matrix<float> mat;
 
 Sigmoid::Sigmoid(){
 	_weight.resize(1,2,0);
-	_input.resize(1,1,0);
-	_prediff.resize(1,1,0);
+	rand_init();
 }
 Sigmoid::Sigmoid(const Sigmoid& s){
 	_weight=s._weight;
-	_input.resize(1,1,0);
-	_prediff.resize(1,1,0);
 	//NOTE::copy constructor won't copy input!
 }
 Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
@@ -44,20 +43,15 @@ Sigmoid::Sigmoid(const mat& wpart,const mat& bias){
 
 	delete [] h_data;
 	delete [] b_data;
-	_prediff.resize(1,1,0);
-	_input.resize(1,1,0);
 }
 Sigmoid::Sigmoid(const mat& w){
 	_weight=w;
-	_input.resize(_weight.getCols()-1,1,0);
-	_prediff.resize(1,1,0);
 }
 Sigmoid::Sigmoid(size_t out_dim, size_t inp_dim){
 	_weight.resize(out_dim,inp_dim+1);  // +1 for bias
-	rand_init();
-	_input.resize(1,1,0);
-	_prediff.resize(1,1,0);
-	//_weight/=sqrt(inp_dim);
+	//rand_init(); // uniform -0.5 ~ 0.5
+	init_norm(0.1); // variance=0.1
+	_weight=_weight/(float)sqrt(inp_dim);
 }
 
 Sigmoid::~Sigmoid(){
@@ -92,17 +86,10 @@ void Sigmoid::backPropagate(mat& out, const mat& delta, float rate, float moment
 	// update weight
 	mat _inp(_input);
 	pushOne(_inp);
-/*
-	if(( _prediff.size()==_weight.size()) &&( momentum!= 0 ))
-	_prediff = delta * ~_input + _prediff * momentum ;
-	else
-	_prediff = delta * ~_input;
-	_weight = _weight -  _prediff * rate;
-*/
 	//_weight = _weight - prediff * (rate/(float)(_weight.getCols()-1);
 	//NOTE: below are the case without momentum
+	rate=rate/(float)_input.getCols();
 	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
-	//gemm(delta,_inp,_weight,(float)-1.0*rate/(float)_input.getCols(),(float)1.0,false,true);
 }
 
 void Sigmoid::getSigDiff(mat& delta,const mat& error){
@@ -139,7 +126,7 @@ void Sigmoid::print(FILE* fid, int precision, char delimiter){
 	char format[16];
 	sprintf(format,"%c%%.%de",delimiter,(precision>0)? precision :0);
 	
-	fprintf(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()); // <sigmoid> outputDimension inputDimension
+	fprintf(fid,"<sigmoid> %d %d \n",_weight.getRows() ,_weight.getCols()-1); // <sigmoid> outputDimension inputDimension
 	for(size_t i=0;i<_weight.getRows();++i){
 		for(size_t j=0;j<_weight.getCols()-1;++j)
 			fprintf(fid,format,h_data[j*_weight.getRows()+i]);
@@ -166,6 +153,16 @@ void Sigmoid::rand_init(){
 		h_data[i]=(rand() / (float) RAND_MAX) -0.5;
 	CCE(cudaMemcpy(_weight.getData(), h_data, _weight.size() * sizeof(float), cudaMemcpyHostToDevice));
 	delete [] h_data;
+}
+
+void Sigmoid::init_norm(float var){
+	default_random_engine eng;
+	normal_distribution<float> dis(0,var);
+	size_t s=_weight.size();
+	float* h_data =new float [s];
+	for(size_t t=0;t<s;++t)
+			h_data[t]=dis(eng);
+	CCE(cudaMemcpy(_weight.getData(),h_data,_weight.size() * sizeof(float),cudaMemcpyHostToDevice));
 }
 
 void Sigmoid::pushOne(mat& input){

@@ -121,11 +121,12 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			posTest=sTest.find(" ", initialPos);
 		}		
 	}
+	/*
 	cout<<sizeof _testDataMatrix<<endl;	
 	cout<<sizeof _testDataMatrix[0]<<endl;	
 	cout<<testCount<<endl;
 	cout<<testDataCount<<endl;
-	
+	*/
 	finTest.close();
 
 	cout << "inputting training label file:\n";
