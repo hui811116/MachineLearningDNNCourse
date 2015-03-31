@@ -25,6 +25,7 @@ public:
 	void write(ofstream& out);
 	void print(FILE* fid = stdout,int precision = 6, char delimiter = ' ');
 private:
+	void init_norm(float var);
 	void rand_init();
 	void pushOne(mat& input);
 	mat _weight;
