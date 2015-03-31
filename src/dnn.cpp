@@ -64,8 +64,8 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 	}
 	*/
 
-	_pData->getTrainSet(25000, trainSet, trainLabel);
-	_pData->getValidSet(100000, validSet, validLabel);
+	_pData->getTrainSet(50000, trainSet, trainLabel);
+	_pData->getValidSet(10000, validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
 		mat batchData;
