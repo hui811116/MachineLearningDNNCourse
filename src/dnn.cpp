@@ -104,7 +104,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 500 == 0 ){
+		if( num % 200 == 0 ){
 			
 			//DEBUG
 			//	for(size_t t=0;t<trainLabel.size();t++)

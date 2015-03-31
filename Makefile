@@ -47,8 +47,8 @@ TARGET=test.app
 #all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
 #	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-#larry: $(OBJ) $(HEADEROBJ) temp.cpp
-#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+larry: $(OBJ) $(HEADEROBJ) temp.cpp
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 #hui:$(HEADEROBJ) matMultTest.cu
 #	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)

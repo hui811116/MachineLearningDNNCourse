@@ -2,10 +2,11 @@
 #include <algorithm>
 #include <vector>
 #include <cstdlib> // rand()
+#include <ctime>
 using namespace std;
 typedef device_matrix<float> mat;
 void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
-	// random initialize indices for this batch
+	// random initialize indices for this batch	
 	int* randIndex = new int [batchSize];
 	for (int i = 0; i < batchSize; i++){
 		randIndex[i] = rand() % _trainSize; 
@@ -83,7 +84,6 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 			randIndex[i] = i;
 		else
 			randIndex[i] = rand() % _validSize; 
-		cout << randIndex[i] << endl;
 	}
 	float** validFtre = new float*[validSize];
 	for (int i = 0; i < validSize; i++){
