@@ -44,11 +44,11 @@ LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 CPPFLAGS= -O2 -std=c++11 $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
-	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
+#all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
+#	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-larry: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+#larry: $(OBJ) $(HEADEROBJ) temp.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
 #hui:$(HEADEROBJ) matMultTest.cu
 #	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
@@ -56,17 +56,17 @@ larry: $(OBJ) $(HEADEROBJ) temp.cpp
 train: $(OBJ) $(HEADEROBJ) train.cpp
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBRARY) $(LD_LIBRARY)
 
-Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
+#Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
 
-CSV: $(OBJ) $(HEADEROBJ) testPredictOutput.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV.app $^ $(LIBRARY) $(LD_LIBRARY) 
+#CSV: $(OBJ) $(HEADEROBJ) testPredictOutput.cpp 
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV.app $^ $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
-jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+#jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
