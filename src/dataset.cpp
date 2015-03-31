@@ -249,17 +249,21 @@ void Dataset::saveCSV(vector<size_t> testResult){
 	fout<<"Id,Prediction\n";
 	cout<<testResult.size()<<endl;
 	for(size_t i = 0;i<testResult.size();i++){
-		name = *(_testDataNameMatrix+i-1);
+		name = *(_testDataNameMatrix+i);
+//		cout<<name<<endl;
 		fout<<name<<",";
 		for(map<string,int>::iterator it = _labelMap.begin();it!=_labelMap.end();it++){
 			if(it->second==testResult.at(i)){
 				phoneme = it->first;
+	//			cout<<phoneme<<endl;
 				break;
 			}
 		}
 		//	map<string, string>iterator it2 = _To39PhonemeMap.find(phoneme);
+	//		cout<<"1"<<endl;
 			phoneme = _To39PhonemeMap.find(phoneme)->second;
-	
+	//		cout<<"2"<<endl;				
+
 		fout<<phoneme<<endl;
 	
 	}	
