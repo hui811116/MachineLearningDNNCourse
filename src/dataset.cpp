@@ -269,7 +269,8 @@ void Dataset::saveCSV(vector<size_t> testResult){
 
 //Get function
 mat Dataset::getTestSet(){
-return inputFtreToMat(_testDataMatrix, getInputDim(), _numOfTestData);
+	//cout << "size of test set: " << getInputDim() << " " << _numOfTestData << endl;
+	return inputFtreToMat(_testDataMatrix, getInputDim(), _numOfTestData);
 }
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
 size_t Dataset::getNumOfTestData(){return _numOfTestData;}

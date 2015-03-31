@@ -153,6 +153,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
+	//inputMat.print();
 	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
 	float* h_data = new float [outputMat.size()];
