@@ -76,13 +76,14 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 	}
 	validLabel.clear();
 	// random choose index
-	cout << validSize << " " << _validSize << endl;
+	cout << "validate size is : " << validSize << " " << _validSize << endl;
 	int* randIndex = new int [validSize];
 	for (int i = 0; i < validSize; i++){
 		if (validSize == _validSize)
 			randIndex[i] = i;
 		else
 			randIndex[i] = rand() % _validSize; 
+		cout << randIndex[i] << endl;
 	}
 	float** validFtre = new float*[validSize];
 	for (int i = 0; i < validSize; i++){
