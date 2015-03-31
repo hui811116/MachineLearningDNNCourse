@@ -120,9 +120,11 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			initialPos = posTest+1;
 			posTest=sTest.find(" ", initialPos);
 		}		
-	}		
-	//cout<<testCount<<endl;
-	//cout<<testDataCount<<endl;
+	}
+	cout<<sizeof _testDataMatrix<<endl;	
+	cout<<sizeof _testDataMatrix[0]<<endl;	
+	cout<<testCount<<endl;
+	cout<<testDataCount<<endl;
 	
 	finTest.close();
 
@@ -237,7 +239,7 @@ Dataset::~Dataset(){
 	// NOTE:: deletion for _trainX _validX _trainY _validY need careful implementation!!
 };
 
-void Dataset::saveCSV(){
+void Dataset::saveCSV(vector<size_t> testResult){
 	
 	string name, phoneme;
 	ofstream fout("Prediction.csv");
@@ -245,12 +247,30 @@ void Dataset::saveCSV(){
 		cout<<"Can't write the file!"<<endl;
 	}
 	fout<<"Id,Prediction\n";
+	cout<<testResult.size()<<endl;
+	for(size_t i = 0;i<testResult.size();i++){
+		name = *(_testDataNameMatrix+i-1);
+		fout<<name<<",";
+		for(map<string,int>::iterator it = _labelMap.begin();it!=_labelMap.end();it++){
+			if(it->second==testResult.at(i)){
+				phoneme = it->first;
+				break;
+			}
+		}
+		//	map<string, string>iterator it2 = _To39PhonemeMap.find(phoneme);
+			phoneme = _To39PhonemeMap.find(phoneme)->second;
 	
+		fout<<phoneme<<endl;
+	
+	}	
 	fout.close();
 }
 
 
 //Get function
+mat Dataset::getTestSet(){
+return inputFtreToMat(_testDataMatrix,_featureDimension, _numOfTestData);
+}
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
 size_t Dataset::getNumOfTestData(){return _numOfTestData;}
 size_t Dataset::getNumOfLabel(){return _numOfLabel;}

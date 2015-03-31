@@ -15,6 +15,7 @@ class Dataset{
 	~Dataset();
 	
 	
+	mat getTestSet();
 	size_t getNumOfTrainData();
 	size_t getNumOfTestData();
 	size_t getNumOfLabel();
@@ -33,7 +34,7 @@ class Dataset{
 	void   printTo39PhonemeMap(map<string, string>);
 	void   prtPointer(float** input, int r, int c);
 	void   loadTo39PhonemeMap(const char*);
-	void   saveCSV();
+	void   saveCSV(vector<size_t> testResult);
 
 private:
 	// dataset parameters
