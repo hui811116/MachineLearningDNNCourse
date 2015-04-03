@@ -22,6 +22,9 @@ class Dataset{
 	size_t getNumOfPhoneme();
 	size_t getInputDim();
 	size_t getOutputDim();
+	int    getTrainSize();
+	int    getValidSize();
+
 	float** getTrainDataMatrix();
 	float** getTestDataMatrix();
 	map<string, int> getLabelMap();

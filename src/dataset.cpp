@@ -280,6 +280,9 @@ size_t Dataset::getNumOfLabel(){return _numOfLabel;}
 size_t Dataset::getNumOfPhoneme(){return _numOfPhoneme;}
 size_t Dataset::getInputDim(){ return _featureDimension; }
 size_t Dataset::getOutputDim(){return _stateDimension;}
+int    Dataset::getTrainSize(){return _trainSize;}
+int    Dataset::getValidSize(){return _validSize;}
+
 float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
 float** Dataset::getTestDataMatrix(){return _testDataMatrix;}
 map<string, int> Dataset::getLabelMap(){return _labelMap;}
