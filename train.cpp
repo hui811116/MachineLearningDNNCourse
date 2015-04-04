@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void myUsage(){cerr<<"$cmd [inputfile] [testfile] [labelfile] --labeldim [] --phonenum [] --trainnum [] --testnum [] --labelnum [] --inputdim [] --outputdim []"<<endl;}
+void myUsage(){cerr<<"$cmd [inputfile] [testfile] [labelfile] --labeldim [] --phonenum [] --trainnum [] --testnum [] --labelnum [] --inputdim [] --outputdim [] --maxEpoch []"<<endl;}
 
 int main(int argc,char** argv){
 	srand(time(0));
@@ -27,8 +27,9 @@ int main(int argc,char** argv){
 	p.addOption("--rate",true);
 	p.addOption("--segment",true);
 	p.addOption("--batchsize",true);
+	p.addOption("--maxEpoch",true);
 	string trainF,testF,labelF;
-	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size=500;
+	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size=500,m_e=200000;
 	float rate=0.1,segment=0.8;
 	if(!p.read(argc,argv)){
 		myUsage();
@@ -47,6 +48,7 @@ int main(int argc,char** argv){
 	p.getNum("--rate",rate);
 	p.getNum("--segment",segment);
 	p.getNum("--batchsize",b_size);
+	p.getNum("--maxEpoch",m_e);
 	p.print();
 	Dataset dataset = Dataset(trainF.c_str(),trainnum,testF.c_str(),testnum,labelF.c_str(),labelnum,labdim,indim,outdim,phonenum);
 	dataset.dataSegment(segment);
@@ -55,8 +57,8 @@ int main(int argc,char** argv){
 	dim.push_back(128);
 	dim.push_back(outdim);
 	DNN dnn(&dataset,rate,dim,BATCH);
-	dnn.train(b_size,100000);
-	dnn.save("hui.mdl");
+	dnn.train(b_size,m_e,20000,20000);
+	dnn.save("out.mdl");
 	cout<<"end of training!";
 	return 0;
 }

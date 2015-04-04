@@ -1,13 +1,12 @@
 CC=gcc
 CXX=g++
-CFLAGS= 
+CPPFLAGS= -O2 -std=c++11 $(INCLUDE)
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
 
 EXECUTABLES=
 LIBCUMATDIR=tool/libcumatrix/
-OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 HEADEROBJ=obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
 
@@ -25,10 +24,7 @@ $(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
 DIR:
 	@mkdir -p obj
 
-o3: CFLAGS+=-o3
-o3: all
-
-debug: CFLAGS+=-g -DDEBUG
+debug: CPPFLAGS+=-g -DDEBUG
 
 vpath %.h include/
 vpath %.cpp src/
@@ -41,39 +37,51 @@ INCLUDE= -I include/\
 
 LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
-CPPFLAGS= -O2 -std=c++11 $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-#all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
-#	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
+#all:$(DIR) $(HEADEROBJ) $(EXECUTABLES)
 
-larry: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+larry: $(HEADEROBJ) temp.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
 #hui:$(HEADEROBJ) matMultTest.cu
 #	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
 
-train: $(OBJ) $(HEADEROBJ) train.cpp
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBRARY) $(LD_LIBRARY)
+train: $(HEADEROBJ) train.cpp
+	@echo "compiling train.app for DNN Training"
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-#Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
-#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
+#Pan: $(HEADEROBJ) datasetTest.cpp 
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
-CSV: $(OBJ) $(HEADEROBJ) testPredictSecond.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV2.app $^ $(LIBRARY) $(LD_LIBRARY) 
+CSV: $(HEADEROBJ) testPredictSecond.cpp 
+	@echo "compiling CSV2.app for generating CSV format testing results"
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o CSV2.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
+	@echo "All objects and executables removed"
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
-jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+jason: $(HEADEROBJ) jasonTest.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
+
+ctags:
+	@rm -f src/tags tags
+	@echo "Tagging src directory"
+	@cd src; ctags -a *.cpp ../include/*.h; ctags -a *.cu ../include/*.h; cd ..
+	@echo "Tagging main directory"
+	@ctags -a *.cpp src/* ; ctags -a *.cu src/*
+	
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
 obj/%.o: src/%.cpp include/%.h
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ " 
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
 obj/datasetJason.o: src/datasetJason.cpp include/dataset.h 
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ "
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 obj/%.o: %.cu
-	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ "
+	@$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cassert>
 #include <cstdlib>
+#include <string>
 
 #include <device_matrix.h>
 #include <device_arithmetic.h>
@@ -108,7 +109,21 @@ void rand_norm(float var,mat&){}
 
 Transforms::Transforms(const Transforms& t):_w(t._w),_i(t._i),_pw(t._pw){}
 
-Transforms::Transforms(const mat& w):_w(w){
+Transforms::Transforms(const mat& w,const mat& b){
+	assert(b.getRows()==1 || b.getCols()==1);
+	size_t r=b.getRows(),c=b.getCols();
+	if(r==1){r=c;c=1;}
+	assert(w.getRows()==r);
+	float* h_data=new float[w.size()+b.size()];
+	float* b_data=new float[b.size()];
+	CCE(cudaMemcpy(h_data,w.getData(),w.size() *sizeof(float) ,cudaMemcpyDeviceToHost));
+	CCE(cudaMemcpy(b_data,w.getData(),b.size() *sizeof(float) ,cudaMemcpyDeviceToHost));
+	for(size_t t=0;t<b.size();++t)
+			h_data[w.size()+t]=b_data[t];
+	_w.resize(w.getRows(),w.getCols()+1);
+	CCE(cudaMemcpy(_w.getData(),h_data,(w.size()+b.size()) * sizeof(float), cudaMemcpyHostToDevice));
+	delete [] b_data;
+	delete [] h_data;
 	_pw.resize(w.getRows(),w.getCols(),0);
 }
 
@@ -125,10 +140,10 @@ size_t Transforms::getOutputDim()const{
 	return _w.getRows();
 }
 
-void Transforms::write(ofstream& out){
+void Transforms::print(ofstream& out){
 	float* h_data = new float[_w.size()];
 	CCE(cudaMemcpy( h_data, _w.getData(), _w.size() * sizeof(float), cudaMemcpyDeviceToHost));
-    out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols() - 1<<endl;
+//    out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols() - 1<<endl;
     for(size_t i=0;i<_w.getRows();++i){
     for(size_t j=0;j<_w.getCols()-1;++j){
                 out<<" "<<h_data[_w.getRows()*j+i]; 
@@ -141,17 +156,12 @@ void Transforms::write(ofstream& out){
 	out << endl;
 	delete [] h_data;
 }
-void Transforms::print(){
-	cout<<"Weight matrix: last column is bias"<<endl;
-	_w.print();
-	cout<<endl;
-}
 ///////////////////////////////
 /////////SIGMOID///////////////
 
 Sigmoid::Sigmoid(const Sigmoid& s): Transforms(s){
 }
-Sigmoid::Sigmoid(const mat& w, const mat& bias): Transforms(w){
+Sigmoid::Sigmoid(const mat& w, const mat& bias): Transforms(w,bias){
 }
 Sigmoid::Sigmoid(size_t inputdim,size_t outputdim): Transforms(inputdim,outputdim){
 }
@@ -179,39 +189,24 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	//rate=rate/(float)_input.getCols();
 	gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 }
-/*
-=======
-void Sigmoid::backPropagetion(mat& out,const mat& delta, float rate,float momentum){
-	assert( (delta.getRows()==_weight.getRows()) && (delta.getCols()==_input.getCols()) );
-	mat withoutBias(_weight.getRows(),_weight.getCols()-1);
-	CCE(cudaMemcpy(withoutBias.getData(),_weight.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
-	mat _tmp( ~withoutBias * delta);
-	mat one(_input.getRows(),_input.getCols(),1);
-	out = _input & (one-_input) & _tmp;   // this part need tesing
-	// update weight
-	mat _inp(_input);
-	pushOne(_inp);
-	_pw= delta * ~_inp;
-	//NOTE: below are the case without momentum
-	//rate=rate/(float)_input.getCols();
-	gemm(delta,_inp,_weight,(float)-1.0*rate,(float)1.0,false,true);
+void Sigmoid::write(ofstream& out){
+	out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols()<<endl;
+	print(out);
 }
-
->>>>>>> FETCH_HEAD
+/*
 Sigmoid& Sigmoid::operator=(const Sigmoid& s){
 	_w=s._w;
 	_i=s._i;
 	_pw=s._pw;
 		return *this
 }
-<<<<<<< HEAD
 */
 ///////////////////////////////
 ///////////SOFTMAX/////////////
 
 Softmax::Softmax(const Softmax& s): Transforms(s){
 }
-Softmax::Softmax(const mat& w, const mat& bias):Transforms(w){
+Softmax::Softmax(const mat& w, const mat& bias):Transforms(w,bias){
 }
 Softmax::Softmax(size_t inputdim,size_t outputdim): Transforms(inputdim,outputdim){
 }
@@ -247,5 +242,8 @@ void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum
 	gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 	
 }
-
+void Softmax::write(ofstream& out){
+	out<<"<softmax> "<<_w.getRows()<<" "<<_w.getCols()<<endl;
+	print(out);
+}
 ///////////////////////////////
