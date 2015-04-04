@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 #include <cassert>
 #include <device_matrix.h>
 
@@ -17,18 +18,8 @@ typedef device_matrix<float> mat;
 float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
-template <typename T>
-void randomInit(device_matrix<T>& m) {
-	T* h_data = new T [m.size()];
-	for (int i=0; i<m.size(); ++i)
-		h_data[i] = rand() / (T) RAND_MAX;
-	cudaMemcpy(m.getData(), h_data, m.size() * sizeof(T), cudaMemcpyHostToDevice);
-	delete [] h_data;
-}
 
-
-DNN::DNN():_pData(NULL), _method(ALL){}
-
+DNN::DNN():_pData(NULL), _learningRate(0.001), _method(ALL){}
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
 	size_t numOfLayers = v.size();
 	for(size_t i = 0; i < numOfLayers-1; i++){
@@ -40,7 +31,6 @@ DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method met
 		_transforms.push_back(pTransform);
 	}
 }
-
 DNN::~DNN(){
 	while(!_transforms.empty()){
 		delete _transforms.back();
@@ -48,43 +38,38 @@ DNN::~DNN(){
 	}
 }
 
-void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
+void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNum = 10000, size_t validSetNum = 10000){
 	mat trainSet;
 	vector<size_t> trainLabel;
 	mat validSet;
 	vector<size_t> validLabel;
-	size_t errRise = 0;
+	size_t EinRise = 0;
 	float Ein = 1;
 	float pastEin = Ein;
+	float minEin = Ein;
 	float Eout = 1;
 	float pastEout = Eout;
 	float minEout = Eout;
 	
-	/*	
-	vector<Sigmoid*> tempBestMdls;
-	for(size_t i = 0; i < _transforms.size(); i++){
-		Sigmoid* pTransform = new Sigmoid(*_transforms.at(i));
-		tempBestMdls.push_back(pTransform);
-	}
-	*/
-
-	_pData->getTrainSet(50000, trainSet, trainLabel);
-	_pData->getValidSet(10000, validSet, validLabel);
+	_pData->getTrainSet(trainSetNum, trainSet, trainLabel);
+	_pData->getValidSet(validSetNum, validSet, validLabel);
 	size_t num = 0;
 	for(; num < maxEpoch; num++){
 		mat batchData;
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-		//cout << "start ff\n";
 		feedForward(batchOutput, batchData, true);
-		//cout << "done feedForward\n";
+		
+		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
+		
+		// Wait for removal
 		float* h_data = new float [batchOutput.size()];
 		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
 		for(size_t j = 0; j < batchOutput.getCols(); j++){
-			float sum = 0.0;	
+			float sum = 0.0;
 			for(size_t i = 0; i < batchOutput.getRows(); i++){
-				sum += h_data[j*batchOutput.getRows() + i];
+				sum += (float)h_data[j*batchOutput.getRows() + i];
 			}
 			for(size_t i = 0; i < batchOutput.getRows(); i++){
 				h_data[j*batchOutput.getRows() + i] /= sum;
@@ -92,51 +77,42 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 		}	
 		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
 		delete [] h_data;
+		
 
-
-		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
-
-		//mat lastDelta;
-		//_transforms[_transforms.size()-1]->getSigDiff(lastDelta,(batchOutput-batchLabel) * 2 );
-		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 2);
+		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 1);
 		backPropagate(lastDelta , _learningRate);
 
-		//backPropagate((batchOutput&(oneMat - batchOutput))&(batchOutput-batchLabel)*(2) , _learningRate);
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 500 == 0 ){
-			
-			//DEBUG
-			//	for(size_t t=0;t<trainLabel.size();t++)
-			//		cout<<"trainLabel "<<trainLabel[t]<<" trainResult "<<trainResult[t]<<endl;
-			//	cout<<endl;
-		
+		if( num % 200 == 1 ){
 			Ein = computeErrRate(trainLabel, trainResult);
-			if(Ein > pastEin){
-				//cout << "Something wrong had happened, training err does not decrease.\n";
-				//exit(1);
-			}
-			pastEin = Ein;
 			Eout = computeErrRate(validLabel, validResult);
-			cout.precision(5);
-			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %,  epoch:" << num <<"\n";
-			if(Eout > pastEout){
-				errRise++;
+			
+			if(Ein - minEin > 0 && EinRise >= 3 || num % 1000 == 0){
+				_learningRate *= 0.99;
+				EinRise = 0;
+				cout << "Reduce learning rate to : " << _learningRate << endl;
+			}	
+			if(Ein > pastEin){
+				EinRise++;
 			}
 			else{
-				errRise = 0;
+				EinRise = 0;
+			}
+			pastEin  = Ein;
+			pastEout = Eout;
+
+			if(minEin > Ein){
+				minEin = Ein;
 			}
 			if(minEout > Eout){
 				minEout = Eout;
-				//for(size_t i = 0; i < _transforms.size(); i++){
-				//	(*tempBestMdls.at(i)) = (*_transforms.at(i));
-				//}
 				ofstream ofs("best.mdl");
-				cout << "bestMdl: Error at" << minEout << endl;  
+				cout << "bestMdl: Error at: " << minEout << endl;  
 				if (ofs.is_open()){
 					for(size_t i = 0; i < _transforms.size(); i++){
 						(_transforms.at(i))->write(ofs);
@@ -144,25 +120,23 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){
 				}
 				ofs.close();	
 			}
+			
+			cout.precision(5);
+			cout << "Validating error: " << Eout*100 << " %, Training error: " << Ein*100 << " %,  iterations:" << num-1 <<"\n";
 		}
-		/* save model after a certain steps
-		if (num%2000 == 0){
-			save("MdlTmp.mdl");
-		} 
-		*/
 	}
-	cout << "Finished training for " << num << " epochs.\n";
-	cout << "bestMdl: Error at" << minEout << endl;  
-	
+	cout << "Finished training for " << num << " iterations.\n";
+	cout << "bestMdl: Error at: " << minEout << endl;  
 }
 
 void DNN::predict(vector<size_t>& result, const mat& inputMat){
-	//inputMat.print();
 	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
+	computeLabel(result, outputMat);
+
+	/*
 	float* h_data = new float [outputMat.size()];
 	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
 	for(size_t j = 0; j < outputMat.getCols(); j++){
 		float tempMax = h_data[j*outputMat.getRows()];
 		size_t idx = 0;		
@@ -174,7 +148,8 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 		}
 		result.push_back(idx);
 	}
-	/*
+	*/
+	/*  Transpose matrix print.
 	for(size_t i = 0; i < outputMat.getRows(); i++){
 		for(size_t j = 0; j < outputMat.getCols(); j++){
 			cout << h_data[j*outputMat.getRows() + i] << " ";
@@ -184,7 +159,7 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	
 	cout << endl;
 	*/
-	delete [] h_data;
+	//delete [] h_data;
 }
 
 void DNN::setDataset(Dataset* pData){
@@ -276,29 +251,6 @@ void DNN::load(const string& fn){
 	ifs.close();
 }
 
-void DNN::debug(){
-
-	mat testMat(getInputDimension(), 3);
-	mat testLabel(getOutputDimension(), 3);
-	randomInit(testMat);
-	randomInit(testLabel);
-	cout.precision(5);
-	testMat.print();
-	for(size_t i = 0; i < _transforms.size(); i++){
-		(_transforms.at(i))->print();
-		cout << endl;
-	}
-	mat output;
-	feedForward(output,testMat,true);
-	mat one(output.getRows(),output.getCols(),1.0);
-	mat last(output & (one-output) & (output-testLabel) * 2);
-	backPropagate(last,_learningRate);
-
-	cout<<"End of debug!"<<endl;
-}
-//helper function
-
-
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 	mat tempInputMat = inputMat;
 	for(size_t i = 0; i < _transforms.size(); i++){
@@ -318,7 +270,6 @@ void DNN::backPropagate(const mat& deltaMat, float learningRate){
 }
 
 //Helper Functions
-
 void computeLabel(vector<size_t>& result,const mat& outputMat){
 	float* h_data = new float [outputMat.size()];
 	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);

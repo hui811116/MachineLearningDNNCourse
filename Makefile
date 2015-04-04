@@ -65,8 +65,8 @@ CSV: $(OBJ) $(HEADEROBJ) testPredictSecond.cpp
 clean:
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
-#jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
-#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+

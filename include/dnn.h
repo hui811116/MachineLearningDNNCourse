@@ -22,7 +22,7 @@ public:
 //	DNN(const string& fn);
 	~DNN();
 
-	void train(size_t batchSize, size_t maxEpoch);
+	void train(size_t batchSize, size_t maxEpoch, size_t trainSetNum, size_t validSetNum);
 	void predict(vector<size_t>& result, const mat& inputMat);
 
 	void setDataset(Dataset* pData);
@@ -32,7 +32,6 @@ public:
 	size_t getNumLayers();
 	void save(const string& fn);
 	void load(const string& fn);
-	void debug();
 
 private:
 	void feedForward(mat& ouputMat, const mat& inputMat, bool train);
