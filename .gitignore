@@ -32,6 +32,7 @@ obj/*.o
 
 # Tags
 tags
+src/tags
 
 # Model file
 *.mdl
