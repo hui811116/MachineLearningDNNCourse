@@ -32,7 +32,11 @@ DNN::DNN():_pData(NULL), _method(ALL){}
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
 	size_t numOfLayers = v.size();
 	for(size_t i = 0; i < numOfLayers-1; i++){
-		Sigmoid* pTransform = new Sigmoid(v.at(i+1), v.at(i));
+		Transforms* pTransform;
+		if( i < numOfLayers-2 )
+			pTransform = new Sigmoid(v.at(i+1), v.at(i));
+		else
+			pTransform = new Softmax(v.at(i+1), v.at(i));
 		_transforms.push_back(pTransform);
 	}
 }
@@ -220,6 +224,8 @@ void DNN::load(const string& fn){
 			string tempStr(buf);
 			size_t found = tempStr.find_first_of(">");
 			if(found !=std::string::npos ){
+				size_t typeBegin = tempStr.find_first_of("<") + 1;
+				string type = tempStr.substr(typeBegin, 7);
 				stringstream ss(tempStr.substr(found+1));
 				string rows, cols;
 				size_t rowNum, colNum;
@@ -252,7 +258,15 @@ void DNN::load(const string& fn){
 				cudaMemcpy(weightMat.getData(), h_data, totalEle * sizeof(float), cudaMemcpyHostToDevice);
 				cudaMemcpy(biasMat.getData(), h_data_bias, rowNum * sizeof(float), cudaMemcpyHostToDevice);
 				
-				Sigmoid* pTransform = new Sigmoid(weightMat, biasMat);
+				Transforms* pTransform;
+				if(type == "Sigmoid")
+					pTransform = new Sigmoid(weightMat, biasMat);
+				else if(type == "Softmax")
+					pTransform = new Softmax(weightMat, biasMat);
+				else{
+					cerr << "Undefined activation function!\n";
+					exit(1);
+				}
 				_transforms.push_back(pTransform);
 				delete [] h_data;
 				delete [] h_data_bias;
@@ -298,7 +312,7 @@ void DNN::backPropagate(const mat& deltaMat, float learningRate){
 	mat tempMat = deltaMat;
 	mat errorMat;
 	for(int i = _transforms.size()-1; i >= 0; i--){
-		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate);
+		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate, 0);
 		tempMat = errorMat;
 	}
 }

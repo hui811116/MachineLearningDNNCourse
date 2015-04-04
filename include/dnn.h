@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <device_matrix.h>
-#include "sigmoid.h"
+#include "transforms.h"
 #include "dataset.h"
 using namespace std;
 
@@ -41,7 +41,7 @@ private:
 	Dataset* _pData;
 	float _learningRate;
 	Method _method;
-	vector<Sigmoid*> _transforms;
+	vector<Transforms*> _transforms;
 	vector<float> _validateAccuracy;
 };
 
