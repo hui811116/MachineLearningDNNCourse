@@ -19,8 +19,8 @@ float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 
-DNN::DNN():_pData(NULL), _learningRate(0.001), _method(ALL){}
-DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
+DNN::DNN():_pData(NULL), _learningRate(0.001),_momentum(0), _method(ALL){}
+DNN::DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate),_momentum(momentum), _method(method){
 	int numOfLayers = v.size();
 	for(int i = 0; i < numOfLayers-1; i++){
 		Transforms* pTransform;
@@ -80,7 +80,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		
 
 		mat lastDelta(batchOutput - batchLabel );
-		backPropagate(lastDelta , _learningRate);
+		backPropagate(lastDelta , _learningRate, _momentum); //momentum
 
 
 		vector<size_t> trainResult;
@@ -167,6 +167,9 @@ void DNN::setDataset(Dataset* pData){
 }
 void DNN::setLearningRate(float learningRate){
 	_learningRate = learningRate;
+}
+void DNN::setMomentum(float momentum){
+	_momentum = momentum;
 }
 
 size_t DNN::getInputDimension(){
@@ -260,11 +263,11 @@ void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
 }
 
 //The delta of last layer = _sigoutdiff & grad(errorFunc())
-void DNN::backPropagate(const mat& deltaMat, float learningRate){
+void DNN::backPropagate(const mat& deltaMat, float learningRate, float momentum){
 	mat tempMat = deltaMat;
 	mat errorMat;
 	for(int i = _transforms.size()-1; i >= 0; i--){
-		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate, 0);
+		(_transforms.at(i))->backPropagate(errorMat, tempMat, learningRate, momentum);
 		tempMat = errorMat;
 	}
 }
