@@ -5,7 +5,7 @@ NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
 
-EXECUTABLES=hui
+EXECUTABLES=
 LIBCUMATDIR=tool/libcumatrix/
 OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
@@ -41,30 +41,32 @@ INCLUDE= -I include/\
 
 LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
-CPPFLAGS= -g -std=c++11 $(CFLAGS) $(INCLUDE)
+CPPFLAGS= -O2 -std=c++11 $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
-	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
+#all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
+#	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
 
-larry: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+#larry: $(OBJ) $(HEADEROBJ) temp.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 
+#hui:$(HEADEROBJ) matMultTest.cu
+#	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
 
-hui:$(HEADEROBJ) matMultTest.cu
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
+train: $(OBJ) $(HEADEROBJ) train.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBRARY) $(LD_LIBRARY)
 
-Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
+#Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
 
-CSV: $(OBJ) $(HEADEROBJ) testPredictOutput.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV.app $^ $(LIBRARY) $(LD_LIBRARY) 
+CSV: $(OBJ) $(HEADEROBJ) testPredictSecond.cpp 
+	$(CXX) $(CFLAGS) $(INCLUDE) -o CSV2.app $^ $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
-jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+#jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
@@ -74,4 +76,4 @@ obj/%.o: src/%.cpp include/%.h
 obj/datasetJason.o: src/datasetJason.cpp include/dataset.h 
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 obj/%.o: %.cu
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<
+	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<

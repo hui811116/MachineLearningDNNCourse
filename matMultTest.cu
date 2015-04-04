@@ -13,6 +13,7 @@
 #include <cuda_memory_manager.h>
 #include "parser.h"
 
+#include <random>
 
 using namespace std;
 
@@ -44,7 +45,10 @@ int main(int argc,char** argv){
 
 PARSER p;
 
-
+default_random_engine generator;
+normal_distribution<float> dis(0,0.1);
+size_t dim=500;
+float n=0.02;
 srand(time(0));
 
 mat A(5,8),B(8,5);
@@ -60,7 +64,7 @@ randomInit(D);
 //testing sigmoid function
 
 Sigmoid n1(5,5);
-
+/*
 C.resize(8,3);
 randomInit(C);
 
@@ -70,14 +74,14 @@ C.print();
 
 printf("testing ext::sigmoid\n");
 (ext::sigmoid(C)).print();
-
+*/
 n1.print();
 
-printf("minus const num\n");
+printf("divide by a const num\n");
 C.print();
 printf("\n");
-(C-1).print();
-
+(C*n/(float)dim).print();
+/*
 A.resize(5,8);B.resize(5,8);
 randomInit(A);randomInit(B);
 
@@ -86,6 +90,14 @@ randomInit(C);
 gemm(A,B,C,(float)-1,(float)1,false,true);
 printf("C=\n");
 C.print();
-
+*/
+printf("sigmoid test\n");
+(ext::sigmoid(C)).print();
+/*
+C.print();
+printf("pushone test\n");
+pushOne(C);
+C.print();
+*/
 return 0;
 }

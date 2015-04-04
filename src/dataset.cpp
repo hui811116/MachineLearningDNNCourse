@@ -41,7 +41,7 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	_trainDataNameMatrix  = new string[trainDataNum];	
 	_trainDataMatrix = new float*[trainDataNum];
 	for(int i = 0;i<trainDataNum;i++){
-		_trainDataMatrix[i] = new float [phonemeNum];
+		_trainDataMatrix[i] = new float [inputDim];
 	}
 	cout << "inputting train feature file:\n";	
 	NameFtreMap InputMap;
@@ -121,11 +121,12 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 			posTest=sTest.find(" ", initialPos);
 		}		
 	}
+	/*
 	cout<<sizeof _testDataMatrix<<endl;	
 	cout<<sizeof _testDataMatrix[0]<<endl;	
 	cout<<testCount<<endl;
 	cout<<testDataCount<<endl;
-	
+	*/
 	finTest.close();
 
 	cout << "inputting training label file:\n";
@@ -250,7 +251,6 @@ void Dataset::saveCSV(vector<size_t> testResult){
 	cout<<testResult.size()<<endl;
 	for(size_t i = 0;i<testResult.size();i++){
 		name = *(_testDataNameMatrix+i);
-//		cout<<name<<endl;
 		fout<<name<<",";
 		for(map<string,int>::iterator it = _labelMap.begin();it!=_labelMap.end();it++){
 			if(it->second==testResult.at(i)){
@@ -260,9 +260,7 @@ void Dataset::saveCSV(vector<size_t> testResult){
 			}
 		}
 		//	map<string, string>iterator it2 = _To39PhonemeMap.find(phoneme);
-	//		cout<<"1"<<endl;
 			phoneme = _To39PhonemeMap.find(phoneme)->second;
-	//		cout<<"2"<<endl;				
 
 		fout<<phoneme<<endl;
 	
@@ -282,6 +280,9 @@ size_t Dataset::getNumOfLabel(){return _numOfLabel;}
 size_t Dataset::getNumOfPhoneme(){return _numOfPhoneme;}
 size_t Dataset::getInputDim(){ return _featureDimension; }
 size_t Dataset::getOutputDim(){return _stateDimension;}
+int    Dataset::getTrainSize(){return _trainSize;}
+int    Dataset::getValidSize(){return _validSize;}
+
 float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
 float** Dataset::getTestDataMatrix(){return _testDataMatrix;}
 map<string, int> Dataset::getLabelMap(){return _labelMap;}
