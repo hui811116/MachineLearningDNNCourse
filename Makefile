@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CPPFLAGS= -O2 -std=c++11 $(INCLUDE)
+CPPFLAGS= -g -std=c++11 $(INCLUDE)
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/

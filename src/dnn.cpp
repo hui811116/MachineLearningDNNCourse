@@ -30,6 +30,7 @@ DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method met
 			pTransform = new Softmax(v.at(i+1), v.at(i));
 		_transforms.push_back(pTransform);
 	}
+	cout << _transforms.size() << endl;
 }
 DNN::~DNN(){
 	while(!_transforms.empty()){
@@ -59,8 +60,12 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		mat batchLabel;
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
-		feedForward(batchOutput, batchData, true);
 		
+		cout << "Enter forward!\n";
+		feedForward(batchOutput, batchData, true);
+		cout << "Leave forward!\n";
+
+		/*	
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
 		
 		// Wait for removal
@@ -77,11 +82,13 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		}	
 		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
 		delete [] h_data;
-		
+		*/
 
-		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 1);
+		mat lastDelta (batchOutput - batchLabel);
+
+		cout << "Enter bp!\n";
 		backPropagate(lastDelta , _learningRate);
-
+		cout << "Leave bp!\n";
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
