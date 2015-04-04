@@ -124,7 +124,7 @@ Transforms::Transforms(const mat& w,const mat& b){
 	CCE(cudaMemcpy(_w.getData(),h_data,(w.size()+b.size()) * sizeof(float), cudaMemcpyHostToDevice));
 	delete [] b_data;
 	delete [] h_data;
-	_pw.resize(w.getRows(),w.getCols(),0);
+	_pw.resize(_w.getRows(),_w.getCols(),0);
 }
 
 Transforms::Transforms(size_t inputdim,size_t outputdim){
@@ -183,6 +183,7 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	// update weight
 	mat _inp(_i);
 	pushOne(_inp);
+	assert(_pw.getRows()==_w.getRows() && _pw.getCols()==_w.getCols())
 	_pw= delta * ~_inp + _pw * momentum;
 	//_w -= _pw * rate;
 	//NOTE: below are the case without momentum
@@ -193,14 +194,7 @@ void Sigmoid::write(ofstream& out){
 	out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols()<<endl;
 	print(out);
 }
-/*
-Sigmoid& Sigmoid::operator=(const Sigmoid& s){
-	_w=s._w;
-	_i=s._i;
-	_pw=s._pw;
-		return *this
-}
-*/
+
 ///////////////////////////////
 ///////////SOFTMAX/////////////
 
