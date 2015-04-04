@@ -21,13 +21,13 @@ void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 DNN::DNN():_pData(NULL), _learningRate(0.001), _method(ALL){}
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
-	size_t numOfLayers = v.size();
-	for(size_t i = 0; i < numOfLayers-1; i++){
+	int numOfLayers = v.size();
+	for(int i = 0; i < numOfLayers-1; i++){
 		Transforms* pTransform;
 		if( i < numOfLayers-2 )
-			pTransform = new Sigmoid(v.at(i+1), v.at(i));
+			pTransform = new Sigmoid(v.at(i), v.at(i+1));
 		else
-			pTransform = new Softmax(v.at(i+1), v.at(i));
+			pTransform = new Softmax(v.at(i), v.at(i+1));
 		_transforms.push_back(pTransform);
 	}
 }
@@ -79,7 +79,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		delete [] h_data;
 		
 
-		mat lastDelta(batchOutput & (oneMat-batchOutput) & (batchOutput - batchLabel) * 1);
+		mat lastDelta(batchOutput - batchLabel );
 		backPropagate(lastDelta , _learningRate);
 
 

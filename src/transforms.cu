@@ -33,7 +33,7 @@ void rand_init(mat& w){
 }
 void pushOne(mat& in){
 	mat tmp(~in);
-	float* h_data=new float[in.getRows()*(in.getCols()+1)];
+	float* h_data=new float[(in.getRows()+1)*in.getCols()];
 	CCE(cudaMemcpy(h_data,tmp.getData(),tmp.size()*sizeof(float),cudaMemcpyDeviceToHost));
 	for(size_t t=0;t<tmp.getRows();++t)
 		h_data[tmp.size()+t]=1;
@@ -130,6 +130,7 @@ Transforms::Transforms(const mat& w,const mat& b){
 Transforms::Transforms(size_t inputdim,size_t outputdim){
 	_w.resize(outputdim,inputdim+1);
 	rand_init(_w);
+	_w/=sqrt((float)inputdim);
 	_pw.resize(outputdim,inputdim+1,0);
 }
 
@@ -168,7 +169,7 @@ Sigmoid::Sigmoid(size_t inputdim,size_t outputdim): Transforms(inputdim,outputdi
 void Sigmoid::forward(mat& out,const mat& in,bool train){
 	mat _inp(in);
 	pushOne(_inp);
-	out=sigmoid(_w*_inp);
+	out=sigmoid(_w * _inp);
 	if(train){
 		_i=in;
 	}
@@ -177,17 +178,15 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	assert( (delta.getRows()==_w.getRows()) && (delta.getCols()==_i.getCols()) );
 	mat withoutBias(_w.getRows(),_w.getCols()-1);
 	CCE(cudaMemcpy(withoutBias.getData(),_w.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
-	mat _tmp( ~withoutBias * delta);
 	mat one(_i.getRows(),_i.getCols(),1);
-	out = _i & (one-_i) & _tmp;   // this part need tesing
+	out = _i & (one-_i) & (~withoutBias * delta);   // this part need tesing
 	// update weight
 	mat _inp(_i);
 	pushOne(_inp);
-	assert(_pw.getRows()==_w.getRows() && _pw.getCols()==_w.getCols());
 	_pw= delta * ~_inp + _pw * momentum;
-	//_w -= _pw * rate;
 	//NOTE: below are the case without momentum
-	//rate=rate/(float)_input.getCols();
+	rate/=(float)_i.getCols();
+	//_w -= _pw * rate;
 	gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 }
 void Sigmoid::write(ofstream& out){
@@ -228,11 +227,18 @@ void Softmax::forward(mat& out,const mat& in,bool train){
 }
 
 void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum){
+	assert( (delta.getRows()==_w.getRows()) && (delta.getCols()==_i.getCols()) );
+	mat withoutBias(_w.getRows(),_w.getCols()-1);
+	CCE(cudaMemcpy(withoutBias.getData(),_w.getData(),withoutBias.size() * sizeof(float),cudaMemcpyDeviceToDevice));
+	mat one(_i.getRows(),_i.getCols(),1);
+	out = _i & (one-_i) & (~withoutBias * delta);   // this part need tesing
+	//update weight
 	mat inp(_i);
 	pushOne(inp);	
 	_pw=delta * ~inp + _pw * momentum;
-	//_w-= _pw * rate;
 	//NOTE: eq. below haven't include momentum yet.
+	rate/=(float)_i.getCols();
+	//_w-= _pw * rate;
 	gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 	
 }

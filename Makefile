@@ -45,8 +45,8 @@ OBJDIR:
 larry: $(HEADEROBJ) temp.cpp
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-#hui: $(HEADEROBJ) matMultTest.cu
-#	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
+hui: $(HEADEROBJ) matMultTest.cu
+	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
 
 train:  $(HEADEROBJ) train.cpp
 	@echo "compiling train.app for DNN Training"
