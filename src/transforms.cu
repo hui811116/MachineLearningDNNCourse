@@ -25,7 +25,7 @@ typedef device_matrix<float> mat;
 void rand_init(mat& w){
 	float* h_data = new float[w.size()];
 	for(size_t t=0;t<w.getRows()*(w.getCols()-1);++t)
-		h_data[t]=2*rand()/RAND_MAX-1;
+		h_data[t]=2*rand()/(float)RAND_MAX - 1;
 	for(size_t t=0;t<w.getRows();++t)
 		h_data[t+w.getRows()*(w.getCols()-1)]=0;
 	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
@@ -128,9 +128,9 @@ Transforms::Transforms(const mat& w,const mat& b){
 }
 
 Transforms::Transforms(size_t inputdim,size_t outputdim){
-	_w.resize(outputdim,inputdim);
+	_w.resize(outputdim,inputdim+1);
 	rand_init(_w);
-	_pw.resize(outputdim,inputdim,0);
+	_pw.resize(outputdim,inputdim+1,0);
 }
 
 size_t Transforms::getInputDim()const{
@@ -183,7 +183,7 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	// update weight
 	mat _inp(_i);
 	pushOne(_inp);
-	assert(_pw.getRows()==_w.getRows() && _pw.getCols()==_w.getCols())
+	assert(_pw.getRows()==_w.getRows() && _pw.getCols()==_w.getCols());
 	_pw= delta * ~_inp + _pw * momentum;
 	//_w -= _pw * rate;
 	//NOTE: below are the case without momentum
@@ -214,7 +214,7 @@ void Softmax::forward(mat& out,const mat& in,bool train){
 	
 	thrust::device_ptr<float> zPtr(z.getData());
 	thrust::device_ptr<float> pPtr(p.getData());
-	thrust::transform(zPtr, zPtr + z.size(),zPtr, func::exp<float>());
+	thrust::transform(zPtr, zPtr + z.size(),pPtr, func::exp<float>());
 
 	mat sumOfProb =  (mat(p.getRows(), p.getRows(),0) += 1) * p;
 	out.resize(_w.getRows(),in.getCols());

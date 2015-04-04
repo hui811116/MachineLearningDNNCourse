@@ -14,16 +14,13 @@ HEADEROBJ=obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser
 # +======== Phony Rules =========+
 # +==============================+
 
-.PHONY: debug all clean o3
+.PHONY: debug all clean 
 
 LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 
-$(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
-	@echo "something wrong in tool/libcumatrix..."
-
-DIR:
-	@mkdir -p obj
-
+$(LIBCUMATDIR)lib/libcumatrix.a:
+	@echo "Missing library file, trying to fix it in tool/libcumatrix"
+	@cd tool/libcumatrix/ ; make ; cd ../..
 debug: CPPFLAGS+=-g -DDEBUG
 
 vpath %.h include/
@@ -39,15 +36,19 @@ LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 TARGET=test.app
 
+DIR=OBJDIR
+OBJDIR:
+	@mkdir -p obj
+
 #all:$(DIR) $(HEADEROBJ) $(EXECUTABLES)
 
 larry: $(HEADEROBJ) temp.cpp
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-#hui:$(HEADEROBJ) matMultTest.cu
+#hui: $(HEADEROBJ) matMultTest.cu
 #	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
 
-train: $(HEADEROBJ) train.cpp
+train:  $(HEADEROBJ) train.cpp
 	@echo "compiling train.app for DNN Training"
 	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
