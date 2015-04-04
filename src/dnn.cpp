@@ -21,13 +21,13 @@ void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 DNN::DNN():_pData(NULL), _learningRate(0.001), _method(ALL){}
 DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){
-	size_t numOfLayers = v.size();
-	for(size_t i = 0; i < numOfLayers-1; i++){
+	int numOfLayers = v.size();
+	for(int i = 0; i < numOfLayers-1; i++){
 		Transforms* pTransform;
 		if( i < numOfLayers-2 )
-			pTransform = new Sigmoid(v.at(i+1), v.at(i));
+			pTransform = new Sigmoid(v.at(i), v.at(i+1));
 		else
-			pTransform = new Softmax(v.at(i+1), v.at(i));
+			pTransform = new Softmax(v.at(i), v.at(i+1));
 		_transforms.push_back(pTransform);
 	}
 	cout << _transforms.size() << endl;
@@ -61,9 +61,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		mat batchOutput;
 		_pData->getBatch(batchSize, batchData, batchLabel);
 		
-		cout << "Enter forward!\n";
 		feedForward(batchOutput, batchData, true);
-		cout << "Leave forward!\n";
 
 		/*	
 		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
@@ -86,9 +84,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 
 		mat lastDelta (batchOutput - batchLabel);
 
-		cout << "Enter bp!\n";
 		backPropagate(lastDelta , _learningRate);
-		cout << "Leave bp!\n";
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
@@ -99,7 +95,7 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 			Ein = computeErrRate(trainLabel, trainResult);
 			Eout = computeErrRate(validLabel, validResult);
 			
-			if(Ein - minEin > 0 && EinRise >= 3 || num % 1000 == 0){
+			if((Ein - minEin > 0 && EinRise >= 3 )|| num % 1000 == 1){
 				_learningRate *= 0.99;
 				EinRise = 0;
 				cout << "Reduce learning rate to : " << _learningRate << endl;
@@ -241,12 +237,12 @@ void DNN::load(const string& fn){
 				cudaMemcpy(biasMat.getData(), h_data_bias, rowNum * sizeof(float), cudaMemcpyHostToDevice);
 				
 				Transforms* pTransform;
-				if(type == "Sigmoid")
+				if(type == "sigmoid")
 					pTransform = new Sigmoid(weightMat, biasMat);
-				else if(type == "Softmax")
+				else if(type == "softmax")
 					pTransform = new Softmax(weightMat, biasMat);
 				else{
-					cerr << "Undefined activation function!\n";
+					cerr << "Undefined activation function! \" " << type << " \"\n";
 					exit(1);
 				}
 				_transforms.push_back(pTransform);

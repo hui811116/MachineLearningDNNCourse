@@ -70,13 +70,26 @@ printf("\n");
 
 mat in(10,3);
 randomInit(in);
-cout<<"in"<<endl;
-in.print();
 Softmax s1(10,10);
 mat out;
 s1.forward(out,in,true);
 cout<<"out"<<endl;
 out.print();
+mat bk;
+s1.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+
+Sigmoid s2(10,10);
+cout<<"testing sigmoid"<<endl;
+s2.forward(out,in,true);
+cout<<"out"<<endl;
+out.print();
+s2.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+
+
  
 
 return 0;

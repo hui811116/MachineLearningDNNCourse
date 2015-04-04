@@ -41,3 +41,4 @@ model/*.mdl
 # Temp and Testing cpp files
 temp.cpp
 *Test.cpp
+*Test.cu
