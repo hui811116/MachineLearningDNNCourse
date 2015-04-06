@@ -7,15 +7,31 @@
 #include "device_matrix.h"
 using namespace std;
 typedef device_matrix<float> mat;
+typedef struct{
+	
+	const char* trainPath;
+	size_t trainDataNum;
+	const char* testPath;
+	size_t testDataNum;
+	const char* labelPath;
+	size_t labelDataNum;
+	size_t labelNum;
+	size_t inputDim;
+	size_t outputDim;
+	size_t phonemeNum;
+}Data;
+
 class Dataset{
 	public:
-		Dataset();
+	Dataset();
 	Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t inputDim, size_t outputDim, size_t phonemeNum);
+	Dataset(Data data, char mode);
 	Dataset(const Dataset& data);
 	~Dataset();
 	
 	
 	mat getTestSet();
+	mat getTestSet(float** testData,size_t frameRan, size_t testNum);
 	size_t getNumOfTrainData();
 	size_t getNumOfTestData();
 	size_t getNumOfLabel();
@@ -25,6 +41,8 @@ class Dataset{
 	int    getTrainSize();
 	int    getValidSize();
 
+	string* getTrainDataNameMatrix();
+	string* getTestDataNameMatrix();
 	float** getTrainDataMatrix();
 	float** getTestDataMatrix();
 	map<string, int> getLabelMap();
@@ -49,6 +67,7 @@ private:
 	size_t _numOfPhoneme;
 	int    _trainSize;
 	int    _validSize;
+	int _frameRange; //Used for frame
 	
 	// datasetJason private functions
 	mat    outputNumtoBin(int* outputVector, int vectorSize);
