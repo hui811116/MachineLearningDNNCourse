@@ -55,7 +55,7 @@ train:  $(HEADEROBJ) train.cpp
 #Pan: $(HEADEROBJ) datasetTest.cpp 
 #	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
-CSV: $(HEADEROBJ) testPredictSecond.cpp 
+CSV: $(HEADEROBJ) CSVTest.cpp 
 	@echo "compiling CSV2.app for generating CSV format testing results"
 	$(CXX) $(CPPFLAGS) $(INCLUDE) -o CSV2.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
