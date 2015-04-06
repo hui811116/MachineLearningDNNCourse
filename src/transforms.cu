@@ -186,8 +186,8 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	_pw= delta * ~_inp + _pw * momentum;
 	//NOTE: below are the case without momentum
 	rate/=(float)_i.getCols();
-	//_w -= _pw * rate;
-	gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
+	_w -= _pw * rate;
+	//gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 }
 void Sigmoid::write(ofstream& out){
 	out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols()-1<<endl;
@@ -238,8 +238,8 @@ void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum
 	_pw=delta * ~inp + _pw * momentum;
 	//NOTE: eq. below haven't include momentum yet.
 	rate/=(float)_i.getCols();
-	//_w-= _pw * rate;
-	gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);
+	_w-= _pw * rate;
+	//gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 	
 }
 void Softmax::write(ofstream& out){
