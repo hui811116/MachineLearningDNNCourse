@@ -18,7 +18,6 @@ typedef device_matrix<float> mat;
 float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
-
 DNN::DNN():_pData(NULL), _learningRate(0.001),_momentum(0), _method(ALL){}
 DNN::DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate),_momentum(momentum), _method(method){
 	int numOfLayers = v.size();
