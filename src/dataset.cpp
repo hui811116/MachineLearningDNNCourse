@@ -10,6 +10,7 @@ struct mapData {
 };
 typedef map<string, mapData> NameFtreMap;
 
+
 Dataset::Dataset(){
 	_featureDimension=39;
 	_stateDimension=0;
@@ -35,7 +36,8 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	_numOfPhoneme = phonemeNum;
 	_featureDimension = inputDim;
 	_stateDimension = outputDim;
-
+	_frameRange = 0;
+	
 	size_t count  = 0, dataCount = 0;
 	short split = 0;	
 	_trainDataNameMatrix  = new string[trainDataNum];	
@@ -198,6 +200,238 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	}
 	*/
 };
+Dataset::Dataset(Data data, char mode){
+	
+	switch(mode){
+	case 'F':
+	case 'f':
+		{	
+		//Set private members
+		_numOfTrainData = data.trainDataNum;
+		_numOfTestData = data.testDataNum;
+		_numOfLabel = data.labelNum;
+		_numOfPhoneme = data.phonemeNum;
+		_featureDimension = data.inputDim;
+		_stateDimension = data.outputDim;
+		
+		_frameRange = 4;
+		size_t  dataCount = 0;
+		size_t count = 0;
+		size_t split = 0;
+		string* tempTrainDataNameMatrix = new string[data.trainDataNum];
+		float** tempTrainDataMatrix = new float*[data.trainDataNum];		
+		for(int i=0;i<data.trainDataNum;i++){
+			tempTrainDataMatrix[i] = new float [data.inputDim];
+		}
+		
+		ifstream fin(data.trainPath);
+		if(!fin) cout<<"Can't open the train data!\n";
+		else cout<<"Inputting train data!\n";
+		string s, tempStr;
+		while(getline(fin,s)&&count<data.trainDataNum){
+			count++;
+			size_t pos = s.find(" ");
+			size_t initialPos=0;
+			split=0;
+			string tmpName;
+			while(split<data.inputDim+1){
+				dataCount++;
+				split++;
+				
+				tempStr= s.substr(initialPos, pos-initialPos);
+				if (split==1){
+					*(tempTrainDataNameMatrix+count-1) = tempStr;
+				}
+
+				else{
+					tempTrainDataMatrix[count-1][split-2] = atof(tempStr.c_str());
+				}		
+				initialPos = pos+1;
+				pos=s.find(" ", initialPos);
+			}		
+			
+		}	
+		
+		
+		//fin.close();
+	
+		_trainDataNameMatrix = new string[data.trainDataNum];
+		_trainDataMatrix = new float*[data.trainDataNum];
+		
+		for(int i=0;i<data.trainDataNum;i++){
+			_trainDataMatrix[i]=new float[data.inputDim*(2*_frameRange+1)];
+//			cout<<data.inputDim*(2*_frameRange+1)<<endl;
+		}
+		for(int i=0;i<data.trainDataNum;i++){
+			unsigned int pos = (*(tempTrainDataNameMatrix+i)).find_last_of("_");				
+			//cout<<*(tempTrainDataNameMatrix+i)<<endl;
+			_trainDataNameMatrix[i]=tempTrainDataNameMatrix[i];
+			string str = _trainDataNameMatrix[i].substr(0,pos);
+			unsigned int num = atoi(_trainDataNameMatrix[i].substr(pos+1).c_str());
+			//cout<<"num"<<num<<endl;
+			for(int j =(_frameRange*(-1));j<=_frameRange;j++){
+				int k = j;
+				//cout<<"j:"<<j<<endl;
+				if(num+j<1||(i+j)>=_numOfTrainData){
+					k=0;	
+				}
+				else {
+					unsigned int pos2 = tempTrainDataNameMatrix[i+j].find_last_of("_");
+					unsigned int num2 = atoi(tempTrainDataNameMatrix[i+j].substr(pos2+1).c_str());	
+				
+					if(num2!=(num+j))	k=0;
+				}	
+				
+	
+				for(int l=0;l<_featureDimension;l++){
+				_trainDataMatrix[i][_featureDimension*(j+_frameRange)+l]=tempTrainDataMatrix[i+k][l];	
+				}
+			}
+			
+		}
+		
+		
+		fin.close();
+
+		 dataCount = 0;
+		 count = 0;
+		 split = 0;
+		string* tempTestDataNameMatrix = new string[data.testDataNum];
+		float** tempTestDataMatrix = new float*[data.testDataNum];		
+		for(int i=0;i<data.testDataNum;i++){
+			tempTestDataMatrix[i] = new float [data.inputDim];
+		}
+		
+		ifstream finTest(data.testPath);
+		if(!finTest) cout<<"Can't open the train data!\n";
+		else cout<<"Inputting test data!\n";
+		//string s, tempStr;
+		while(getline(finTest,s)&&count<data.testDataNum){
+			count++;
+			size_t pos = s.find(" ");
+			 size_t initialPos=0;
+			split=0;
+			string tmpName;
+			while(split<data.inputDim+1){
+				dataCount++;
+				split++;
+				
+				tempStr= s.substr(initialPos, pos-initialPos);
+				if (split==1){
+					*(tempTestDataNameMatrix+count-1) = tempStr;
+				}
+
+				else{
+					tempTestDataMatrix[count-1][split-2] = atof(tempStr.c_str());
+				}		
+				initialPos = pos+1;
+				pos=s.find(" ", initialPos);
+			}		
+			
+		}	
+		
+		
+		//fin.close();
+	
+		_testDataNameMatrix = new string[data.testDataNum];
+		_testDataMatrix = new float*[data.testDataNum];
+		
+		for(int i=0;i<data.testDataNum;i++){
+			_testDataMatrix[i]=new float[data.inputDim*(2*_frameRange+1)];
+//			cout<<data.inputDim*(2*_frameRange+1)<<endl;
+		}
+		for(int i=0;i<data.testDataNum;i++){
+			unsigned int pos = (*(tempTestDataNameMatrix+i)).find_last_of("_");				
+			//cout<<*(tempTrainDataNameMatrix+i)<<endl;
+			_testDataNameMatrix[i]=tempTestDataNameMatrix[i];
+			string str = _testDataNameMatrix[i].substr(0,pos);
+			unsigned int num = atoi(_testDataNameMatrix[i].substr(pos+1).c_str());
+			//cout<<"num"<<num<<endl;
+			for(int j =(_frameRange*(-1));j<=_frameRange;j++){
+				int k = j;
+				//cout<<"j:"<<j<<endl;
+				if(num+j<1||(i+j)>=_numOfTestData){
+					k=0;	
+				}
+				else {
+					unsigned int pos2 = tempTestDataNameMatrix[i+j].find_last_of("_");
+					unsigned int num2 = atoi(tempTestDataNameMatrix[i+j].substr(pos2+1).c_str());	
+				
+					if(num2!=(num+j))	k=0;
+				}	
+				
+	
+				for(int l=0;l<_featureDimension;l++){
+				_testDataMatrix[i][_featureDimension*(j+_frameRange)+l]=tempTestDataMatrix[i+k][l];	
+				}
+			}
+		}
+		finTest.close();
+		cout << "inputting training label file:\n";
+		size_t countLabel  = 0, labelDataCount = 0, numForLabel=0;
+		 split = 0;	
+		
+		_labelMatrix = new int[data.labelDataNum]; 
+
+		ifstream finLabel(data.labelPath);
+		if(!finLabel) cout<<"Can't open this file!!!\n";
+		string sLabel, tempStrLabel, preLabel= "" ;
+		while(getline(finLabel, sLabel)){
+			countLabel++;
+
+			unsigned int pos  = sLabel.find(",");
+			unsigned int initialPos = 0;
+			split=0;
+			string tmpName;
+			while(split<2){
+				labelDataCount++;
+				split++;
+			
+				tempStrLabel = sLabel.substr(initialPos, pos-initialPos);
+				if (split == 1) tmpName = tempStrLabel;
+
+				if (split==2){
+				if(tempStrLabel.compare(preLabel)!=0){
+					if(_labelMap.find(tempStrLabel)==_labelMap.end()){
+					numForLabel++;
+					_labelMap.insert(pair<string, int>(tempStrLabel, numForLabel));	
+					}
+					preLabel = tempStrLabel;
+				}
+
+			
+				*(_labelMatrix+countLabel-1)=_labelMap.find(tempStrLabel)->second;
+		//	InputMap.find(tmpName)->second.phoneme =_labelMap.find(tempStrLabel)->second; 
+			//cout<<tempStrLabel<<endl;		
+
+					
+			//*(_labelMatrix+countLabel-1) = tempStrLabel;
+			//	cout<<*(_labelMatrix+count-1)<<endl;	
+			}
+			initialPos = pos+1;
+			pos=sLabel.find(",", initialPos);
+		}		
+	}		
+	//cout<<countLabel<<endl;
+	//cout<<labelDataCount<<endl;
+	
+	finLabel.close();	
+			
+		
+		//destructor
+		if(_numOfTrainData!=0) delete [] tempTrainDataNameMatrix;
+		if(tempTrainDataMatrix!=NULL){
+			for(int i =0;i<_numOfTrainData;i++)
+				delete tempTrainDataMatrix[i];
+		}
+		if(_featureDimension!=0) delete []tempTrainDataMatrix;
+		break;
+		}
+	default:
+		cout<<"No match mode!"<<endl;
+		break;
+	}
+};
 Dataset::Dataset(const Dataset& data){};
 Dataset::~Dataset(){
 	if(_numOfTrainData!=0)
@@ -269,11 +503,18 @@ void Dataset::saveCSV(vector<size_t> testResult){
 }
 
 
+
 //Get function
 mat Dataset::getTestSet(){
 	//cout << "size of test set: " << getInputDim() << " " << _numOfTestData << endl;
 	return inputFtreToMat(_testDataMatrix, getInputDim(), _numOfTestData);
 }
+mat Dataset::getTestSet(float** testData,size_t frameRange, size_t testNum){
+	
+	return inputFtreToMat(testData, getInputDim()*(2*frameRange+1), testNum);
+
+}
+
 size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }
 size_t Dataset::getNumOfTestData(){return _numOfTestData;}
 size_t Dataset::getNumOfLabel(){return _numOfLabel;}
@@ -283,6 +524,8 @@ size_t Dataset::getOutputDim(){return _stateDimension;}
 int    Dataset::getTrainSize(){return _trainSize;}
 int    Dataset::getValidSize(){return _validSize;}
 
+string* Dataset::getTrainDataNameMatrix(){return _trainDataNameMatrix;}
+string* Dataset::getTestDataNameMatrix(){return _testDataNameMatrix;}
 float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}
 float** Dataset::getTestDataMatrix(){return _testDataMatrix;}
 map<string, int> Dataset::getLabelMap(){return _labelMap;}
