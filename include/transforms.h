@@ -3,6 +3,8 @@
 #include <device_matrix.h>
 #include <fstream>
 #include <string>
+#include <random>
+
 using namespace std;
 
 typedef device_matrix<float> mat;
