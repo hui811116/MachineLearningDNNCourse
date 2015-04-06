@@ -29,18 +29,20 @@ int main(int argc, char**argv){
 		
 	Dataset dataset = Dataset(trainFilename, trainDataNum, testFilename, testDataNum, labelFilename, labelDataNum, labelNum, inFtreDim, outFtreDim, phonemeNum);
 	dataset.loadTo39PhonemeMap(labelMapFilename);
-	//Dataset dataset = Dataset();
 	DNN dnn ;
 	dnn.load("model/best0.55.mdl");
 	dnn.setDataset(&dataset);	
 	dnn.setLearningRate(0.004);
 	mat testSet = dataset.getTestSet();
-//	cout<<"gg1"<<endl;
-	//dataset.getTestSet(testSet);
 	vector<size_t> testResult;
+<<<<<<< HEAD
+	dnn.predict(testResult, testSet);
+	ofstream ofs("testResult.dat");
+=======
 	dnn.predict(testResult, testSet);//dataset.getTestSet());
 //	cout<<"gg2"<<endl;
 	ofstream ofs("testResult2.dat");
+>>>>>>> FETCH_HEAD
 	if(ofs.is_open()){
 		for (size_t i=0;i<testResult.size();i++){
 			ofs<<testResult.at(i)<<endl;	

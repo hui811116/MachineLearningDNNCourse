@@ -6,12 +6,12 @@
 
 #include <device_arithmetic.h>
 #include <device_math.h>
-#include "sigmoid.h"
 
 #include <cublas_v2.h>
 #include <helper_cuda.h>
 #include <cuda_memory_manager.h>
 #include "parser.h"
+#include "transforms.h"
 
 #include <random>
 
@@ -63,41 +63,34 @@ randomInit(D);
 
 //testing sigmoid function
 
-Sigmoid n1(5,5);
-/*
-C.resize(8,3);
-randomInit(C);
-
-printf("testing push one \n");
-pushOne(C);
-C.print();
-
-printf("testing ext::sigmoid\n");
-(ext::sigmoid(C)).print();
-*/
-n1.print();
-
 printf("divide by a const num\n");
 C.print();
 printf("\n");
 (C*n/(float)dim).print();
-/*
-A.resize(5,8);B.resize(5,8);
-randomInit(A);randomInit(B);
 
-C.resize(5,5);
-randomInit(C);
-gemm(A,B,C,(float)-1,(float)1,false,true);
-printf("C=\n");
-C.print();
-*/
-printf("sigmoid test\n");
-(ext::sigmoid(C)).print();
-/*
-C.print();
-printf("pushone test\n");
-pushOne(C);
-C.print();
-*/
+mat in(10,3);
+randomInit(in);
+Softmax s1(10,10);
+mat out;
+s1.forward(out,in,true);
+cout<<"out"<<endl;
+out.print();
+mat bk;
+s1.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+
+Sigmoid s2(10,10);
+cout<<"testing sigmoid"<<endl;
+s2.forward(out,in,true);
+cout<<"out"<<endl;
+out.print();
+s2.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+
+
+ 
+
 return 0;
 }
