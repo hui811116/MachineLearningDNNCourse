@@ -190,7 +190,7 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	//gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
 }
 void Sigmoid::write(ofstream& out){
-	out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols()<<endl;
+	out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols()-1<<endl;
 	print(out);
 }
 
@@ -243,7 +243,7 @@ void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum
 	
 }
 void Softmax::write(ofstream& out){
-	out<<"<softmax> "<<_w.getRows()<<" "<<_w.getCols()<<endl;
+	out<<"<softmax> "<<_w.getRows()<<" "<<_w.getCols()-1<<endl;
 	print(out);
 }
 ///////////////////////////////
