@@ -21,8 +21,11 @@ class NnGen{
 		~NnGen(){delete _dis;}
 		void reset(float mean, float var){
 			assert(var>0);
+			if(mean==_m&&var==_v){}
+			else{
 			delete _dis;
 			_dis=new normal_distribution<float>(mean,var);
+			}
 		}
 		float operator ()(){
 			return _dis->operator()(_gen);
