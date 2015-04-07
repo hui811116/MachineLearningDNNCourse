@@ -4,18 +4,14 @@
 #include <cassert>
 #include <cstdlib>
 #include <string>
-
 #include <device_matrix.h>
 #include <device_arithmetic.h>
 #include <device_math.h>
-
 #include "util.h"
-
 #include <thrust/transform_reduce.h>
 #include <thrust/functional.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
-
 
 using namespace std;
 using namespace ext;
@@ -187,7 +183,6 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	mat _inp(_i);
 	pushOne(_inp);
 	_pw= delta * ~_inp + _pw * momentum;
-	//NOTE: below are the case without momentum
 	rate/=(float)_i.getCols();
 	_w -= _pw * rate;
 	//gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
@@ -239,7 +234,6 @@ void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum
 	mat inp(_i);
 	pushOne(inp);	
 	_pw=delta * ~inp + _pw * momentum;
-	//NOTE: eq. below haven't include momentum yet.
 	rate/=(float)_i.getCols();
 	_w-= _pw * rate;
 	//gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);
