@@ -28,9 +28,10 @@ int main(int argc,char** argv){
 	p.addOption("--segment",true);
 	p.addOption("--batchsize",true);
 	p.addOption("--maxEpoch",true);
+	p.addOption("--momentum",true);
 	string trainF,testF,labelF;
 	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size=500,m_e=200000;
-	float rate=0.1,segment=0.8;
+	float rate=0.1,segment=0.8,momentum=0;
 	if(!p.read(argc,argv)){
 		myUsage();
 		return 1;
@@ -49,6 +50,7 @@ int main(int argc,char** argv){
 	p.getNum("--segment",segment);
 	p.getNum("--batchsize",b_size);
 	p.getNum("--maxEpoch",m_e);
+	p.getNum("--momentum",momentum);
 	p.print();
 	Dataset dataset = Dataset(trainF.c_str(),trainnum,testF.c_str(),testnum,labelF.c_str(),labelnum,labdim,indim,outdim,phonenum);
 	dataset.dataSegment(segment);
@@ -56,7 +58,8 @@ int main(int argc,char** argv){
 	dim.push_back(indim);
 	dim.push_back(128);
 	dim.push_back(outdim);
-	DNN dnn(&dataset,rate,dim,BATCH);
+	DNN dnn(&dataset,rate,momentum,dim,BATCH);
+	dnn.save("init.mdl");
 	dnn.train(b_size,m_e,20000,20000);
 	dnn.save("out.mdl");
 	cout<<"end of training!";
