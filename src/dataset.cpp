@@ -183,7 +183,12 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	//cout<<labelDataCount<<endl;
 	
 	finLabel.close();	
-
+	// initialize all pointers
+	_trainX = NULL;
+	_trainY = NULL;
+	_validX = NULL;
+	_validY = NULL;
+	dataSegment(0.9);
 	// put things into dataMatrix
 	/*
 	cout << "putting them into pointers:\n";

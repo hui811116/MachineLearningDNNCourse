@@ -99,6 +99,12 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 
 
 void Dataset::dataSegment( float trainProp ){
+	if (_trainX != NULL){
+		delete _trainX;
+		delete _trainY;
+		delete _validX;
+		delete _validY;
+	}
 	cout << "start data segmenting:\n";
 	cout << "num of data is "<< getNumOfTrainData() << endl;
 	// segment data into training and validating set
