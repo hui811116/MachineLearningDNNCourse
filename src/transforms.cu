@@ -4,18 +4,14 @@
 #include <cassert>
 #include <cstdlib>
 #include <string>
-
 #include <device_matrix.h>
 #include <device_arithmetic.h>
 #include <device_math.h>
-
-//#include <random>
-
+#include "util.h"
 #include <thrust/transform_reduce.h>
 #include <thrust/functional.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
-
 
 using namespace std;
 using namespace ext;
@@ -26,6 +22,15 @@ void rand_init(mat& w){
 	float* h_data = new float[w.size()];
 	for(size_t t=0;t<w.getRows()*(w.getCols()-1);++t)
 		h_data[t]=2*rand()/(float)RAND_MAX - 1;
+	for(size_t t=0;t<w.getRows();++t)
+		h_data[t+w.getRows()*(w.getCols()-1)]=0;
+	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
+	delete [] h_data;
+}
+void rand_norm(mat& w){
+	float* h_data = new float[w.size()];
+	for(size_t t=0;t<w.getRows()*(w.getCols()-1);++t)
+		h_data[t]=gn();
 	for(size_t t=0;t<w.getRows();++t)
 		h_data[t+w.getRows()*(w.getCols()-1)]=0;
 	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
@@ -99,12 +104,6 @@ mat getRowMax(mat& C)
 	return rmax;
 }
 //////////////////////////////////////////////
-/*
-void rand_norm(float var,mat&){}
-*/
-///
-
-
 ///////TRANSFORMS/////////////
 
 Transforms::Transforms(const Transforms& t):_w(t._w),_i(t._i),_pw(t._pw){}
@@ -129,7 +128,8 @@ Transforms::Transforms(const mat& w,const mat& b){
 
 Transforms::Transforms(size_t inputdim,size_t outputdim){
 	_w.resize(outputdim,inputdim+1);
-	rand_init(_w);
+	//rand_norm(_w);  // default variance = 0.2 , to change varance head to include/util.h
+	rand_init(_w); // uniform distribution
 	_w/=sqrt((float)inputdim);
 	_pw.resize(outputdim,inputdim+1,0);
 }
@@ -144,7 +144,6 @@ size_t Transforms::getOutputDim()const{
 void Transforms::print(ofstream& out){
 	float* h_data = new float[_w.size()];
 	CCE(cudaMemcpy( h_data, _w.getData(), _w.size() * sizeof(float), cudaMemcpyDeviceToHost));
-//    out<<"<sigmoid> "<<_w.getRows()<<" "<<_w.getCols() - 1<<endl;
     for(size_t i=0;i<_w.getRows();++i){
     for(size_t j=0;j<_w.getCols()-1;++j){
                 out<<" "<<h_data[_w.getRows()*j+i]; 
@@ -184,7 +183,6 @@ void Sigmoid::backPropagate(mat& out,const mat& delta, float rate,float momentum
 	mat _inp(_i);
 	pushOne(_inp);
 	_pw= delta * ~_inp + _pw * momentum;
-	//NOTE: below are the case without momentum
 	rate/=(float)_i.getCols();
 	_w -= _pw * rate;
 	//gemm(delta,_inp,_w,(float)-1.0*rate,(float)1.0,false,true);
@@ -236,7 +234,6 @@ void Softmax::backPropagate(mat& out,const mat& delta,float rate, float momentum
 	mat inp(_i);
 	pushOne(inp);	
 	_pw=delta * ~inp + _pw * momentum;
-	//NOTE: eq. below haven't include momentum yet.
 	rate/=(float)_i.getCols();
 	_w-= _pw * rate;
 	//gemm(delta,inp,_w,(float)-1.0*rate,(float)1.0,false,true);

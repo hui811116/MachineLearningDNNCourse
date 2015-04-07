@@ -12,7 +12,6 @@
 #include <cuda_memory_manager.h>
 #include "parser.h"
 #include "transforms.h"
-
 #include <random>
 
 using namespace std;
@@ -45,8 +44,8 @@ int main(int argc,char** argv){
 
 PARSER p;
 
-default_random_engine generator;
-normal_distribution<float> dis(0,0.1);
+
+default_random_engine gen((unsigned)time(NULL));
 size_t dim=500;
 float n=0.02;
 srand(time(0));
@@ -89,8 +88,12 @@ s2.backPropagate(bk,out,0.02,0);
 cout<<"bk="<<endl;
 bk.print();
 
-
- 
-
+cout<<"testing normal distribution"<<endl;
+Sigmoid sss(5,6);
+cout<<endl;
+Sigmoid ss2(5,6);
+cout<<endl;
+Softmax s12(5,6);
+cout<<endl;
 return 0;
 }

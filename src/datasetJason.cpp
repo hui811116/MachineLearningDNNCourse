@@ -23,8 +23,6 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// free tmp pointers
 	delete[] randIndex;
 	delete[] batchOutput;
-	//for (int i = 0; i < batchSize; i++)
-	//	delete[] batchFtre[i];
 	delete[] batchFtre;
 	randIndex = NULL;
 	batchOutput = NULL;
@@ -101,6 +99,12 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 
 
 void Dataset::dataSegment( float trainProp ){
+	if (_trainX != NULL){
+		delete _trainX;
+		delete _trainY;
+		delete _validX;
+		delete _validY;
+	}
 	cout << "start data segmenting:\n";
 	cout << "num of data is "<< getNumOfTrainData() << endl;
 	// segment data into training and validating set
