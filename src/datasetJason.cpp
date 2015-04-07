@@ -23,8 +23,6 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 	// free tmp pointers
 	delete[] randIndex;
 	delete[] batchOutput;
-	//for (int i = 0; i < batchSize; i++)
-	//	delete[] batchFtre[i];
 	delete[] batchFtre;
 	randIndex = NULL;
 	batchOutput = NULL;
