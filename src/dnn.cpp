@@ -37,7 +37,7 @@ DNN::~DNN(){
 	}
 }
 
-void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNum = 10000, size_t validSetNum = 10000){
+void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNum = 10000, size_t validSetNum = 10000, float alpha = 0.98){
 	mat trainSet;
 	vector<size_t> trainLabel;
 	mat validSet;
@@ -61,64 +61,38 @@ void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH, size_t trainSetNu
 		
 		feedForward(batchOutput, batchData, true);
 
-		/*	
-		mat oneMat(batchOutput.getRows(), batchOutput.getCols(), 1.0);
-		
-		// Wait for removal
-		float* h_data = new float [batchOutput.size()];
-		cudaMemcpy(h_data, batchOutput.getData(), batchOutput.size() * sizeof(float), cudaMemcpyDeviceToHost);
-		for(size_t j = 0; j < batchOutput.getCols(); j++){
-			float sum = 0.0;
-			for(size_t i = 0; i < batchOutput.getRows(); i++){
-				sum += (float)h_data[j*batchOutput.getRows() + i];
-			}
-			for(size_t i = 0; i < batchOutput.getRows(); i++){
-				h_data[j*batchOutput.getRows() + i] /= sum;
-			}
-		}	
-		cudaMemcpy(batchOutput.getData(), h_data, batchOutput.size() * sizeof(float), cudaMemcpyHostToDevice);
-		delete [] h_data;
-		*/
-
 		mat lastDelta(batchOutput - batchLabel );
-		backPropagate(lastDelta , _learningRate, _momentum); //momentum
+		backPropagate(lastDelta, _learningRate, _momentum); //momentum
 
 		vector<size_t> trainResult;
 		vector<size_t> validResult;
 		predict(trainResult, trainSet);
 		predict(validResult, validSet);
 
-		if( num % 200 == 1 ){
+		if( num % 200 == 0 )
+			_learningRate *= alpha;
+
+		if( num % 500 == 1 ){
 			Ein = computeErrRate(trainLabel, trainResult);
 			Eout = computeErrRate(validLabel, validResult);
 			
-			//if(Ein - minEin > 0 && EinRise >= 3 ){
-			_learningRate *= 0.99;
-			//	EinRise = 0;
-				//cout << "Reduce learning rate to : " << _learningRate << endl;
-			//}	
-			if(Ein > pastEin){
-				EinRise++;
-			}
-			else{
-				EinRise = 0;
-			}
 			pastEin  = Ein;
 			pastEout = Eout;
-
 			if(minEin > Ein){
 				minEin = Ein;
 			}
 			if(minEout > Eout){
 				minEout = Eout;
-				ofstream ofs("best.mdl");
 				cout << "bestMdl: Error at: " << minEout << endl;  
-				if (ofs.is_open()){
-					for(size_t i = 0; i < _transforms.size(); i++){
-						(_transforms.at(i))->write(ofs);
+				if(minEout < 0.5){
+					ofstream ofs("best.mdl");
+					if (ofs.is_open()){
+						for(size_t i = 0; i < _transforms.size(); i++){
+							(_transforms.at(i))->write(ofs);
+						}
 					}
+					ofs.close();
 				}
-				ofs.close();	
 			}
 			
 			cout.precision(5);
@@ -133,22 +107,6 @@ void DNN::predict(vector<size_t>& result, const mat& inputMat){
 	mat outputMat(1, 1);
 	feedForward(outputMat, inputMat, false);
 	computeLabel(result, outputMat);
-
-	/*
-	float* h_data = new float [outputMat.size()];
-	cudaMemcpy(h_data ,outputMat.getData(), outputMat.size() * sizeof(float), cudaMemcpyDeviceToHost);
-	for(size_t j = 0; j < outputMat.getCols(); j++){
-		float tempMax = h_data[j*outputMat.getRows()];
-		size_t idx = 0;		
-		for(size_t i = 0; i < outputMat.getRows(); i++){
-			if(tempMax < h_data[j*outputMat.getRows() + i]){
-				tempMax = h_data[j*outputMat.getRows() + i];
-				idx = i;
-			}
-		}
-		result.push_back(idx);
-	}
-	*/
 	/*  Transpose matrix print.
 	for(size_t i = 0; i < outputMat.getRows(); i++){
 		for(size_t j = 0; j < outputMat.getCols(); j++){

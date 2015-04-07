@@ -19,10 +19,9 @@ class DNN{
 public:
 	DNN();
 	DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>& v, Method method);
-//	DNN(const string& fn);
 	~DNN();
 
-	void train(size_t batchSize, size_t maxEpoch, size_t trainSetNum, size_t validSetNum);
+	void train(size_t batchSize, size_t maxEpoch, size_t trainSetNum, size_t validSetNum, float alpha);
 	void predict(vector<size_t>& result, const mat& inputMat);
 
 	void setDataset(Dataset* pData);
