@@ -213,8 +213,8 @@ Dataset::Dataset(Data data, char mode){
 		_numOfPhoneme = data.phonemeNum;
 		_featureDimension = data.inputDim;
 		_stateDimension = data.outputDim;
-		
-		_frameRange = 4;
+		_frameRange = data.frameRange;
+			
 		size_t  dataCount = 0;
 		size_t count = 0;
 		size_t split = 0;
@@ -303,7 +303,7 @@ Dataset::Dataset(Data data, char mode){
 		}
 		
 		ifstream finTest(data.testPath);
-		if(!finTest) cout<<"Can't open the train data!\n";
+		if(!finTest) cout<<"Can't open the test data!\n";
 		else cout<<"Inputting test data!\n";
 		//string s, tempStr;
 		while(getline(finTest,s)&&count<data.testDataNum){
@@ -338,7 +338,6 @@ Dataset::Dataset(Data data, char mode){
 		
 		for(int i=0;i<data.testDataNum;i++){
 			_testDataMatrix[i]=new float[data.inputDim*(2*_frameRange+1)];
-//			cout<<data.inputDim*(2*_frameRange+1)<<endl;
 		}
 		for(int i=0;i<data.testDataNum;i++){
 			unsigned int pos = (*(tempTestDataNameMatrix+i)).find_last_of("_");				
@@ -367,6 +366,7 @@ Dataset::Dataset(Data data, char mode){
 			}
 		}
 		finTest.close();
+		
 		cout << "inputting training label file:\n";
 		size_t countLabel  = 0, labelDataCount = 0, numForLabel=0;
 		 split = 0;	
@@ -388,6 +388,7 @@ Dataset::Dataset(Data data, char mode){
 				split++;
 			
 				tempStrLabel = sLabel.substr(initialPos, pos-initialPos);
+	//			cout<<"tempStrLabel: "<<tempStrLabel<<endl;
 				if (split == 1) tmpName = tempStrLabel;
 
 				if (split==2){
@@ -401,12 +402,6 @@ Dataset::Dataset(Data data, char mode){
 
 			
 				*(_labelMatrix+countLabel-1)=_labelMap.find(tempStrLabel)->second;
-		//	InputMap.find(tmpName)->second.phoneme =_labelMap.find(tempStrLabel)->second; 
-			//cout<<tempStrLabel<<endl;		
-
-					
-			//*(_labelMatrix+countLabel-1) = tempStrLabel;
-			//	cout<<*(_labelMatrix+count-1)<<endl;	
 			}
 			initialPos = pos+1;
 			pos=sLabel.find(",", initialPos);
@@ -425,6 +420,13 @@ Dataset::Dataset(Data data, char mode){
 				delete tempTrainDataMatrix[i];
 		}
 		if(_featureDimension!=0) delete []tempTrainDataMatrix;
+	
+		if(_numOfTestData!=0) delete [] tempTestDataNameMatrix;
+		if(tempTestDataMatrix!=NULL){
+			for(int i =0;i<_numOfTestData;i++)
+				delete tempTestDataMatrix[i];
+		}
+		if(_featureDimension!=0) delete []tempTestDataMatrix;
 		break;
 		}
 	default:
@@ -510,7 +512,7 @@ mat Dataset::getTestSet(){
 	return inputFtreToMat(_testDataMatrix, getInputDim(), _numOfTestData);
 }
 mat Dataset::getTestSet(float** testData,size_t frameRange, size_t testNum){
-	
+	cout<<"mat row: "<<getInputDim()*(2*frameRange+1)<<endl;	
 	return inputFtreToMat(testData, getInputDim()*(2*frameRange+1), testNum);
 
 }

@@ -52,7 +52,7 @@ train:  $(HEADEROBJ) train.cpp
 	@echo "compiling train.app for DNN Training"
 	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-#Pan: $(HEADEROBJ) datasetTest.cpp 
+#Pan: $(HEADEROBJ) makeFrameDatasetTest.cpp 
 #	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
 CSV: $(HEADEROBJ) CSVTest.cpp 
