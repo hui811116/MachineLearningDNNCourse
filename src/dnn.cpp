@@ -29,7 +29,6 @@ DNN::DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>
 			pTransform = new Softmax(v.at(i), v.at(i+1));
 		_transforms.push_back(pTransform);
 	}
-	cout << _transforms.size() << endl;
 }
 DNN::~DNN(){
 	while(!_transforms.empty()){
