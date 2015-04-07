@@ -36,7 +36,7 @@ src/tags
 
 # Model file
 *.mdl
-model/*.mdl
+model/*
 
 # Temp and Testing cpp files
 temp.cpp

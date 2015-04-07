@@ -9,10 +9,10 @@
 
 using namespace std;
 
-void myUsage(){cerr<<"$cmd [inputfile] [testfile] [labelfile] --labeldim [] --phonenum [] --trainnum [] --testnum [] --labelnum [] --inputdim [] --outputdim [] --maxEpoch []"<<endl;}
+void myUsage(){cerr<<"$cmd [inputfile] [testfile] [labelfile] --labeldim [] --phonenum [] --trainnum [] --testnum [] --labelnum [] --inputdim [] --outputdim [] --maxEpoch [] --momentum [] --decay [] --load []"<<endl;}
 
 int main(int argc,char** argv){
-	srand(time(0));
+	srand((unsigned)time(NULL));
 	PARSER p;
 	p.addMust("trainFilename",false);
 	p.addMust("testFilename",false);
@@ -29,9 +29,12 @@ int main(int argc,char** argv){
 	p.addOption("--batchsize",true);
 	p.addOption("--maxEpoch",true);
 	p.addOption("--momentum",true);
-	string trainF,testF,labelF;
-	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size=500,m_e=200000;
-	float rate=0.1,segment=0.8,momentum=0;
+	p.addOption("--outName",false);
+	p.addOption("--load",false);
+	p.addOption("--decay",true);
+	string trainF,testF,labelF,outF,loadF;
+	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size,m_e;
+	float rate,segment,momentum,decay;
 	if(!p.read(argc,argv)){
 		myUsage();
 		return 1;
@@ -39,30 +42,45 @@ int main(int argc,char** argv){
 	p.getString("trainfilename",trainF);
 	p.getString("testfilename",testF);
 	p.getString("labelFilename",labelF);
-	p.getNum("--labeldim",labdim);
-	p.getNum("--phonenum",phonenum);
-	p.getNum("--trainnum",trainnum);
-	p.getNum("--testnum",testnum);
-	p.getNum("--labelnum",labelnum);
+	if(!p.getNum("--labeldim",labdim)){return 1;}
+	if(!p.getNum("--phonenum",phonenum)){return 1;}
+	if(!p.getNum("--trainnum",trainnum)){return 1;}
+	if(!p.getNum("--testnum",testnum)){return 1;}
+	if(!p.getNum("--labelnum",labelnum)){return 1;}
 	p.getNum("--inputdim",indim);
 	p.getNum("--outputdim",outdim);
-	p.getNum("--rate",rate);
-	p.getNum("--segment",segment);
-	p.getNum("--batchsize",b_size);
-	p.getNum("--maxEpoch",m_e);
-	p.getNum("--momentum",momentum);
+	if(!p.getNum("--rate",rate)){rate=0.1;}
+	if(!p.getNum("--segment",segment)){segment=0.8;}
+	if(!p.getNum("--batchsize",b_size)){b_size=128;}
+	if(!p.getNum("--maxEpoch",m_e)){m_e=10000;}
+	if(!p.getNum("--momentum",momentum)){momentum=0;}
+	if(!p.getString("--outName",outF)){outF="out.mdl";}
+	if(!p.getNum("--decay",decay)){decay=1;}
 	p.print();
 	Dataset dataset = Dataset(trainF.c_str(),trainnum,testF.c_str(),testnum,labelF.c_str(),labelnum,labdim,indim,outdim,phonenum);
 	dataset.dataSegment(segment);
+	if(p.getString("--load",loadF)){
+		DNN nnload;
+		if(nnload.load(loadF)){
+		nnload.setDataset(&dataset);
+		nnload.setLearningRate(rate);
+		nnload.setMomentum(momentum);
+		nnload.train(b_size,m_e,10000,10000,decay);
+		nnload.save(outF);
+		}
+		else{	cerr<<"loading file:"<<loadF<<" failed! please check again..."<<endl;return 1;}
+	}
+	else{
 	vector<size_t>dim;
 	dim.push_back(indim);
 	dim.push_back(128);
 	dim.push_back(outdim);
 	DNN dnn(&dataset,rate,momentum,dim,BATCH);
-	dnn.save("init.mdl");
-	dnn.train(b_size,m_e,20000,20000);
-	dnn.save("out.mdl");
+	dnn.train(b_size,m_e,10000,10000,decay);
+	dnn.save(outF);
+	}
 	cout<<"end of training!";
+	cout<<"\n model saved as :"<<outF<<endl;
 	return 0;
 }
 

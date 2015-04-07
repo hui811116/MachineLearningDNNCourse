@@ -31,7 +31,7 @@ public:
 	size_t getOutputDimension();
 	size_t getNumLayers();
 	void save(const string& fn);
-	void load(const string& fn);
+	bool load(const string& fn);
 
 private:
 	void feedForward(mat& ouputMat, const mat& inputMat, bool train);

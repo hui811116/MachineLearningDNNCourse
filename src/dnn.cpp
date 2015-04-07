@@ -152,10 +152,11 @@ void DNN::save(const string& fn){
 	ofs.close();
 }
 
-void DNN::load(const string& fn){
+bool DNN::load(const string& fn){
 	ifstream ifs(fn);
 	char buf[50000];
-	if(ifs.is_open()){
+	if(!ifs){return false;}
+	else{
 		while(ifs.getline(buf, sizeof(buf)) != 0 ){
 			string tempStr(buf);
 			size_t found = tempStr.find_first_of(">");
@@ -210,6 +211,7 @@ void DNN::load(const string& fn){
 		}
 	}
 	ifs.close();
+	return true;
 }
 
 void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){
