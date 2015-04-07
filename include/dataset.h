@@ -19,6 +19,7 @@ typedef struct{
 	size_t inputDim;
 	size_t outputDim;
 	size_t phonemeNum;
+	int frameRange;
 }Data;
 
 class Dataset{
