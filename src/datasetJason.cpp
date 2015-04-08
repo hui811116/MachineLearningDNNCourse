@@ -39,6 +39,10 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 }
 
 void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel){
+	if (_trainSetFlag == true){
+		trainData = trainMat;
+		return;
+	}
 	if (trainSize > _trainSize){
 		cout << "requested training set size overflow, will only output "
 		     << _trainSize << " training sets.\n";
@@ -60,6 +64,9 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 		trainLabel.push_back( _trainY[ randIndex[i] ] );
 	}
 	trainData = inputFtreToMat(trainFtre, getInputDim(), trainSize);
+	
+	_trainSetFlag = true;
+	trainMat = trainData;
 	//cout << "get Train Set:\n";
 	//trainData.print();
 	delete[] randIndex;

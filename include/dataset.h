@@ -88,11 +88,14 @@ private:
 	map<string, string> _To39PhonemeMap; //Map the output to 39 dimension
 	
 	// storing training matrix
-
+	mat trainMat;
+	mat validMat;
 	float** _trainX;
 	float** _validX;
 	int* _trainY;
 	int* _validY;
+	bool _trainSetFlag;
+	bool _validSetFlag;
 };
 
 #endif 

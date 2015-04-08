@@ -28,6 +28,8 @@ Dataset::Dataset(){
 	_validX = NULL;
 	_trainY = NULL;
 	_validY = NULL;
+	_trainSetFlag = false;
+	_validSetFlag = true;
 }
 Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t inputDim, size_t outputDim, size_t phonemeNum){
 	
@@ -40,6 +42,8 @@ Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPat
 	_validX = NULL;
 	_trainY = NULL;
 	_validY = NULL;
+	_trainSetFlag = false;
+	_validSetFlag = false;
 	_numOfTrainData = trainDataNum;
 	_numOfTestData = testDataNum;
 	_numOfLabel = labelNum;
