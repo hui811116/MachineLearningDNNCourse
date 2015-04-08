@@ -96,6 +96,7 @@ private:
 	int* _validY;
 	bool _trainSetFlag;
 	bool _validSetFlag;
+	long long int _batchCtr;
 };
 
 #endif 
