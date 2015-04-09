@@ -6,7 +6,19 @@
 using namespace std;
 typedef device_matrix<float> mat;
 void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
+	// use shuffled trainX to get batch sequentially
+	float** batchFtre = new float*[batchSize];
+	int*    batchOutput = new int[batchSize];
+	for (int i = 0; i < batchSize; i++){
+		batchFtre[i] = _trainX[ _batchCtr % _trainSize ];
+		batchOutput[i] = _trainY[ _batchCtr % _trainSize ];
+		_batchCtr ++;
+	}
+
+	
+	
 	// random initialize indices for this batch	
+	/*
 	int* randIndex = new int [batchSize];
 	for (int i = 0; i < batchSize; i++){
 		randIndex[i] = rand() % _trainSize; 
@@ -17,14 +29,15 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 		batchFtre[i] = _trainX[ randIndex[i] ];
 		batchOutput[i] = _trainY[ randIndex[i] ];
 	}
+	delete[] randIndex;
+	randIndex = NULL;
+	*/
 	// convert them into mat format
 	batch = inputFtreToMat( batchFtre, getInputDim(), batchSize);
 	batchLabel = outputNumtoBin( batchOutput, batchSize );
 	// free tmp pointers
-	delete[] randIndex;
 	delete[] batchOutput;
 	delete[] batchFtre;
-	randIndex = NULL;
 	batchOutput = NULL;
 	batchFtre = NULL;
 	// for debugging, print both matrices
@@ -39,6 +52,10 @@ void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){
 }
 
 void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel){
+	if (_trainSetFlag == true){
+		trainData = trainMat;
+		return;
+	}
 	if (trainSize > _trainSize){
 		cout << "requested training set size overflow, will only output "
 		     << _trainSize << " training sets.\n";
@@ -60,6 +77,9 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 		trainLabel.push_back( _trainY[ randIndex[i] ] );
 	}
 	trainData = inputFtreToMat(trainFtre, getInputDim(), trainSize);
+	
+	_trainSetFlag = true;
+	trainMat = trainData;
 	//cout << "get Train Set:\n";
 	//trainData.print();
 	delete[] randIndex;
@@ -69,6 +89,10 @@ void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLa
 }
 
 void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLabel){
+	if (_validSetFlag == true){
+		validData = validMat;
+		return;
+	}
 	if (validSize > _validSize){
 		cout << "requested valid set size is too big, can only feed in " << _validSize << " data.\n";
 	validSize = _validSize;
@@ -89,6 +113,9 @@ void Dataset::getValidSet(int validSize, mat& validData, vector<size_t>& validLa
 		validLabel.push_back( _validY[ randIndex[i] ] );
 	}
 	validData = inputFtreToMat(validFtre, getInputDim(), validSize);
+	
+	_validSetFlag = true;
+	validMat = validData;
 	delete[] validFtre;
 	delete[] randIndex;
 	validFtre = NULL;
