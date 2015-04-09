@@ -3,7 +3,7 @@
 #include <device_matrix.h>
 #include <fstream>
 #include <string>
-#include <random>
+#include "mynngen.h"
 
 using namespace std;
 
@@ -19,7 +19,8 @@ class Transforms{
 		size_t getOutputDim()const;
 	protected:
 		Transforms(const mat& w,const mat& b);
-		Transforms(size_t inputdim, size_t outputdim);
+		Transforms(size_t inputdim, size_t outputdim,float range=1.0);
+		Transforms(size_t inputdim, size_t outputdim,myNnGen& ran);
 		void print(ofstream& out);
 		mat _w;
 		mat _i;
@@ -32,7 +33,8 @@ class Sigmoid : public Transforms{
 	public:
 	Sigmoid(const Sigmoid& s);
 	Sigmoid(const mat& w, const mat& bias);
-	Sigmoid(size_t inputdim, size_t outputdim);
+	Sigmoid(size_t inputdim, size_t outputdim,float range=1.0);
+	Sigmoid(size_t inputdim, size_t outputdim,myNnGen& ran);
 	virtual void forward(mat& out,const mat& in,bool train);
 	virtual void backPropagate(mat& out, const mat& delta, float rate,float momentum);
 	virtual void write(ofstream& out);
@@ -45,7 +47,8 @@ class Softmax : public Transforms{
 	public:
 	Softmax(const Softmax& s);
 	Softmax(const mat& w, const mat& bias);
-	Softmax(size_t inputdim,size_t outputdim);
+	Softmax(size_t inputdim,size_t outputdim,float range=1.0);
+	Softmax(size_t inputdim,size_t outputdim,myNnGen& ran);
 	virtual void forward(mat& out,const mat& in,bool train);
 	virtual void backPropagate(mat& out, const mat& delta, float rate,float momentum);
 	virtual void write(ofstream& out);

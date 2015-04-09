@@ -44,8 +44,6 @@ int main(int argc,char** argv){
 
 PARSER p;
 
-
-default_random_engine gen((unsigned)time(NULL));
 size_t dim=500;
 float n=0.02;
 srand(time(0));
@@ -95,5 +93,6 @@ Sigmoid ss2(5,6);
 cout<<endl;
 Softmax s12(5,6);
 cout<<endl;
+
 return 0;
 }

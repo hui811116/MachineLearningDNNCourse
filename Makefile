@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CPPFLAGS= -O2 -std=c++11 $(INCLUDE)
+CPPFLAGS=-g -O2 -std=c++11 $(INCLUDE)
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
@@ -8,7 +8,7 @@ CUDA_DIR=/usr/local/cuda/
 EXECUTABLES=
 LIBCUMATDIR=tool/libcumatrix/
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ=obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
+HEADEROBJ=obj/util.o obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
 
 # +==============================+
 # +======== Phony Rules =========+
@@ -21,7 +21,7 @@ LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 $(LIBCUMATDIR)lib/libcumatrix.a:
 	@echo "Missing library file, trying to fix it in tool/libcumatrix"
 	@cd tool/libcumatrix/ ; make ; cd ../..
-debug: CPPFLAGS+=-g -DDEBUG
+debug: CPPFLAGS+=-g -DDEBUG 
 
 vpath %.h include/
 vpath %.cpp src/

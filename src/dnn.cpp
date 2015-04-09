@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cassert>
 #include <device_matrix.h>
+#include "util.h"
 
 #define MAX_EPOCH 10000000
 
@@ -19,15 +20,33 @@ float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output);
 void computeLabel(vector<size_t>& result,const mat& outputMat);
 
 DNN::DNN():_pData(NULL), _learningRate(0.001),_momentum(0), _method(ALL){}
-DNN::DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate),_momentum(momentum), _method(method){
+DNN::DNN(Dataset* pData, float learningRate,float momentum,float variance,Init init, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate),_momentum(momentum), _method(method){
 	int numOfLayers = v.size();
-	for(int i = 0; i < numOfLayers-1; i++){
-		Transforms* pTransform;
-		if( i < numOfLayers-2 )
-			pTransform = new Sigmoid(v.at(i), v.at(i+1));
-		else
-			pTransform = new Softmax(v.at(i), v.at(i+1));
-		_transforms.push_back(pTransform);
+	switch(init){
+	case NORMAL:
+		gn.reset(0,variance);
+		for(int i = 0; i < numOfLayers-1; i++){
+			Transforms* pTransform;
+			if( i < numOfLayers-2 )
+				pTransform = new Sigmoid(v.at(i), v.at(i+1), gn);
+			else
+				pTransform = new Softmax(v.at(i), v.at(i+1), gn);
+			_transforms.push_back(pTransform);
+		}
+	break;
+	
+	case UNIFORM:
+	case RBM:
+	default:
+		for(int i = 0; i < numOfLayers-1; i++){
+			Transforms* pTransform;
+			if( i < numOfLayers-2 )
+				pTransform = new Sigmoid(v.at(i), v.at(i+1), variance);
+			else
+				pTransform = new Softmax(v.at(i), v.at(i+1), variance);
+			_transforms.push_back(pTransform);
+		}
+	break;
 	}
 }
 DNN::~DNN(){

@@ -18,35 +18,6 @@ using namespace ext;
 
 typedef device_matrix<float> mat;
 /////////////helper functions//////////////////////
-void rand_init(mat& w){
-	float* h_data = new float[w.size()];
-	for(size_t t=0;t<w.getRows()*(w.getCols()-1);++t)
-		h_data[t]=2*rand()/(float)RAND_MAX - 1;
-	for(size_t t=0;t<w.getRows();++t)
-		h_data[t+w.getRows()*(w.getCols()-1)]=0;
-	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
-	delete [] h_data;
-}
-void rand_norm(mat& w){
-	float* h_data = new float[w.size()];
-	for(size_t t=0;t<w.getRows()*(w.getCols()-1);++t)
-		h_data[t]=gn();
-	for(size_t t=0;t<w.getRows();++t)
-		h_data[t+w.getRows()*(w.getCols()-1)]=0;
-	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
-	delete [] h_data;
-}
-void pushOne(mat& in){
-	mat tmp(~in);
-	float* h_data=new float[(in.getRows()+1)*in.getCols()];
-	CCE(cudaMemcpy(h_data,tmp.getData(),tmp.size()*sizeof(float),cudaMemcpyDeviceToHost));
-	for(size_t t=0;t<tmp.getRows();++t)
-		h_data[tmp.size()+t]=1;
-	tmp.resize(tmp.getRows(),tmp.getCols()+1);
-	CCE(cudaMemcpy(tmp.getData(),h_data,tmp.size()*sizeof(float),cudaMemcpyHostToDevice));
-	in = ~tmp;
-	delete [] h_data;
-}
 
 template<typename T>
 struct linear_index_to_row_index : public thrust::unary_function<T,T>
@@ -126,14 +97,19 @@ Transforms::Transforms(const mat& w,const mat& b){
 	_pw.resize(_w.getRows(),_w.getCols(),0);
 }
 
-Transforms::Transforms(size_t inputdim,size_t outputdim){
+Transforms::Transforms(size_t inputdim,size_t outputdim,float range){
 	_w.resize(outputdim,inputdim+1);
-	//rand_norm(_w);  // default variance = 0.2 , to change varance head to include/util.h
-	rand_init(_w); // uniform distribution
+	rand_init(_w,range); // uniform distribution
 	_w/=sqrt((float)inputdim);
 	_pw.resize(outputdim,inputdim+1,0);
 }
 
+Transforms::Transforms(size_t inputdim,size_t outputdim,myNnGen& ran){
+	_w.resize(outputdim,inputdim+1);
+	rand_norm(_w,ran);  // default variance = 0.2 , to change varance head to include/util.h
+	_w/=sqrt((float)inputdim);
+	_pw.resize(outputdim,inputdim+1,0);
+}
 size_t Transforms::getInputDim()const{
 	return _w.getCols();
 }
@@ -163,7 +139,9 @@ Sigmoid::Sigmoid(const Sigmoid& s): Transforms(s){
 }
 Sigmoid::Sigmoid(const mat& w, const mat& bias): Transforms(w,bias){
 }
-Sigmoid::Sigmoid(size_t inputdim,size_t outputdim): Transforms(inputdim,outputdim){
+Sigmoid::Sigmoid(size_t inputdim,size_t outputdim,float range): Transforms(inputdim,outputdim,range){
+}
+Sigmoid::Sigmoid(size_t inputdim,size_t outputdim,myNnGen& ran): Transforms(inputdim,outputdim,ran){
 }
 void Sigmoid::forward(mat& out,const mat& in,bool train){
 	mat _inp(in);
@@ -199,7 +177,9 @@ Softmax::Softmax(const Softmax& s): Transforms(s){
 }
 Softmax::Softmax(const mat& w, const mat& bias):Transforms(w,bias){
 }
-Softmax::Softmax(size_t inputdim,size_t outputdim): Transforms(inputdim,outputdim){
+Softmax::Softmax(size_t inputdim,size_t outputdim,float range): Transforms(inputdim,outputdim,range){
+}
+Softmax::Softmax(size_t inputdim,size_t outputdim,myNnGen& ran): Transforms(inputdim,outputdim,ran){
 }
 void Softmax::forward(mat& out,const mat& in,bool train){
 	mat inp=in;

@@ -15,10 +15,16 @@ enum Method{
 	ONE
 };
 
+enum Init{
+	UNIFORM,
+	NORMAL,
+	RBM,
+};
+
 class DNN{
 public:
 	DNN();
-	DNN(Dataset* pData, float learningRate,float momentum, const vector<size_t>& v, Method method);
+	DNN(Dataset* pData, float learningRate,float momentum,float variance,Init init, const vector<size_t>& v, Method method);
 	~DNN();
 
 	void train(size_t batchSize, size_t maxEpoch, size_t trainSetNum, size_t validSetNum, float alpha);
@@ -43,6 +49,7 @@ private:
 	Method _method;
 	vector<Transforms*> _transforms;
 	vector<float> _validateAccuracy;
+
 };
 
 
