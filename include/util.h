@@ -13,5 +13,7 @@ extern void rand_init(mat& w,float range=1);
 extern void rand_norm(mat& w,myNnGen& ran=gn);
 
 extern void pushOne(mat& in);
+extern void getBias(mat& out,const mat& w);
+extern void replaceBias(mat& w,const mat& bias);
 
 #endif

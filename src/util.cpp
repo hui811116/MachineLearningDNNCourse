@@ -1,5 +1,6 @@
 #include "mynngen.h"
 #include <device_matrix.h>
+#include <cassert>
 
 typedef device_matrix<float> mat;
 
@@ -35,5 +36,19 @@ void pushOne(mat& in){
 	CCE(cudaMemcpy(tmp.getData(),h_data,tmp.size()*sizeof(float),cudaMemcpyHostToDevice));
 	in = ~tmp;
 	delete [] h_data;
+}
+
+void getBias(mat& out,const mat& w){
+	float* h_data=new float[w.getRows()];
+	CCE(cudaMemcpy(h_data,w.getData()+(w.getRows())*(w.getCols()-1),sizeof(float)*w.getRows(),cudaMemcpyDeviceToHost));
+	out.resize(w.getRows(),1);
+	CCE(cudaMemcpy(out.getData(),h_data,sizeof(float)*w.getRows(),cudaMemcpyHostToDevice));
+	delete [] h_data;
+}
+
+void replaceBias(mat& w,const mat& bias){
+	assert(bias.getCols()==1);
+	assert(w.getRows()==bias.size());
+	CCE(cudaMemcpy(w.getData()+w.getRows()*(w.getCols()-1),bias.getData(),sizeof(float)*w.getRows(),cudaMemcpyDeviceToDevice));
 }
 

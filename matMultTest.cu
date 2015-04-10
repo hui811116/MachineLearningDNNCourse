@@ -12,7 +12,8 @@
 #include <cuda_memory_manager.h>
 #include "parser.h"
 #include "transforms.h"
-#include <random>
+#include "util.h"
+
 
 using namespace std;
 
@@ -59,12 +60,13 @@ randomInit(C);
 randomInit(D);
 
 //testing sigmoid function
-
+/*
 printf("divide by a const num\n");
 C.print();
 printf("\n");
 (C*n/(float)dim).print();
-
+*/
+/*
 mat in(10,3);
 randomInit(in);
 Softmax s1(10,10);
@@ -76,7 +78,8 @@ mat bk;
 s1.backPropagate(bk,out,0.02,0);
 cout<<"bk="<<endl;
 bk.print();
-
+*/
+/*
 Sigmoid s2(10,10);
 cout<<"testing sigmoid"<<endl;
 s2.forward(out,in,true);
@@ -85,14 +88,22 @@ out.print();
 s2.backPropagate(bk,out,0.02,0);
 cout<<"bk="<<endl;
 bk.print();
-
-cout<<"testing normal distribution"<<endl;
-Sigmoid sss(5,6);
-cout<<endl;
-Sigmoid ss2(5,6);
-cout<<endl;
-Softmax s12(5,6);
-cout<<endl;
+*/
+cout<<"testing util functions"<<endl;
+mat W(5,8);
+randomInit(W);
+mat B1(5,1,1);
+cout<<"W="<<endl;
+W.print();
+cout<<"calling getBias()"<<endl;
+mat tmp;
+getBias(tmp,W);
+cout<<"result:"<<endl;
+tmp.print();
+cout<<"calling replaceBias()"<<endl;
+replaceBias(W,B1);
+cout<<"result"<<endl;
+W.print();
 
 return 0;
 }
