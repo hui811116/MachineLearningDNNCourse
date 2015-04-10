@@ -17,21 +17,21 @@ DECAY=1
 INITMODEL=model/momentExpInit.mdl
 MODELDIR=model/initexp
 UNIRANGE="0.1 0.5 1 2";
+DIM=${INDIM}-128-128-${OUTDIM}
 
 
-
-#./train.app ${TRAIN} ${TEST} ${LABEL} --trainnum ${SIZE} --testnum ${TESTNUM} --labelnum ${SIZE} --outputdim ${OUTDIM} \
-#--inputdim ${INDIM} --phonenum ${PHONUM} --labeldim ${OUTDIM} --rate ${RATE} --batchsize ${BSIZE} --maxEpoch ${MAXEPOCH} \
-#--momentum 0.9 --outName out.mdl --decay ${DECAY} --range 
-
-mkdir -p ${MODELDIR}
-for x in $UNIRANGE
-do
-echo "calling momentum $x ..."
 ./train.app ${TRAIN} ${TEST} ${LABEL} --trainnum ${SIZE} --testnum ${TESTNUM} --labelnum ${SIZE} --outputdim ${OUTDIM} \
 --inputdim ${INDIM} --phonenum ${PHONUM} --labeldim ${OUTDIM} --rate ${RATE} --batchsize ${BSIZE} --maxEpoch ${MAXEPOCH} \
---momentum 0.9 --load ${INITMODEL} --outName ${MODELDIR}/uni${x}.mdl --decay ${DECAY} --range $x | tee ${MODELDIR}/uni${x}.log
-done
+--momentum 0.9 --outName out.mdl --decay ${DECAY} --range 1 --dim ${DIM}
+
+#mkdir -p ${MODELDIR}
+#for x in $UNIRANGE
+#do
+#echo "calling momentum $x ..."
+#./train.app ${TRAIN} ${TEST} ${LABEL} --trainnum ${SIZE} --testnum ${TESTNUM} --labelnum ${SIZE} --outputdim ${OUTDIM} \
+#--inputdim ${INDIM} --phonenum ${PHONUM} --labeldim ${OUTDIM} --rate ${RATE} --batchsize ${BSIZE} --maxEpoch ${MAXEPOCH} \
+#--momentum 0.9 --load ${INITMODEL} --outName ${MODELDIR}/uni${x}.mdl --decay ${DECAY} --range $x | tee ${MODELDIR}/uni${x}.log
+#done
 
 #mkdir -p /model/decexp
 #for x in $DECAYSET

@@ -44,6 +44,16 @@ void pushOne(device_matrix<T>& m) {
 int main(int argc,char** argv){
 
 PARSER p;
+p.addOption("--dim",false);
+p.read(argc,argv);
+string str;
+p.getString("--dim",str);
+vector<size_t> v;
+parseDim(str,v);
+for(size_t t=0;t<v.size();++t)
+	cout<<" "<<v[t];
+cout<<endl;
+
 
 size_t dim=500;
 float n=0.02;

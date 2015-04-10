@@ -1,6 +1,9 @@
 #include "mynngen.h"
 #include <device_matrix.h>
+#include <string>
+#include <vector>
 #include <cassert>
+#include <cstdlib>
 
 typedef device_matrix<float> mat;
 
@@ -24,7 +27,6 @@ void rand_norm(mat& w,myNnGen& ran){
 	CCE(cudaMemcpy(w.getData(),h_data,w.size()* sizeof(float) , cudaMemcpyHostToDevice));
 	delete [] h_data;
 }
-
 
 void pushOne(mat& in){
 	mat tmp(~in);
@@ -50,5 +52,20 @@ void replaceBias(mat& w,const mat& bias){
 	assert(bias.getCols()==1);
 	assert(w.getRows()==bias.size());
 	CCE(cudaMemcpy(w.getData()+w.getRows()*(w.getCols()-1),bias.getData(),sizeof(float)*w.getRows(),cudaMemcpyDeviceToDevice));
+}
+
+void parseDim(string str,vector<size_t>& dim){
+	size_t begin=str.find_first_not_of(' '),end;
+	string hold;
+	while(begin!=string::npos){
+		end=str.find_first_of('-',begin);
+		if(end==string::npos)
+			hold=str.substr(begin);
+		else
+			hold=str.substr(begin,end-begin);
+		if(!hold.empty())
+			dim.push_back(atoi(hold.c_str()));
+		begin=str.find_first_not_of('-',end);
+	}
 }
 

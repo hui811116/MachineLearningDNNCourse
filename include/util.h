@@ -15,5 +15,6 @@ extern void rand_norm(mat& w,myNnGen& ran=gn);
 extern void pushOne(mat& in);
 extern void getBias(mat& out,const mat& w);
 extern void replaceBias(mat& w,const mat& bias);
+extern void parseDim(string str, vector<size_t>& dim);
 
 #endif

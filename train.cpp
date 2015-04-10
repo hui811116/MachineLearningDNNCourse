@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "dnn.h"
 #include "dataset.h"
+#include "util.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -34,7 +35,8 @@ int main(int argc,char** argv){
 	p.addOption("--decay",true);
 	p.addOption("--variance",true);
 	p.addOption("--range",true);
-	string trainF,testF,labelF,outF,loadF;
+	p.addOption("--dim",false);
+	string trainF,testF,labelF,outF,loadF,dims;
 	size_t labdim,phonenum,trainnum,testnum,labelnum,indim,outdim,b_size,m_e;
 	float rate,segment,momentum,decay,var;
 	Init _inittype;
@@ -62,6 +64,7 @@ int main(int argc,char** argv){
 	if(p.getNum("--variance",var)&&p.getNum("--range",var)){cerr<<"--variance for normal init, --range for uniform init, not both!"<<endl;return 1;}
 	if(!p.getNum("--variance",var)){var=0.2;_inittype=NORMAL;}
 	if(!p.getNum("--range",var)){var=1;_inittype=UNIFORM;}
+	if(!p.getString("--dim",dims)){cerr<<"wrong hidden layer dimensions";return 1;}
 	p.print();
 	Dataset dataset = Dataset(trainF.c_str(),trainnum,testF.c_str(),testnum,labelF.c_str(),labelnum,labdim,indim,outdim,phonenum);
 	dataset.dataSegment(segment);
@@ -78,9 +81,7 @@ int main(int argc,char** argv){
 	}
 	else{
 	vector<size_t>dim;
-	dim.push_back(indim);
-	dim.push_back(128);
-	dim.push_back(outdim);
+	parseDim(dims,dim);
 	DNN dnn(&dataset,rate,momentum,var,_inittype,dim,BATCH);
 	dnn.train(b_size,m_e,10000,10000,decay);
 	dnn.save(outF);
