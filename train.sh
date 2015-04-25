@@ -1,8 +1,8 @@
-DATA=/home/hui/Downloads/MLDS_HW1_RELEASE_v1/
+DATA=/home/ahpan/DeepLearningHW1/MachineLearningDNNCourse/Data/MLDS_HW1_RELEASE_v1/
 TYPE=mfcc/
-TRAIN=${DATA}${TYPE}train.ark2
+TRAIN=${DATA}${TYPE}train.ark
 TEST=${DATA}${TYPE}test.ark
-LABEL=${DATA}label/train.lab2
+LABEL=${DATA}label/train.lab
 INDIM=39
 OUTDIM=48
 PHONUM=39
@@ -20,9 +20,9 @@ UNIRANGE="0.1 0.5 1 2";
 DIM=${INDIM}-128-128-${OUTDIM}
 
 
-./train.app ${TRAIN} ${TEST} ${LABEL} --trainnum ${SIZE} --testnum ${TESTNUM} --labelnum ${SIZE} --outputdim ${OUTDIM} \
+./bin/train.app ${TRAIN} ${TEST} ${LABEL} --trainnum ${SIZE} --testnum ${TESTNUM} --labelnum ${SIZE} --outputdim ${OUTDIM} \
 --inputdim ${INDIM} --phonenum ${PHONUM} --labeldim ${OUTDIM} --rate ${RATE} --batchsize ${BSIZE} --maxEpoch ${MAXEPOCH} \
---momentum 0.9 --outName out.mdl --decay ${DECAY} --range 1 --dim ${DIM}
+--momentum 0.9 --outName out.mdl --decay ${DECAY} --range 1.5 --dim ${DIM}
 
 #mkdir -p ${MODELDIR}
 #for x in $UNIRANGE

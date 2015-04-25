@@ -5,7 +5,7 @@ NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
 
-EXECUTABLES=
+EXECUTABLES=train
 LIBCUMATDIR=tool/libcumatrix/
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 HEADEROBJ=obj/util.o obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
@@ -36,35 +36,33 @@ LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
 TARGET=test.app
 
-DIR=OBJDIR
-OBJDIR:
+DIR:
+	@echo "checking object and executable directory..."
 	@mkdir -p obj
+	@mkdir -p bin
 
-#all:$(DIR) $(HEADEROBJ) $(EXECUTABLES)
+all:DIR $(EXECUTABLES)
 
-larry: $(HEADEROBJ) temp.cpp
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
+larry: $(HEADEROBJ) example/temp.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-hui: $(HEADEROBJ) matMultTest.cu
-	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
-
-train:  $(HEADEROBJ) train.cpp
+train:  $(HEADEROBJ) example/train.cpp
 	@echo "compiling train.app for DNN Training"
-	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o train.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$@.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
 #Pan: $(HEADEROBJ) makeFrameDatasetTest.cpp 
 #	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
 CSV: $(HEADEROBJ) CSVTest.cpp 
 	@echo "compiling CSV2.app for generating CSV format testing results"
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o CSV2.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/CSV2.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
 
 clean:
 	@echo "All objects and executables removed"
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
 jason: $(HEADEROBJ) jasonTest.cpp
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
 ctags:
 	@rm -f src/tags tags
