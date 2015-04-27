@@ -1,0 +1,246 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALL	include/dnn.h	/^	ALL, $/;"	e	enum:Method
+BATCH	include/dnn.h	/^	BATCH, $/;"	e	enum:Method
+CACHE_SIZE	tool/libcumatrix/include/cuda_memory_manager.h	/^  static size_t CACHE_SIZE;$/;"	m	class:CudaMemManager
+CACHE_SIZE	tool/libcumatrix/src/cuda_memory_manager.cpp	/^size_t CudaMemManager<T>::CACHE_SIZE = 16 * 1024 * 1024; \/* 16 MBytes *\/$/;"	m	class:CudaMemManager	file:
+CC	Makefile	/^CC=gcc$/;"	m
+CC	tool/libcumatrix/Makefile	/^CC=gcc$/;"	m
+CCE	tool/libcumatrix/include/cuda_memory_manager.h	11;"	d
+CCE	tool/libcumatrix/include/device_matrix.h	16;"	d
+CFLAGS	Makefile	/^CFLAGS= $/;"	m
+CFLAGS	tool/libcumatrix/Makefile	/^CFLAGS=$/;"	m
+CPPFLAGS	Makefile	/^CPPFLAGS= -g -std=c++0x $(CFLAGS) $(INCLUDE)$/;"	m
+CPPFLAGS	tool/libcumatrix/Makefile	/^CPPFLAGS= -std=c++0x $(CFLAGS) $(INCLUDE)$/;"	m
+CUBLAS_HANDLE	tool/libcumatrix/include/device_matrix.h	/^  CUBLAS_HANDLE()  { CCE(cublasCreate(&_handle)); }$/;"	f	class:CUBLAS_HANDLE
+CUBLAS_HANDLE	tool/libcumatrix/include/device_matrix.h	/^class CUBLAS_HANDLE {$/;"	c
+CUDA_DIR	Makefile	/^CUDA_DIR=\/usr\/local\/cuda\/$/;"	m
+CUDA_INCLUDE	tool/libcumatrix/Makefile	/^CUDA_INCLUDE=$(INCLUDE) \\$/;"	m
+CUDA_ROOT	tool/libcumatrix/Makefile	/^CUDA_ROOT=\/usr\/local\/cuda$/;"	m
+CUMATOBJ	Makefile	/^CUMATOBJ=$(LIBCUMATDIR)obj\/device_matrix.o $(LIBCUMATDIR)obj\/cuda_memory_manager.o$/;"	m
+CXX	Makefile	/^CXX=g++$/;"	m
+CXX	tool/libcumatrix/Makefile	/^CXX=g++$/;"	m
+CudaMemManager	tool/libcumatrix/include/cuda_memory_manager.h	/^  CudaMemManager(): _total_byte_allocated(0) { \/* Nothing to do *\/ }$/;"	f	class:CudaMemManager
+CudaMemManager	tool/libcumatrix/include/cuda_memory_manager.h	/^class CudaMemManager {$/;"	c
+DATASET_H_	include/dataset.h	2;"	d
+DNN	include/dnn.h	/^class DNN{$/;"	c
+DNN	src/dnn.cpp	/^DNN::DNN():_pData(NULL), _method(ALL){}$/;"	f	class:DNN
+DNN	src/dnn.cpp	/^DNN::DNN(Dataset* pData, float learningRate, const vector<size_t>& v, Method method):_pData(pData), _learningRate(learningRate), _method(method){$/;"	f	class:DNN
+DNN_H	include/dnn.h	2;"	d
+Dataset	include/dataset.h	/^class Dataset{$/;"	c
+Dataset	src/dataset.cpp	/^Dataset::Dataset(){$/;"	f	class:Dataset
+Dataset	src/dataset.cpp	/^Dataset::Dataset(const Dataset& data){};$/;"	f	class:Dataset
+Dataset	src/dataset.cpp	/^Dataset::Dataset(const char* trainPath, size_t trainDataNum, const char* testPath, size_t testDataNum, const char* labelPath, size_t labelDataNum, size_t labelNum, size_t phonemeNum){$/;"	f	class:Dataset
+EXAMPLE_PROGRAM	tool/libcumatrix/Makefile	/^EXAMPLE_PROGRAM=$/;"	m
+EXECUTABLES	Makefile	/^EXECUTABLES=hui$/;"	m
+EXECUTABLES	tool/libcumatrix/Makefile	/^EXECUTABLES=$/;"	m
+HAVE_THRUST_DEVICE_VECTOR_H	tool/libcumatrix/include/device_math.h	8;"	d
+HAVE_THRUST_DEVICE_VECTOR_H	tool/libcumatrix/include/device_vector_operators.h	9;"	d
+HEADEROBJ	Makefile	/^HEADEROBJ=obj\/sigmoid.o obj\/dnn.o obj\/dataset.o obj\/datasetJason.o$/;"	m
+INCLUDE	Makefile	/^INCLUDE= -I include\/\\$/;"	m
+INCLUDE	tool/libcumatrix/Makefile	/^INCLUDE= -I include\/\\$/;"	m
+LD_LIBRARY	Makefile	/^LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib$/;"	m
+LIBCUMATDIR	Makefile	/^LIBCUMATDIR=tool\/libcumatrix\/$/;"	m
+LIBRARY	Makefile	/^LIBRARY=-lcuda -lcublas -lcudart -lcumatrix$/;"	m
+LIBRARY	tool/libcumatrix/Makefile	/^LIBRARY= -lcuda -lcublas -lcudart$/;"	m
+LIBRARY_PATH	tool/libcumatrix/Makefile	/^LIBRARY_PATH=-L$(CUDA_ROOT)\/lib64\/$/;"	m
+LIBS	Makefile	/^LIBS=$(LIBCUMATDIR)lib\/libcumatrix.a$/;"	m
+MAX_EPOCH	src/dnn.cpp	10;"	d	file:
+MemList	tool/libcumatrix/include/cuda_memory_manager.h	/^  MemList(): hits(0), hit_rate(0) {}$/;"	f	struct:MemList
+MemList	tool/libcumatrix/include/cuda_memory_manager.h	/^struct MemList {$/;"	s
+MemPool	tool/libcumatrix/include/cuda_memory_manager.h	/^struct MemPool {$/;"	s
+Method	include/dnn.h	/^enum Method{$/;"	g
+NVCC	Makefile	/^NVCC=nvcc -arch=sm_21 -w$/;"	m
+NVCC	tool/libcumatrix/Makefile	/^NVCC=nvcc -arch=sm_21 -w$/;"	m
+OBJ	Makefile	/^OBJ=$(LIBCUMATDIR)obj\/device_matrix.o $(LIBCUMATDIR)obj\/cuda_memory_manager.o$/;"	m
+OBJ	tool/libcumatrix/Makefile	/^OBJ=obj\/device_matrix.o obj\/cuda_memory_manager.o$/;"	m
+ONE	include/dnn.h	/^	ONE$/;"	e	enum:Method
+PI	tool/libcumatrix/include/math_ext.h	5;"	d
+SCALAR_MEMORY_BUFFER	tool/libcumatrix/include/device_matrix.h	/^  SCALAR_MEMORY_BUFFER(): _ptr(NULL) {$/;"	f	class:SCALAR_MEMORY_BUFFER
+SCALAR_MEMORY_BUFFER	tool/libcumatrix/include/device_matrix.h	/^class SCALAR_MEMORY_BUFFER {$/;"	c
+SIGMOID_H	include/sigmoid.h	2;"	d
+Sigmoid	include/sigmoid.h	/^class Sigmoid{$/;"	c
+TARGET	Makefile	/^TARGET=test.app$/;"	m
+Transposed	tool/libcumatrix/include/device_matrix.h	/^      Transposed(const device_matrix<T>& m): _m(m) {}$/;"	f	class:device_matrix::Transposed
+Transposed	tool/libcumatrix/include/device_matrix.h	/^  class Transposed {$/;"	c	class:device_matrix
+VECTOR	tool/libcumatrix/include/device_vector_operators.h	14;"	d
+VECTOR	tool/libcumatrix/include/device_vector_operators.h	18;"	d
+WHERE	tool/libcumatrix/include/device_vector_operators.h	15;"	d
+WHERE	tool/libcumatrix/include/device_vector_operators.h	19;"	d
+__CUDA_MEMORY_MANAGER_H_	tool/libcumatrix/include/cuda_memory_manager.h	2;"	d
+__DEVICE_BLAS_H_	tool/libcumatrix/include/device_arithmetic.h	2;"	d
+__DEVICE_MATH_EXT_H_	tool/libcumatrix/include/device_math.h	2;"	d
+__DEVICE_MATRIX_H__	tool/libcumatrix/include/device_matrix.h	2;"	d
+__MATH_EXT_H_	tool/libcumatrix/include/math_ext.h	2;"	d
+_byte_allocated	tool/libcumatrix/include/cuda_memory_manager.h	/^  std::map<T*, size_t> _byte_allocated;$/;"	m	class:CudaMemManager
+_capacity	tool/libcumatrix/include/device_matrix.h	/^  size_t _capacity;$/;"	m	class:device_matrix
+_cols	tool/libcumatrix/include/device_matrix.h	/^  size_t _cols;$/;"	m	class:device_matrix
+_cuda_stream	tool/libcumatrix/include/device_matrix.h	/^  static cudaStream_t _cuda_stream;$/;"	m	class:device_matrix
+_data	tool/libcumatrix/include/device_matrix.h	/^  T* _data;$/;"	m	class:device_matrix
+_featureDimension	include/dataset.h	/^	size_t _featureDimension;$/;"	m	class:Dataset
+_handle	tool/libcumatrix/include/device_matrix.h	/^  cublasHandle_t _handle;$/;"	m	class:CUBLAS_HANDLE
+_input	include/sigmoid.h	/^	mat _input; \/\/for backpropagation$/;"	m	class:Sigmoid
+_labelMatrix	include/dataset.h	/^	int* _labelMatrix; \/\/ output phoneme changed to integer$/;"	m	class:Dataset
+_learningRate	include/dnn.h	/^	float _learningRate;$/;"	m	class:DNN
+_m	tool/libcumatrix/include/device_matrix.h	/^      const device_matrix<T>& _m;$/;"	m	class:device_matrix::Transposed
+_mem_manager	tool/libcumatrix/include/device_matrix.h	/^  static CudaMemManager<T> _mem_manager;$/;"	m	class:device_matrix
+_method	include/dnn.h	/^	Method _method;$/;"	m	class:DNN
+_numOfLabel	include/dataset.h	/^	size_t _numOfLabel;$/;"	m	class:Dataset
+_numOfPhoneme	include/dataset.h	/^	size_t _numOfPhoneme;$/;"	m	class:Dataset
+_numOfTestData	include/dataset.h	/^	size_t _numOfTestData;$/;"	m	class:Dataset
+_numOfTrainData	include/dataset.h	/^	size_t _numOfTrainData;$/;"	m	class:Dataset
+_pData	include/dnn.h	/^	Dataset* _pData;$/;"	m	class:DNN
+_pool	tool/libcumatrix/include/cuda_memory_manager.h	/^  typename MemPool<T>::type _pool;$/;"	m	class:CudaMemManager
+_ptr	tool/libcumatrix/include/device_matrix.h	/^  T* _ptr;$/;"	m	class:SCALAR_MEMORY_BUFFER
+_random_seed_	tool/libcumatrix/include/math_ext.h	/^    static time_t _random_seed_ = srander();$/;"	m	namespace:ext::randomgenerator
+_rows	tool/libcumatrix/include/device_matrix.h	/^  size_t _rows;$/;"	m	class:device_matrix
+_stateDimension	include/dataset.h	/^	size_t _stateDimension;$/;"	m	class:Dataset
+_testDataMatrix	include/dataset.h	/^	float** _testDataMatrix;$/;"	m	class:Dataset
+_testDataNameMatrix	include/dataset.h	/^	string* _testDataNameMatrix;$/;"	m	class:Dataset
+_total_byte_allocated	tool/libcumatrix/include/cuda_memory_manager.h	/^  size_t _total_byte_allocated;$/;"	m	class:CudaMemManager
+_trainDataMatrix	include/dataset.h	/^	float** _trainDataMatrix; \/\/ input MFCC features$/;"	m	class:Dataset
+_trainDataNameMatrix	include/dataset.h	/^	string* _trainDataNameMatrix; \/\/ frame name$/;"	m	class:Dataset
+_trainSize	include/dataset.h	/^	int    _trainSize;$/;"	m	class:Dataset
+_trainX	include/dataset.h	/^	float** _trainX;$/;"	m	class:Dataset
+_trainY	include/dataset.h	/^	int* _trainY;$/;"	m	class:Dataset
+_transforms	include/dnn.h	/^	vector<Sigmoid*> _transforms;$/;"	m	class:DNN
+_validSize	include/dataset.h	/^	int    _validSize;$/;"	m	class:Dataset
+_validX	include/dataset.h	/^	float** _validX;$/;"	m	class:Dataset
+_validY	include/dataset.h	/^	int* _validY;$/;"	m	class:Dataset
+_validateAccuracy	include/dnn.h	/^	vector<float> _validateAccuracy;$/;"	m	class:DNN
+_weight	include/sigmoid.h	/^	mat _weight;$/;"	m	class:Sigmoid
+b_sigmoid	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> b_sigmoid(const std::vector<T>& x) {$/;"	f	namespace:ext
+back	tool/libcumatrix/include/cuda_memory_manager.h	/^  T* back() const {$/;"	f	struct:MemList
+backPropagate	src/dnn.cpp	/^void DNN::backPropagate(const mat& deltaMat, float learningRate){$/;"	f	class:DNN
+computeErrRate	src/dnn.cpp	/^float computeErrRate(const vector<size_t>& ans, const vector<size_t>& output){$/;"	f
+computeLabel	src/dnn.cpp	/^void computeLabel(vector<size_t>& result,const mat& outputMat){$/;"	f
+dataSegment	src/datasetJason.cpp	/^void Dataset::dataSegment( float trainProp ){$/;"	f	class:Dataset
+debug	src/dnn.cpp	/^void DNN::debug(){$/;"	f	class:DNN
+device_matrix	tool/libcumatrix/include/device_matrix.h	/^class device_matrix {$/;"	c
+diff1st	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> diff1st(const std::vector<T>& v) {$/;"	f	namespace:ext
+dmat	tool/libcumatrix/include/device_arithmetic.h	78;"	d
+dmat	tool/libcumatrix/include/device_arithmetic.h	9;"	d
+dmat	tool/libcumatrix/include/device_matrix.h	246;"	d
+dmat	tool/libcumatrix/include/device_matrix.h	317;"	d
+dvec	tool/libcumatrix/include/device_arithmetic.h	77;"	d
+dvec	tool/libcumatrix/include/device_arithmetic.h	8;"	d
+empty	tool/libcumatrix/include/cuda_memory_manager.h	/^  bool empty() const {$/;"	f	struct:MemList
+ext	tool/libcumatrix/include/device_math.h	/^namespace ext {$/;"	n
+ext	tool/libcumatrix/include/math_ext.h	/^namespace ext {$/;"	n
+feedForward	src/dnn.cpp	/^void DNN::feedForward(mat& outputMat, const mat& inputMat, bool train){$/;"	f	class:DNN
+free	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::free(T* ptr) {$/;"	f	class:CudaMemManager
+garbage_collection	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::garbage_collection() {$/;"	f	class:CudaMemManager
+gc	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::gc() {$/;"	f	class:CudaMemManager
+geam	tool/libcumatrix/include/device_matrix.h	/^void geam(const dmat& A, const dmat& B, dmat& C, T alpha = 1.0, T beta = 1.0, bool transA = false, bool transB = false) {$/;"	f
+gemm	tool/libcumatrix/include/device_matrix.h	/^void gemm(const dmat& A, const dmat& B, dmat& C, T alpha = 1.0, T beta = 0.0, bool transA = false, bool transB = false) {$/;"	f
+get	tool/libcumatrix/src/cuda_memory_manager.cpp	/^T* CudaMemManager<T>::get(size_t size) {$/;"	f	class:CudaMemManager
+getBatch	src/datasetJason.cpp	/^void Dataset::getBatch(int batchSize, mat& batch, mat& batchLabel){$/;"	f	class:Dataset
+getBuffer	tool/libcumatrix/include/device_matrix.h	/^  static T* getBuffer() {$/;"	f	class:SCALAR_MEMORY_BUFFER
+getCols	tool/libcumatrix/include/device_matrix.h	/^  size_t getCols() const { return _cols; }$/;"	f	class:device_matrix
+getData	tool/libcumatrix/include/device_matrix.h	/^  T* getData() const { return _data; }$/;"	f	class:device_matrix
+getInputDim	src/dataset.cpp	/^size_t Dataset::getInputDim(){}$/;"	f	class:Dataset
+getInputDimension	src/dnn.cpp	/^size_t DNN::getInputDimension(){$/;"	f	class:DNN
+getInstance	tool/libcumatrix/include/cuda_memory_manager.h	/^  static CudaMemManager& getInstance() {$/;"	f	class:CudaMemManager
+getInstance	tool/libcumatrix/include/device_matrix.h	/^  static cublasHandle_t& getInstance() {$/;"	f	class:CUBLAS_HANDLE
+getKeys	tool/libcumatrix/src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::getKeys(const typename MemPool<T>::type &pool) {$/;"	f	class:CudaMemManager
+getLabelMap	src/dataset.cpp	/^map<string, int> Dataset::getLabelMap(){return labelMap;}$/;"	f	class:Dataset
+getNumLayers	src/dnn.cpp	/^size_t DNN::getNumLayers(){$/;"	f	class:DNN
+getNumOfTrainData	src/dataset.cpp	/^size_t Dataset::getNumOfTrainData(){ return _numOfTrainData; }$/;"	f	class:Dataset
+getOutputDim	src/dataset.cpp	/^size_t Dataset::getOutputDim(){}$/;"	f	class:Dataset
+getOutputDimension	src/dnn.cpp	/^size_t DNN::getOutputDimension(){$/;"	f	class:DNN
+getRows	tool/libcumatrix/include/device_matrix.h	/^  size_t getRows() const { return _rows; }$/;"	f	class:device_matrix
+getTestDataMatrix	src/dataset.cpp	/^float** Dataset::getTestDataMatrix(){return _testDataMatrix;}$/;"	f	class:Dataset
+getTrainDataMatrix	src/dataset.cpp	/^float** Dataset::getTrainDataMatrix(){return _trainDataMatrix;}$/;"	f	class:Dataset
+getTrainSet	src/datasetJason.cpp	/^void Dataset::getTrainSet(int trainSize, mat& trainData, vector<size_t>& trainLabel){$/;"	f	class:Dataset
+getValidSet	src/datasetJason.cpp	/^void Dataset::getValidSet(mat& validData, vector<size_t>& validLabel){$/;"	f	class:Dataset
+hasMore	tool/libcumatrix/src/cuda_memory_manager.cpp	/^bool CudaMemManager<T>::hasMore(size_t size) {$/;"	f	class:CudaMemManager
+hist	tool/libcumatrix/include/math_ext.h	/^  std::vector<size_t> hist(const std::vector<T>& v) {$/;"	f	namespace:ext
+hit	tool/libcumatrix/include/cuda_memory_manager.h	/^  void hit() {$/;"	f	struct:MemList
+hit_rate	tool/libcumatrix/include/cuda_memory_manager.h	/^  size_t hit_rate;$/;"	m	struct:MemList
+hits	tool/libcumatrix/include/cuda_memory_manager.h	/^  size_t hits;$/;"	m	struct:MemList
+inputFtreToMat	src/datasetJason.cpp	/^mat Dataset::inputFtreToMat(float** input, int r, int c){$/;"	f	class:Dataset
+is_inf	tool/libcumatrix/include/math_ext.h	/^  inline bool is_inf(T x) {$/;"	f	namespace:ext
+labelMap	include/dataset.h	/^	map<string, int> labelMap; \/\/Map phoneme to int$/;"	m	class:Dataset
+load	tool/libcumatrix/include/device_math.h	/^  thrust::device_vector<T> load(std::string filename) {$/;"	f	namespace:ext
+load	tool/libcumatrix/include/math_ext.h	/^  void load(std::vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+main	datasetTest.cpp	/^int main()$/;"	f
+main	jasonTest.cpp	/^int main(){$/;"	f
+main	temp.cpp	/^int main(int argc, char** argv){$/;"	f
+malloc	tool/libcumatrix/src/cuda_memory_manager.cpp	/^T* CudaMemManager<T>::malloc(size_t N) {$/;"	f	class:CudaMemManager
+mat	include/dataset.h	/^typedef device_matrix<float> mat;$/;"	t
+mat	include/dnn.h	/^typedef device_matrix<float> mat;$/;"	t
+mat	include/sigmoid.h	/^typedef device_matrix<float> mat;$/;"	t
+mat	jasonTest.cpp	/^typedef device_matrix<float> mat;$/;"	t	file:
+mat	src/datasetJason.cpp	/^typedef device_matrix<float> mat;$/;"	t	file:
+mat	src/dnn.cpp	/^typedef device_matrix<float> mat;$/;"	t	file:
+mat	src/nnTrain.cpp	/^typedef device_matrix<float> mat;$/;"	t	file:
+mat	temp.cpp	/^typedef device_matrix<float> mat;$/;"	t	file:
+max	tool/libcumatrix/include/math_ext.h	/^  T max(const std::vector<T>& v) {$/;"	f	namespace:ext
+nnTrain	src/nnTrain.cpp	/^DNN nnTrain( Dataset* dataPtr, $/;"	f
+norm	tool/libcumatrix/include/device_math.h	/^  T norm(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+norm	tool/libcumatrix/include/device_math.h	/^  T norm(const thrust::host_vector<T>& v) {$/;"	f	namespace:ext
+normalize	tool/libcumatrix/include/math_ext.h	/^  void normalize(std::vector<T>& v) {$/;"	f	namespace:ext
+nrm2	tool/libcumatrix/include/device_matrix.h	/^T nrm2(const dmat& A) {$/;"	f
+operator &	tool/libcumatrix/include/device_arithmetic.h	/^dvec<T> operator & (const dvec<T>& x, const dvec<T>& y) {$/;"	f
+operator *	tool/libcumatrix/include/device_arithmetic.h	/^dmat<T> operator * (const dmat<T>& A, const dvec<T>& v) {$/;"	f
+operator *	tool/libcumatrix/include/device_arithmetic.h	/^dmat<T> operator * (const dvec<T>& col_vector, const dvec<T>& row_vector) {$/;"	f
+operator *	tool/libcumatrix/include/device_arithmetic.h	/^dmat<T> operator * (const dvec<T>& v, const dmat<T>& A) {$/;"	f
+operator *	tool/libcumatrix/include/device_matrix.h	/^      device_matrix<T> operator * (const Transposed& rhs) {$/;"	f	class:device_matrix::Transposed
+operator *	tool/libcumatrix/include/device_matrix.h	/^      device_matrix<T> operator * (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator *	tool/libcumatrix/include/device_matrix.h	/^device_matrix<T> operator * (T alpha, const device_matrix<T>& m) {$/;"	f
+operator +	tool/libcumatrix/include/device_matrix.h	/^      device_matrix<T> operator + (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator +	tool/libcumatrix/include/device_matrix.h	/^device_matrix<T> operator + (T alpha, const device_matrix<T>& m) {$/;"	f
+operator -	tool/libcumatrix/include/device_matrix.h	/^      device_matrix<T> operator - (const device_matrix<T>& rhs) {$/;"	f	class:device_matrix::Transposed
+operator -	tool/libcumatrix/include/device_matrix.h	/^device_matrix<T> operator - (T alpha, const device_matrix<T>& m) {$/;"	f
+outputNumtoBin	src/datasetJason.cpp	/^mat Dataset::outputNumtoBin(int* outputVector, int vectorSize)$/;"	f	class:Dataset
+pop_back	tool/libcumatrix/include/cuda_memory_manager.h	/^  void pop_back() {$/;"	f	struct:MemList
+predict	src/dnn.cpp	/^void DNN::predict(vector<size_t>& result, const mat& inputMat){$/;"	f	class:DNN
+print	tool/libcumatrix/include/device_math.h	/^  void print(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+print	tool/libcumatrix/include/device_math.h	/^  void print(const thrust::host_vector<T>& v) {$/;"	f	namespace:ext
+printLabelMap	src/dataset.cpp	/^void   Dataset::printLabelMap(map<string, int> Map){$/;"	f	class:Dataset
+prtPointer	src/datasetJason.cpp	/^void Dataset::prtPointer(float** input, int r, int c){$/;"	f	class:Dataset
+ptrs	tool/libcumatrix/include/cuda_memory_manager.h	/^  std::vector<T*> ptrs;$/;"	m	struct:MemList
+push	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::push(size_t size, T* ptr) {$/;"	f	class:CudaMemManager
+push_back	tool/libcumatrix/include/cuda_memory_manager.h	/^  void push_back(T* ptr) {$/;"	f	struct:MemList
+rand	tool/libcumatrix/include/device_math.h	/^  void rand(device_matrix<T>& m) {$/;"	f	namespace:ext
+rand	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> rand(size_t size) {$/;"	f	namespace:ext
+rand01	tool/libcumatrix/include/math_ext.h	/^  T rand01() {$/;"	f	namespace:ext
+randn	tool/libcumatrix/include/device_math.h	/^  void randn(device_matrix<T>& m, float mean = 0.0, float variance = 1.0) {$/;"	f	namespace:ext
+randn	tool/libcumatrix/include/math_ext.h	/^  T randn(T mean, T var) {$/;"	f	namespace:ext
+randn	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> randn(size_t size) {$/;"	f	namespace:ext
+randomInit	src/dnn.cpp	/^void randomInit(device_matrix<T>& m) {$/;"	f
+randomInit	temp.cpp	/^void randomInit(device_matrix<T>& m) {$/;"	f
+randomgenerator	tool/libcumatrix/include/math_ext.h	/^  namespace randomgenerator {$/;"	n	namespace:ext
+sampleDataFrom	tool/libcumatrix/include/math_ext.h	/^  std::vector<size_t> sampleDataFrom(const std::vector<T>& pdf, size_t nSample) {$/;"	f	namespace:ext
+save	src/dnn.cpp	/^void DNN::save(const string& fn){$/;"	f	class:DNN
+save	tool/libcumatrix/include/device_math.h	/^  void save(const thrust::device_vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+save	tool/libcumatrix/include/math_ext.h	/^  void save(const std::vector<T>& v, std::string filename) {$/;"	f	namespace:ext
+setCacheSize	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::setCacheSize(size_t cache_size_in_MB) {$/;"	f	class:CudaMemManager
+showCacheHits	tool/libcumatrix/src/cuda_memory_manager.cpp	/^void CudaMemManager<T>::showCacheHits() {$/;"	f	class:CudaMemManager
+sigmoid	tool/libcumatrix/include/device_math.h	/^  device_matrix<T> sigmoid(const device_matrix<T>& m) {$/;"	f	namespace:ext
+sigmoid	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> sigmoid(const std::vector<T>& x) {$/;"	f	namespace:ext
+size	tool/libcumatrix/include/cuda_memory_manager.h	/^  size_t size() const {$/;"	f	struct:MemList
+size	tool/libcumatrix/include/device_matrix.h	/^  size_t size() const { return _rows * _cols; }$/;"	f	class:device_matrix
+size	tool/libcumatrix/src/cuda_memory_manager.cpp	/^size_t CudaMemManager<T>::size() const {$/;"	f	class:CudaMemManager
+softmax	tool/libcumatrix/include/math_ext.h	/^  std::vector<T> softmax(const std::vector<T>& x) {$/;"	f	namespace:ext
+sort_memlist_by_hit_rate	tool/libcumatrix/src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::sort_memlist_by_hit_rate() {$/;"	f	class:CudaMemManager
+sort_memlist_by_hits	tool/libcumatrix/src/cuda_memory_manager.cpp	/^std::vector<size_t> CudaMemManager<T>::sort_memlist_by_hits() {$/;"	f	class:CudaMemManager
+srander	tool/libcumatrix/include/math_ext.h	/^    inline time_t srander() {$/;"	f	namespace:ext::randomgenerator
+status	tool/libcumatrix/include/device_matrix.h	/^  void status() const {$/;"	f	class:device_matrix
+sum	tool/libcumatrix/include/device_math.h	/^  T sum(const device_matrix<T>& m) {$/;"	f	namespace:ext
+sum	tool/libcumatrix/include/device_math.h	/^  T sum(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+sum	tool/libcumatrix/include/math_ext.h	/^  T sum(const std::vector<T>& v) {$/;"	f	namespace:ext
+swap	tool/libcumatrix/include/device_matrix.h	/^void swap(device_matrix<T>& lhs, device_matrix<T>& rhs) {$/;"	f
+toStlVector	tool/libcumatrix/include/device_math.h	/^  std::vector<T> toStlVector(const thrust::device_vector<T>& v) {$/;"	f	namespace:ext
+train	src/dnn.cpp	/^void DNN::train(size_t batchSize, size_t maxEpoch = MAX_EPOCH){$/;"	f	class:DNN
+type	tool/libcumatrix/include/cuda_memory_manager.h	/^  typedef typename std::map<size_t, MemList<T> > type;$/;"	t	struct:MemPool
+unif	tool/libcumatrix/include/math_ext.h	/^  T unif(T &seed) {$/;"	f	namespace:ext
+~CUBLAS_HANDLE	tool/libcumatrix/include/device_matrix.h	/^  ~CUBLAS_HANDLE() { CCE(cublasDestroy(_handle)); }$/;"	f	class:CUBLAS_HANDLE
+~CudaMemManager	tool/libcumatrix/include/cuda_memory_manager.h	/^  ~CudaMemManager() {}$/;"	f	class:CudaMemManager
+~DNN	src/dnn.cpp	/^DNN::~DNN(){$/;"	f	class:DNN
+~Dataset	src/dataset.cpp	/^Dataset::~Dataset(){$/;"	f	class:Dataset
+~SCALAR_MEMORY_BUFFER	tool/libcumatrix/include/device_matrix.h	/^  ~SCALAR_MEMORY_BUFFER() { CCE(cudaFree(_ptr)); }$/;"	f	class:SCALAR_MEMORY_BUFFER
