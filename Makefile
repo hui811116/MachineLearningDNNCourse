@@ -1,34 +1,27 @@
 CC=gcc
 CXX=g++
-CFLAGS= 
+CPPFLAGS=-g -O2 -std=c++11 $(INCLUDE)
 NVCC=nvcc -arch=sm_21 -w
 
 CUDA_DIR=/usr/local/cuda/
 
-EXECUTABLES=hui
+EXECUTABLES=train
 LIBCUMATDIR=tool/libcumatrix/
-OBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
 CUMATOBJ=$(LIBCUMATDIR)obj/device_matrix.o $(LIBCUMATDIR)obj/cuda_memory_manager.o
-HEADEROBJ=obj/sigmoid.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
+HEADEROBJ=obj/util.o obj/transforms.o obj/dnn.o obj/dataset.o obj/datasetJason.o obj/parser.o
 
 # +==============================+
 # +======== Phony Rules =========+
 # +==============================+
 
-.PHONY: debug all clean o3
+.PHONY: debug all clean 
 
 LIBS=$(LIBCUMATDIR)lib/libcumatrix.a
 
-$(LIBCUMATDIR)lib/libcumatrix.a:$(CUMATOBJ)
-	@echo "something wrong in tool/libcumatrix..."
-
-DIR:
-	@mkdir -p obj
-
-o3: CFLAGS+=-o3
-o3: all
-
-debug: CFLAGS+=-g -DDEBUG
+$(LIBCUMATDIR)lib/libcumatrix.a:
+	@echo "Missing library file, trying to fix it in tool/libcumatrix"
+	@cd tool/libcumatrix/ ; make ; cd ../..
+debug: CPPFLAGS+=-g -DDEBUG 
 
 vpath %.h include/
 vpath %.cpp src/
@@ -41,33 +34,53 @@ INCLUDE= -I include/\
 
 LD_LIBRARY=-L$(CUDA_DIR)lib64 -L$(LIBCUMATDIR)lib
 LIBRARY=-lcuda -lcublas -lcudart -lcumatrix
-CPPFLAGS= -g -std=c++0x $(CFLAGS) $(INCLUDE)
 TARGET=test.app
 
-all:$(DIR) $(OBJ) $(HEADEROBJ) $(EXECUTABLES)
-	$(NVCC) $(INCLUDE) -o $@ $^ $(OBJ) $(LD_LIBRARY) $(LIBRARY)
+DIR:
+	@echo "checking object and executable directory..."
+	@mkdir -p obj
+	@mkdir -p bin
 
-larry: $(OBJ) $(HEADEROBJ) temp.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+all:DIR $(EXECUTABLES)
 
+larry: $(HEADEROBJ) example/temp.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-hui:$(HEADEROBJ) matMultTest.cu
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) -o hui.app $(INCLUDE) $^ $(LIBS) $(LD_LIBRARY) $(LIBRARY)
+train:  $(HEADEROBJ) example/train.cpp
+	@echo "compiling train.app for DNN Training"
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$@.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
 
-Pan: $(OBJ) $(HEADEROBJ) datasetTest.cpp 
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY) 
+#Pan: $(HEADEROBJ) makeFrameDatasetTest.cpp 
+#	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
+
+CSV: $(HEADEROBJ) CSVTest.cpp 
+	@echo "compiling CSV2.app for generating CSV format testing results"
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/CSV2.app $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY) 
+
 clean:
+	@echo "All objects and executables removed"
 	@rm -f $(EXECUTABLES) obj/* ./*.app
 
-jason: $(OBJ) $(HEADEROBJ) jasonTest.cpp
-	$(CXX) $(CFLAGS) $(INCLUDE) -o $(TARGET) $^ $(LIBRARY) $(LD_LIBRARY)
+jason: $(HEADEROBJ) jasonTest.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -o bin/$(TARGET) $^ $(LIBS) $(LIBRARY) $(LD_LIBRARY)
+
+ctags:
+	@rm -f src/tags tags
+	@echo "Tagging src directory"
+	@cd src; ctags -a *.cpp ../include/*.h; ctags -a *.cu ../include/*.h; cd ..
+	@echo "Tagging main directory"
+	@ctags -a *.cpp src/* ; ctags -a *.cu src/*
+	
 # +==============================+
 # +===== Other Phony Target =====+
 # +==============================+
 obj/%.o: src/%.cpp include/%.h
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ " 
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
 obj/datasetJason.o: src/datasetJason.cpp include/dataset.h 
-	$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ "
+	@$(CXX) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 obj/%.o: %.cu
-	$(NVCC) $(NVCCFLAGS) $(CFLAGS) $(INCLUDE) -o $@ -c $<
+	@echo "compiling OBJ: $@ "
+	@$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<

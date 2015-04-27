@@ -6,12 +6,13 @@
 
 #include <device_arithmetic.h>
 #include <device_math.h>
-#include "sigmoid.h"
 
 #include <cublas_v2.h>
 #include <helper_cuda.h>
 #include <cuda_memory_manager.h>
 #include "parser.h"
+#include "transforms.h"
+#include "util.h"
 
 
 using namespace std;
@@ -43,8 +44,19 @@ void pushOne(device_matrix<T>& m) {
 int main(int argc,char** argv){
 
 PARSER p;
+p.addOption("--dim",false);
+p.read(argc,argv);
+string str;
+p.getString("--dim",str);
+vector<size_t> v;
+parseDim(str,v);
+for(size_t t=0;t<v.size();++t)
+	cout<<" "<<v[t];
+cout<<endl;
 
 
+size_t dim=500;
+float n=0.02;
 srand(time(0));
 
 mat A(5,8),B(8,5);
@@ -58,34 +70,50 @@ randomInit(C);
 randomInit(D);
 
 //testing sigmoid function
-
-Sigmoid n1(5,5);
-
-C.resize(8,3);
-randomInit(C);
-
-printf("testing push one \n");
-pushOne(C);
-C.print();
-
-printf("testing ext::sigmoid\n");
-(ext::sigmoid(C)).print();
-
-n1.print();
-
-printf("minus const num\n");
+/*
+printf("divide by a const num\n");
 C.print();
 printf("\n");
-(C-1).print();
-
-A.resize(5,8);B.resize(5,8);
-randomInit(A);randomInit(B);
-
-C.resize(5,5);
-randomInit(C);
-gemm(A,B,C,(float)-1,(float)1,false,true);
-printf("C=\n");
-C.print();
+(C*n/(float)dim).print();
+*/
+/*
+mat in(10,3);
+randomInit(in);
+Softmax s1(10,10);
+mat out;
+s1.forward(out,in,true);
+cout<<"out"<<endl;
+out.print();
+mat bk;
+s1.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+*/
+/*
+Sigmoid s2(10,10);
+cout<<"testing sigmoid"<<endl;
+s2.forward(out,in,true);
+cout<<"out"<<endl;
+out.print();
+s2.backPropagate(bk,out,0.02,0);
+cout<<"bk="<<endl;
+bk.print();
+*/
+cout<<"testing util functions"<<endl;
+mat W(5,8);
+randomInit(W);
+mat B1(5,1,1);
+cout<<"W="<<endl;
+W.print();
+cout<<"calling getBias()"<<endl;
+mat tmp;
+getBias(tmp,W);
+cout<<"result:"<<endl;
+tmp.print();
+cout<<"calling replaceBias()"<<endl;
+replaceBias(W,B1);
+cout<<"result"<<endl;
+W.print();
 
 return 0;
 }

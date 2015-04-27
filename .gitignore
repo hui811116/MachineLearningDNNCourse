@@ -20,7 +20,6 @@ obj/*.o
 # Compiled Static libraries
 *.lai
 *.la
-#*.a
 *.lib
 
 # Executables
@@ -33,10 +32,13 @@ obj/*.o
 
 # Tags
 tags
+src/tags
 
 # Model file
 *.mdl
-model/*.mdl
+model/*
 
-# Temp
+# Temp and Testing cpp files
 temp.cpp
+*Test.cpp
+*Test.cu
